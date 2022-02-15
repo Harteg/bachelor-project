@@ -54,7 +54,7 @@ def get_peak_index_ranges(peak_locs, peak_range_size):
 
 
 def fit_peaks(data_spec, data_spec_err, peak_index_ranges, print=False):
-    """ Returns array of the fit values: A, mu, sigma, C, chi2_val """
+    """ Returns array of the fit values with errors: A, A_err, mu, mu_err, sigma, sigma_err, C, C_err, chi2_val, ndof, converged (bool) """
 
     peak_fits = []
     for peak_index_range in peak_index_ranges:
@@ -67,7 +67,8 @@ def fit_peaks(data_spec, data_spec_err, peak_index_ranges, print=False):
 
         # Fitting functions:
         def func_GaussConst(x, A, mu, sigma, C) :
-            return A * np.exp(-0.5 * (((x)-mu)/sigma)**2)  +  C
+            return A * np.exp(-0.5 * ((x-mu)/sigma)**2)  +  C
+            # return A * stats.norm.pdf(x, mu, sigma) + C       # doesn't seem to work  ... 
 
 
         # ChiSquare fit model:
@@ -92,16 +93,26 @@ def fit_peaks(data_spec, data_spec_err, peak_index_ranges, print=False):
         mu_fit = minuit.values['mu']
         sigma_mu_fit = minuit.errors['mu']
         Npoints = len(x)
+        ndof = Npoints - len(minuit.values[:])
         Chi2_val = minuit.fval # The chi2 value
-        
+        converged = minuit.fmin.is_valid
+
         # peak_fits.append([*minuit.values, Chi2_val])
-        peak_fits.append(
-            [minuit.values['A'],
+        peak_fits.append([
+            minuit.values['A'],
+            minuit.errors['A'],
             minuit.values['mu'],
+            minuit.errors['mu'],
             minuit.values['sigma'],
+            minuit.errors['sigma'],
             minuit.values['C'],
-            Chi2_val]
-        )
+            minuit.errors['C'],
+            Chi2_val,
+            ndof,
+            converged,
+            index_start, 
+            index_end
+        ])
         
         if print:
             print(f"  Peak fitted. N = {Npoints:2d}   Chi2 ={Chi2_val:5.1f}   Wave mean = {mu_fit:8.3f}+-{sigma_mu_fit:5.3f}")
@@ -132,30 +143,45 @@ def get_true_wavel(data_wavel_given, peak_locs):
         wavel = c/f * 1e10
         return wavel
 
+    # Get peaks in wavel_given
     wavel_given = data_wavel_given[peak_locs]
-    wavel_given_low = wavel_given[0]
-    wavel_given_high = wavel_given[-1]
+    
+    # set max and min 
+    wavel_given_min = wavel_given[0]
+    wavel_given_max = wavel_given[-1]
 
     # gen true wavel
-    wavel_true = [true_wavel(0), true_wavel(1)]
+    wavel_true = [[true_wavel(0), 0], [true_wavel(1), 1]]
     n = 1
-    while wavel_true[-1] > wavel_given_low * (1 - 0.001): # continue until we get well below the lowest given wavel. 
+    while wavel_true[-1][0] > wavel_given_min * (1 - 0.001): # continue until we get well below the lowest given wavel. 
         n += 1
-        wavel_true.append(true_wavel(n))
+        wavel_true.append([true_wavel(n), n])
 
-
-    # Cut off well above wavel_given_high
+    # Cut off well above wavel_given_max
     wavel_true = np.asarray(wavel_true)
-    wavel_true = wavel_true[wavel_true < wavel_given_high * (1 + 0.001)]
+    wavel_true = wavel_true[wavel_true[:, 0] < wavel_given_max * (1 + 0.001)]
     wavel_true = wavel_true[::-1] # reverse order
 
     # wavel_true list is now quite a bit longer than peak_locs, but contains all of them
     # Now, find the closest match in wavel_true for each value in 
     wavel_true_match = []
     for lambd_given in wavel_given:
-        wavel_true_match.append(min(wavel_true, key=lambda x:abs(x-lambd_given)))
+        # Find minimum value
+        # wavel_true_match.append(min(wavel_true[:, 0], key=lambda x:abs(x-lambd_given)))
+        
+        # Find minimum value
+        min_val = min(wavel_true[:, 0], key=lambda x:abs(x-lambd_given))
 
-    return wavel_true_match
+        # Find index of minimum value
+        min_val_index = next((idx for idx, val in np.ndenumerate(wavel_true[:, 0]) if val==min_val), None)[0]
+
+        # So we can find the n of the peak
+        n = wavel_true[:, 1][min_val_index]
+
+        # now add to list
+        wavel_true_match.append([min_val, n])
+
+    return np.asarray(wavel_true_match)
 
 
 # TODO :: rename this 
@@ -175,9 +201,9 @@ def peak_position_fit_func(x, c0, c1, c2, c3, c4, c5, c6):
 
 # TODO :: rename this
 def fit_peak_positions(wavel_true_match, peak_fits):
-    x = np.asarray(peak_fits)[:,1]
+    x = peak_fits[:,2]
     y = wavel_true_match
-    ey = np.sqrt(wavel_true_match) * 0.001  # photon noise is possion (?) 
+    ey = np.sqrt(wavel_true_match) * 0.001  # photon noise is possion (?)  # TODO: Use peak width instead
 
     # Plot data in errorbars
     # figPeak, axPeak = plt.subplots(figsize=(16, 8))
