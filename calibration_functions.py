@@ -203,7 +203,9 @@ def peak_position_fit_func(x, c0, c1, c2, c3, c4, c5, c6):
 def fit_peak_positions(wavel_true_match, peak_fits):
     x = peak_fits[:,2]
     y = wavel_true_match
-    ey = np.sqrt(wavel_true_match) * 0.001  # photon noise is possion (?)  # TODO: Use peak width instead
+    # ey = np.sqrt(wavel_true_match) * 0.001  # photon noise is possion (?)  # TODO: Use peak width instead
+    # ey = peak_fits[:, 3]    # sigma mu (error on the mean of the peak)
+    ey = peak_fits[:, 4]    # sigma (width of the peak)
 
     # Plot data in errorbars
     # figPeak, axPeak = plt.subplots(figsize=(16, 8))
@@ -229,5 +231,5 @@ def fit_peak_positions(wavel_true_match, peak_fits):
     # Prob_fit = stats.chi2.sf(Chi2_fit, Ndof_fit)    # The chi2 probability given N degrees of freedom
     # print(f"  Peak fitted. N = {Npoints:2d}   Chi2 ={Chi2_fit:5.1f}")
 
-    return minuit.values
+    return minuit.values, minuit.fval
 
