@@ -11,6 +11,7 @@ import sys
 from astropy.utils.data import get_pkg_data_filename
 from pylab import *
 from sympy import false
+from scipy.interpolate import interp1d
 
 sys.path.append('/Users/jakobharteg/Github/MyAppStat/')
 from ExternalFunctions import Chi2Regression
@@ -35,7 +36,7 @@ def func_find_peaks(y, required_dist, required_prominence):  # height, required_
     return peaks, prom[0], np.round(widths[2]).astype(int), np.round(widths[3]).astype(int), widths[0], dict_peak['peak_heights']
 
 
-def get_peak_index_ranges(peak_locs, peak_range_size):
+def get_peak_index_ranges(peak_locs, peak_range_size=np.nan):
     """ 
     
     Returns
@@ -45,6 +46,11 @@ def get_peak_index_ranges(peak_locs, peak_range_size):
             An array of indexes (start, end) of a range around each peak. 
 
      """
+    
+    # First compute desired peak_range_size: the mean separation between peaks
+    if np.isnan(peak_range_size):
+        peak_range_size = int(np.mean(np.diff(peak_locs)))
+    
     peak_index_ranges = []
     for nPeak in peak_locs:
         start = nPeak - peak_range_size/2
@@ -185,18 +191,18 @@ def get_true_wavel(data_wavel_given, peak_locs):
 
 
 # TODO :: rename this 
-def peak_position_fit_func(x, c0, c1, c2, c3, c4, c5, c6):
-    # def fit_func(x, c0, c1, c2, c3, c4, c5):
-    # def fit_func(x, c0, c1, c2, c3, c4):
-    # def fit_func(x, c0, c1, c2, c3):
-    # def fit_func(x, c0, c1, c2):
-    # def fit_func(x, c0, c1):
-        return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4 + c5*x**5 + c6*x**6
-        return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4 + c5*x**5
-        return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4
-        return c0 + c1*x + c2*x**2 + c3*x**3
-        return c0 + c1*x + c2*x**2
-        return c0 + c1*x
+# def peak_position_fit_func(x, c0, c1, c2, c3, c4, c5, c6):
+def peak_position_fit_func(x, c0, c1, c2, c3, c4, c5):
+# def peak_position_fit_func(x, c0, c1, c2, c3, c4):
+# def peak_position_fit_func(x, c0, c1, c2, c3):
+# def peak_position_fit_func(x, c0, c1, c2):
+# def peak_position_fit_func(x, c0, c1):
+    # return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4 + c5*x**5 + c6*x**6
+    return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4 + c5*x**5
+    return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4
+    return c0 + c1*x + c2*x**2 + c3*x**3
+    return c0 + c1*x + c2*x**2
+    return c0 + c1*x
 
 
 # TODO :: rename this
@@ -218,7 +224,7 @@ def fit_peak_positions(wavel_true_match, peak_fits):
     model_chi2.errordef = 1
 
     # Fit peak with a Gaussian:
-    minuit = Minuit(model_chi2, c0=1, c1=1, c2=1, c3=1, c4=1, c5=1, c6=1)
+    minuit = Minuit(model_chi2, c0=1, c1=1, c2=1, c3=1, c4=1, c5=1)
 
     # Perform the actual fit (and save the parameters):
     minuit.migrad()                                             
@@ -232,4 +238,49 @@ def fit_peak_positions(wavel_true_match, peak_fits):
     # print(f"  Peak fitted. N = {Npoints:2d}   Chi2 ={Chi2_fit:5.1f}")
 
     return minuit.values, minuit.fval
+
+
+def fit_all_peaks_in_all_orders(filename = r"expres_tp/LFC_200907.1063.fits"):
+    
+    # Load data
+    hdu1 = fits.open(filename)
+
+    data = hdu1[1].data.copy()
+
+    results = []
+    for order in range(0, len(data)):
+        data_spec       = data['spectrum'][order]
+        data_spec_err   = data['uncertainty'][order]
+        data_wavel      = data['wavelength'][order]
+
+        # Find peaks
+        peak_info = func_find_peaks(data_spec, 11, 0.15)
+        peak_locs = peak_info[0]
+
+        # If less than 10 peaks skip order
+        if len(peak_locs) < 10:
+            results.append([order, [[np.nan]], [[np.nan]], [np.nan] ]) # save NaN to list if no peak
+            continue
+
+        # Create data slices around each peak
+        peak_index_ranges = get_peak_index_ranges(peak_locs)
+
+        # Fit peak in each data slice
+        peak_fits = fit_peaks(data_spec, data_spec_err, peak_index_ranges)
+
+        # Get list of true wavelengths
+        wavel_true = get_true_wavel(data_wavel, peak_locs)
+        
+        results.append([order, peak_fits, wavel_true, data_wavel[peak_locs]])
+
+    results = np.asarray(results, dtype=object)
+    return results
+
+
+def interpolate_order(x, y):
+    """ x : peak positions
+        y : wavel_true
+        
+        returns interpolation function """
+    return interp1d(x, y, kind='cubic', bounds_error=False, fill_value=np.nan)
 
