@@ -1,21 +1,13 @@
-import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
-import scipy
 from scipy import stats
-import math
 from astropy.io import fits
-import iminuit
 from iminuit import Minuit
 import sys
-from astropy.utils.data import get_pkg_data_filename
 from pylab import *
-from sympy import false
 from scipy.interpolate import interp1d
 
 sys.path.append('/Users/jakobharteg/Github/MyAppStat/')
 from ExternalFunctions import Chi2Regression
-from ExternalFunctions import nice_string_output, add_text_to_ax # useful functions to print fit results on figure
 
 # from scipy.signal import find_peaks, peak_widths, peak_prominences
 # originally from Lars
@@ -60,7 +52,7 @@ def get_peak_index_ranges(peak_locs, peak_range_size=np.nan):
 
 
 def fit_peaks(data_spec, data_spec_err, peak_index_ranges, print=False):
-    """ Returns array of the fit values with errors: A, A_err, mu, mu_err, sigma, sigma_err, C, C_err, chi2_val, ndof, converged (bool) """
+    """ Returns array of the fit values with errors: A, A_err, mu, mu_err, sigma, sigma_err, C, C_err, chi2_val, ndof, converged (bool), index_start, index_end, prob """
 
     peak_fits = []
     for peak_index_range in peak_index_ranges:
@@ -71,25 +63,46 @@ def fit_peaks(data_spec, data_spec_err, peak_index_ranges, print=False):
         y = np.array(data_spec[index_start:index_end])
         ey = np.array(data_spec_err[index_start:index_end])
 
-        # Fitting functions:
-        def func_GaussConst(x, A, mu, sigma, C) :
-            return A * np.exp(-0.5 * ((x-mu)/sigma)**2)  +  C
-            # return A * stats.norm.pdf(x, mu, sigma) + C       # doesn't seem to work  ... 
+        # # Fitting functions:
+        # def func_GaussConst(x, A, mu, sigma, C) :
+        #     return A * np.exp(-0.5 * ((x-mu)/sigma)**2)  +  C
+        #     # return A * stats.norm.pdf(x, mu, sigma) + C       # doesn't seem to work  ... 
+
+
+        # # ChiSquare fit model:
+        # def model_chi2(A, mu, sigma, C) :
+        #     y_fit = func_GaussConst(x, A, mu, sigma, C)
+        #     chi2 = np.sum(((y - y_fit) / ey)**2)
+        #     return chi2
+        # model_chi2.errordef = 1
+
+        # # Fit peak with a Gaussian:
+        # A_init     = 0.45
+        # mu_init    = np.mean(x)
+        # sigma_init = -1.6
+        # C_init     = 0.02
+        # minuit = Minuit(model_chi2, A=A_init, mu=mu_init, sigma=sigma_init, C=C_init)
+
+        # From Christian
+        def super_gauss(x, A, mu, sigma, P, C, b = 0):
+            z = (x - mu)**2 / (2 * sigma**2)
+            return A * np.exp(-z**P) + C + b * (x - mu)
 
 
         # ChiSquare fit model:
-        def model_chi2(A, mu, sigma, C) :
-            y_fit = func_GaussConst(x, A, mu, sigma, C)
+        def model_chi(A, mu, sigma, P, C) :
+            y_fit = super_gauss(x, A, mu, sigma, P, C)
             chi2 = np.sum(((y - y_fit) / ey)**2)
             return chi2
-        model_chi2.errordef = 1
+        model_chi.errordef = 1
 
-        # Fit peak with a Gaussian:
-        A_init     = 0.45
+        A_init     = 0.87
         mu_init    = np.mean(x)
-        sigma_init = -1.6
-        C_init     = 0.02
-        minuit = Minuit(model_chi2, A=A_init, mu=mu_init, sigma=sigma_init, C=C_init)
+        sigma_init = -1.8
+        P_init     = 1.3
+        C_init     = 0.12
+
+        minuit = Minuit(model_chi, A=A_init, mu=mu_init, sigma=sigma_init, P=P_init, C=C_init)
 
         # Perform the actual fit (and save the parameters):
         m = minuit.migrad()                                             
@@ -102,6 +115,8 @@ def fit_peaks(data_spec, data_spec_err, peak_index_ranges, print=False):
         ndof = Npoints - len(minuit.values[:])
         Chi2_val = minuit.fval # The chi2 value
         converged = minuit.fmin.is_valid
+        Prob = stats.chi2.sf(Chi2_val, ndof)
+
 
         # peak_fits.append([*minuit.values, Chi2_val])
         peak_fits.append([
@@ -117,7 +132,8 @@ def fit_peaks(data_spec, data_spec_err, peak_index_ranges, print=False):
             ndof,
             converged,
             index_start, 
-            index_end
+            index_end,
+            Prob
         ])
         
         if print:
