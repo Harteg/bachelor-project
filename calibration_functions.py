@@ -300,3 +300,11 @@ def interpolate_order(x, y):
         returns interpolation function """
     return interp1d(x, y, kind='cubic', bounds_error=False, fill_value=np.nan)
 
+
+def weighted_mean(x, errors):
+    m1 = np.sum([x/s**2 for x, s in zip(x, errors)])
+    m2 = np.sum([1/(x**2) for x in errors])
+    mean = m1/m2
+    err = np.sqrt(1/np.sum([1/(x**2) for x in errors]))
+    return (mean, err)
+
