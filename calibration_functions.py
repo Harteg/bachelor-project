@@ -308,3 +308,9 @@ def weighted_mean(x, errors):
     err = np.sqrt(1/np.sum([1/(x**2) for x in errors]))
     return (mean, err)
 
+
+def angstrom_to_velocity(wavelength_shift):
+    """ Converts wavelenth shift in angstrom to velocity shift in cm/s """
+    c = 299792458
+    angstrom_to_cm = 1e-8
+    return wavelength_shift * angstrom_to_cm * c
