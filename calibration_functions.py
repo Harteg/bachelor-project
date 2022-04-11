@@ -314,3 +314,9 @@ def angstrom_to_velocity(wavelength_shift):
     c = 299792458
     angstrom_to_cm = 1e-8
     return wavelength_shift * angstrom_to_cm * c
+
+
+def make_nan_matrix(size):
+    matrix = np.empty((size,size))
+    matrix[:] = np.nan
+    return matrix
