@@ -46,12 +46,12 @@ def get_all_spectra_filenames(spectra_path = SPECTRA_PATH_34411):
     """ Returns all filenames of the spectra files in the path speficied in spectra_path"""
     SPEKTRA_filenames = next(walk(spectra_path), (None, None, []))[2]  # [] if no file
     SPEKTRA_filenames = sorted(SPEKTRA_filenames)
+    SPEKTRA_filenames = [spectra_path + x for x in SPEKTRA_filenames] # add path to the filename
     return SPEKTRA_filenames
 
-def load_spectra_fits(filename, spectra_path = SPECTRA_PATH_34411):
+def load_spectra_fits(filename):
     """ Returns data from a fits file with a given name """
-    path = spectra_path  + "/" + filename
-    hdul = fits.open(path)
+    hdul = fits.open(filename)
     data = hdul[1].data.copy()
     hdul.close()
     return data
@@ -60,26 +60,25 @@ def get_spec_wavel(data, order, continuum_normalized=False, angstrom=False):
     """ Returns intensity, intensity_err and wavelength for a given spectra data.
         Use in conjunction with load_spectra_fits """
 
-    data_spec       = data['spectrum'][order]
-    data_spec_err   = data['uncertainty'][order]
-    # data_wavel      = data['wavelength'][order]
-    data_wavel      = data['BARY_EXCALIBUR'][order]
+    excalibur_mask  = data['EXCALIBUR_MASK'][order]    # filter by EXCALIBUR_MASK
+    data_spec       = data['spectrum'][order][excalibur_mask]
+    data_spec_err   = data['uncertainty'][order][excalibur_mask]
+    data_wavel      = data['BARY_EXCALIBUR'][order][excalibur_mask]
 
     if angstrom == False:
         data_wavel = angstrom_to_velocity(data_wavel) # convert angstrom to cm/s
 
     if continuum_normalized:
-        cont = data['continuum'][order]
+        cont = data['continuum'][order][excalibur_mask]
         data_spec = data_spec / cont
         data_spec_err = data_spec_err / cont
 
     return data_spec, data_spec_err, data_wavel
 
 
-def get_spektra_date(filename, spectra_path = SPECTRA_PATH_34411):
+def get_spektra_date(filename):
     """ Returns the date of observation for a given fits filename """
-    path = spectra_path  + "/" + filename
-    hdul = fits.open(path)
+    hdul = fits.open(filename)
     header = hdul[0].header
     hdul.close()
     date = header["DATE-OBS"]
@@ -103,7 +102,7 @@ def get_spectra_filenames_without_duplicate_dates(spectra_path = SPECTRA_PATH_34
     """ Returns a list of filesnames of the spectra files in the path speficied in SPECTRA_PATH_34411 without date-duplicates, i.e.
         oberservations taken on the same day. """
     all_files = get_all_spectra_filenames(spectra_path)
-    all_dates = get_spectra_dates(all_files, spectra_path)
+    all_dates = get_spectra_dates(all_files)
     files = [all_files[0]]
     dates = [all_dates[0]]
     for i in np.arange(1, len(all_dates)):
@@ -221,7 +220,7 @@ def find_features(filename,
         peak_height = peaks[5] # peak height from y=0 
         
         # Plot
-        if plot_orders is not None and (plot_orders == order).any():
+        if plot_orders is not None and (plot_orders == order).any() or plot_orders == -1:
             plt.figure(figsize=(30,3))
             plt.plot(velocity_to_angstrom(x), y, ".")
             plt.plot(velocity_to_angstrom(x[peak_locs]), peak_height, "o", color="C3", label=f"{order}. order")
