@@ -41,6 +41,7 @@ SPECTRA_PATH_34411 = "/Users/jakobharteg/Data/34411_spectra/"
 SPECTRA_PATH_10700 = "/Users/jakobharteg/Data/10700_spectra/"
 SPECTRA_PATH_26965 = "/Users/jakobharteg/Data/26965_spectra/"
 SPECTRA_PATH_101501 = "/Users/jakobharteg/Data/101501_spectra/"
+SPECTRA_PATH_51PEG = "/Users/jakobharteg/Data/51peg/"
 
 def get_all_spectra_filenames(spectra_path = SPECTRA_PATH_34411):
     """ Returns all filenames of the spectra files in the path speficied in spectra_path"""
@@ -112,13 +113,24 @@ def get_spectra_filenames_without_duplicate_dates(spectra_path = SPECTRA_PATH_34
     return files
 
 
-def plot_spectra_dates(spectra_dates):
+def plot_spectra_dates(spectra_dates, label=None):
     from datetime import datetime
     plt.figure(figsize=(25, 8))
     for index, date in enumerate(spectra_dates):
         year, month, date = date
         d = datetime(year, month, date)
-        plt.scatter(d, index, color="k", s=2)
+        if label and index == len(spectra_dates) - 1:
+            plt.scatter(d, index, color="k", s=2, label=label)
+            plt.legend()
+        else:
+            plt.scatter(d, index, color="k", s=2)
+        
+
+def plot_spectra_dates_from_path(path):
+    filenames = get_all_spectra_filenames(path)
+    dates = get_spectra_dates(filenames)
+    plot_spectra_dates(dates, label=f"{len(dates)} files found in {path}")
+
 
 
 def plot_matrix(diff_matrix, diff_matrix_err, diff_matrix_valid):
@@ -157,6 +169,8 @@ def plot_matrix(diff_matrix, diff_matrix_err, diff_matrix_valid):
     ax2.set_title("Error")
     ax3.set_title("Valid ratio")
 
+    fig.tight_layout()
+
 
 
 # def find_features(filename, plot_orders = None, plot_features_in_order = None, log=True):
@@ -167,7 +181,8 @@ def find_features(filename,
                     max_frac_err = 0.1,                 # maximum fractional error in intensity
                     min_order_goodness = 0.7,           # Min fraction of data in an order that should be left after filtering for the order to be included. 
                     min_peak_dist = 50,                 # minimum distance (in pixels) between peaks  
-                    min_peak_prominence = 0.25          # minimum height of peak from base (not zero)
+                    min_peak_prominence = 0.25,         # minimum height of peak from base (not zero)
+                    is_51_peg = False,                  # 51Peg doesn't have excalibur column so we need different keywords 
     ):
     
     """ Returns list of features x_values, y_values, y_err_values, x_peak_location, peak_index, order """
@@ -177,17 +192,26 @@ def find_features(filename,
     fits_data = load_spectra_fits(filename)
     orders_n = shape(fits_data["spectrum"])[0]
 
+    # 51Peg data files have different column names
+    is_51_peg = ("peg" in filename)
+
     orders = np.arange(0, orders_n)
     for order in orders:
         
-        # pixel_mask  = fits_data['pixel_mask'][order]    # filter by pixel mask
-        excalibur_mask  = fits_data['EXCALIBUR_MASK'][order]    # filter by EXCALIBUR_MASK
-        y           = fits_data['spectrum'][order][excalibur_mask]
-        og_y        = y # copy of original y data before filtering
-        y_err       = fits_data['uncertainty'][order][excalibur_mask]
-        continuum   = fits_data['continuum'][order][excalibur_mask]
-        # x           = fits_data['wavelength'][order][excalibur_mask]
-        x           = fits_data['BARY_EXCALIBUR'][order][excalibur_mask]
+        if is_51_peg:
+            pixel_mask  = fits_data['PIXEL_MASK'][order]
+            y           = fits_data['spectrum'][order][pixel_mask]
+            og_y        = y # copy of original y data before filtering
+            y_err       = fits_data['uncertainty'][order][pixel_mask]
+            continuum   = fits_data['continuum'][order][pixel_mask]
+            x           = fits_data['bary_wavelength'][order][pixel_mask]
+        else:
+            excalibur_mask  = fits_data['EXCALIBUR_MASK'][order]    # filter by EXCALIBUR_MASK
+            y           = fits_data['spectrum'][order][excalibur_mask]
+            og_y        = y # copy of original y data before filtering
+            y_err       = fits_data['uncertainty'][order][excalibur_mask]
+            continuum   = fits_data['continuum'][order][excalibur_mask]
+            x           = fits_data['BARY_EXCALIBUR'][order][excalibur_mask]
 
         # skip order if no good data
         if len(x) == 0 or len(y) == 0:
@@ -198,7 +222,7 @@ def find_features(filename,
         y_err = y_err/continuum
 
         # Convert angstorm to cm/s
-        x = angstrom_to_velocity(x)
+        # x = angstrom_to_velocity(x) # Don't convert just yet
 
         # filter by fractional error 
         frac_err = y_err/y
@@ -328,6 +352,11 @@ def find_feature_matches(features1, features2, log=True, filter=True, relative_t
         print(f"{len(matches)} matches found")
     
     return matches
+
+
+
+
+
 
 
 
@@ -575,14 +604,6 @@ def parse_matrix_results(result, coords):
         valids = shifts[:, 2]
         valid_ratio = len(valids[valids == 1])/len(valids)
 
-        # Filter away larger values by setting valid to zero (false)
-        # df = pd.DataFrame(shifts, copy=True)
-        # df.columns = ["x", "err", "valid"]
-        # df.valid[:] = 1 # reset ... 
-        # df.valid[df.x > 0.25] = 0 
-        # df.valid[df.x < -0.25] = 0 
-        # shifts = np.asarray(df)
-
         # Split 
         shifts_list, shifts_err_list, shifts_valid_list = shifts[:, 0], shifts[:, 1], shifts[:, 2]
         
@@ -597,6 +618,27 @@ def parse_matrix_results(result, coords):
         diff_matrix_valid[x, y] = valid_ratio
         
     return diff_matrix, diff_matrix_err, diff_matrix_valid
+
+
+def parse_matrix_results_df(result, coords):
+    
+    size = np.max(np.max(coords)) + 1
+    diff_matrix, diff_matrix_err, diff_matrix_valid = make_nan_matrix(size), make_nan_matrix(size), make_nan_matrix(size)
+
+    for coord, shifts in zip(coords, result):
+
+        # Split 
+        shift, shift_err, shift_valid = shifts[0], shifts[1], shifts[3]
+    
+        x = coord[0]
+        y = coord[1]
+
+        diff_matrix[x, y] = shift
+        diff_matrix_err[x, y] = shift_err
+        diff_matrix_valid[x, y] = shift_valid
+        
+    return diff_matrix, diff_matrix_err, diff_matrix_valid
+
 
 
 def get_above_diagonal(matrix):
@@ -662,6 +704,42 @@ def filter_IQR_result(result, set_to_nan=False):
         filtered_result.append(s)
     filtered_result = np.asarray(filtered_result, dtype=object)
     return filtered_result
+
+
+def filter_IQR_dataframe_from_summed_diff(df, set_to_nan=False):
+    """ Filter shift results for outliers by IQR, taking only the ones that are within the 25-75 percentile.
+        if set_to_nan is true, values outside will be set to np.nan, otherwise 0, marking them as invalid.
+
+        https://www.askpython.com/python/examples/detection-removal-outliers-in-python
+        https://stackoverflow.com/a/53338192/1692590
+    """
+    
+    # Compute IQR range
+    q25 = np.percentile(df.summed_diff, 25, interpolation='midpoint')
+    q75 = np.percentile(df.summed_diff, 75, interpolation='midpoint')
+    intr_qr = q75-q25
+    vmin = q25-(1.5*intr_qr)
+    vmax = q75+(1.5*intr_qr)
+
+    # Filter
+    if set_to_nan:
+        df.valid[df.summed_diff < vmin] = np.nan 
+        df.valid[df.summed_diff > vmax] = np.nan
+    else:
+        df.valid[df.summed_diff < vmin] = False 
+        df.valid[df.summed_diff > vmax] = False 
+    
+    return df
+
+
+def compute_IQR_bounds(x):
+    q25 = np.percentile(x, 25, interpolation='midpoint')
+    q75 = np.percentile(x, 75, interpolation='midpoint')
+    intr_qr = q75-q25
+    vmin = q25-(1.5*intr_qr)
+    vmax = q75+(1.5*intr_qr)
+    return vmin, vmax
+
 
 
 def matrix_reduce_results_file(filename, plot=True):
@@ -730,6 +808,76 @@ def matrix_reduce_results_file(filename, plot=True):
     return m, final_shifts, final_shifts_err
 
 
+def matrix_reduce_results_file_df(filename, plot=True):
+    """ Takes a file of our cross-correlation results (matrix) and reduces"""
+    result, coords = np.load(filename, allow_pickle=True)
+    diff_matrix, diff_matrix_err, diff_matrix_valid = parse_matrix_results_df(result, coords)
+
+    def model_chi2(*V):
+        V = np.asarray([*V])
+        res = []
+        size = diff_matrix.shape[0] 
+        # V = np.ones(size)
+        for x in np.arange(size):
+            for y in np.arange(x, size - 1):
+                if x != y:
+                    diff_matrix[x, y]
+                    V[x]
+                    V[y]
+                    res.append(((diff_matrix[x, y] - (V[x] - V[y])) / diff_matrix_err[x, y])**2)
+        chi2 = np.sum(res)
+        return chi2
+    model_chi2.errordef = 1
+
+    # Use the above diagonal as init values
+    init_values = get_above_diagonal(diff_matrix)
+
+    minuit = Minuit(model_chi2, *init_values)
+    m = minuit.migrad()
+    final_shifts = minuit.values[:]
+    final_shifts_err = minuit.errors[:]
+
+    if plot == False:
+        return m, final_shifts, final_shifts_err
+
+    # Plot: 
+
+    # The velocity shifts are between days, so let's put the x-error bar as the time span for each data point
+    velocity_shifts = get_above_diagonal(diff_matrix)
+    velocity_shifts_err = get_above_diagonal(diff_matrix_err)
+    dates = get_spectra_dates(get_spectra_filenames_without_duplicate_dates())
+    intervals = get_time_interval_between_observations(dates)
+
+    fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(20, 8))
+
+    ax1.set_xlabel("Time [days]")
+    ax1.set_ylabel("Velocity shift [cm/s]")
+    ax1.set_title("Above diagonal")
+
+    ax2.set_xlabel("Time [days]")
+    ax2.set_title("Matrix chi2 reduction")
+
+    # Plot above diagonal
+    for shift, shift_err, interval in zip(velocity_shifts, velocity_shifts_err, intervals):
+        # print(shift, np.diff(interval), interval)
+        days_interval = np.arange(*interval)
+        ax1.plot(days_interval, [shift] * len(days_interval), linewidth=2, color="k")
+        ax1.errorbar(np.median(days_interval), shift, yerr=shift_err, color="k") # add errorbar to the center point
+
+    # Plot matrix reduction results
+    for shift, shift_err, interval in zip(final_shifts, final_shifts_err, intervals):
+        days_interval = np.arange(*interval)
+        ax2.plot(days_interval, [shift] * len(days_interval), linewidth=2, color="k")
+        ax2.errorbar(np.median(days_interval), shift, yerr=shift_err, color="k") # add errorbar to the center point
+
+    fig.tight_layout()
+    # fig.savefig("rooo.png", dpi=300)
+
+    return m, final_shifts, final_shifts_err
+
+
+
+
 
 def fit_final_shifts(final_shifts, final_shifts_err):
 
@@ -792,3 +940,242 @@ def fit_final_shifts(final_shifts, final_shifts_err):
 
     return a, b, c, d, a_err, b_err, c_err, d_err
 
+
+# ================================================================================================
+# 
+#                                   Analysing order by order
+# 
+# ================================================================================================
+
+
+def prepare_orders(filename, max_frac_err = 0.1, angstrom=False, is_peg_51 = False):
+    """ Prepares data in a dataframe
+
+    Data-filtering:
+        - Data points outside EXCALIBUR_MASK are excluded.
+        - Orders with less than 10 data points are excluded.
+        - data points with large fractional error are excluded.
+
+    Args:
+        filename (fits file): the file
+        max_frac_err (float, optional): exclude data points with larger fractional error (spectrum / photon count). Defaults to 0.1.
+        angstrom (bool, optional): True if you want wavelengths in angstrom and not cm/s. Defaults to False.
+        is_peg_51 (bool, optional) : True if using data from Peg51, which has other column names. Defaults to False.
+
+    Returns:
+        pd.DataFrame: Return a pandas dataframe from a given fits file with the following data:
+            x : bary_excalibur in cm/s
+            y : spectrum
+            y_err : spectrum error
+            order : order 
+    """
+
+    order_data = []
+    fits_data = load_spectra_fits(filename)
+    orders_n = shape(fits_data["spectrum"])[0]
+
+    orders = np.arange(0, orders_n)
+    orders = np.arange(37, 76)
+    for order in orders:
+        
+        if is_peg_51:
+            pixel_mask  = fits_data['pixel_mask'][order]
+            y           = fits_data['spectrum'][order][pixel_mask]
+            y_err       = fits_data['uncertainty'][order][pixel_mask]
+            continuum   = fits_data['continuum'][order][pixel_mask]
+            x           = fits_data['bary_wavelength'][order][pixel_mask]
+        else: 
+            excalibur_mask  = fits_data['EXCALIBUR_MASK'][order]
+            y           = fits_data['spectrum'][order][excalibur_mask]
+            y_err       = fits_data['uncertainty'][order][excalibur_mask]
+            continuum   = fits_data['continuum'][order][excalibur_mask]
+            x           = fits_data['BARY_EXCALIBUR'][order][excalibur_mask]
+        
+        # skip order if no good data
+        if len(x) < 10 or len(y) < 10:
+            continue
+
+        # Normalize intensity by continuum 
+        y = y/continuum
+        y_err = y_err/continuum
+
+        # Convert angstorm to cm/s
+        if angstrom == False:
+            x = angstrom_to_velocity(x)
+
+        # filter by fractional error 
+        frac_err = y_err/y
+        frac_err_mask = (0 < frac_err) & (frac_err < max_frac_err) # reject if larger than 10% and negative
+        y = y[frac_err_mask]
+        y_err = y_err[frac_err_mask]
+        x = x[frac_err_mask]
+
+        # Now invert peaks
+        y = 1 - y
+
+        # Create DataFrame and append
+        data = {
+            'x': x,
+            'y': y,
+            'y_err': y_err,
+            'order': order
+            }
+        order_data.append(pd.DataFrame(data))
+    
+    # concatenate dataframes
+    df = pd.concat(order_data)
+    return df
+
+
+
+def compute_order_shift(df1, df2, order=-1, plot=False, zoom_plot=True, ax=None):
+    """Computes the wavelength shift for a given order between two files (dataframes)
+
+    Args:
+        df1 (pd.dataframe): dataframe with order data for file 1
+        df2 (pd.dataframe): dataframe with order data for file 2
+        order (int, optional): Order number, just for the plot, or if needed in the returned dataframe. Defaults to -1.
+        plot (bool, optional): Plot order. Defaults to False.
+        zoom_plot (bool, optional): Zoom in on plot. Defaults to True.
+        ax (plt.ax, optional): optional ax to plot on. Defaults to None.
+
+    Returns:
+        pd.dataframe: Dataframe with computed shift_val, shift_err, minuit_valid, summed_diff, order
+    """
+
+    # Add shift for self test 
+    # df2.x = df2.x + 0.25
+    
+    # Interp first file
+    f1 = interp1d(df1.x, df1.y, kind='cubic', fill_value="extrapolate")
+    f1_upper_err = interp1d(df1.x, df1.y + df1.y_err, kind='cubic', fill_value="extrapolate")
+    f1_lower_err = interp1d(df1.x, df1.y - df1.y_err, kind='cubic', fill_value="extrapolate")
+
+    # ChiSquare fit model:
+    def model_chi2(A):
+
+        # Interpolate template
+        interp_df2 = df2.x + A
+        f2 = interp1d(interp_df2, df2.y, kind='cubic', fill_value="extrapolate")
+
+        # Find common x-range
+        xmin = max([min(df1.x), min(interp_df2)])
+        xmax = min([max(df1.x), max(interp_df2)])
+        xnewCommon = np.linspace(xmin, xmax, 1000)
+        
+        # Evaluate interpolation
+        ynew1 = f1(xnewCommon)
+        ynew2 = f2(xnewCommon)
+
+        # Evalute error interpolation
+        ynew1_upper_err = f1_upper_err(xnewCommon)
+        ynew1_lower_err = f1_lower_err(xnewCommon)
+        ynew1_errs = [np.abs(ynew1 - ynew1_upper_err), np.abs(ynew1 - ynew1_lower_err)] 
+        ynew1_err = np.mean(ynew1_errs)
+
+        # Compute chi2
+        chi2 = np.sum(((ynew1 - ynew2) / ynew1_err)**2)
+        return chi2
+    model_chi2.errordef = 1
+        
+    A_init = 0
+    minuit = Minuit(model_chi2, A=A_init)
+    m = minuit.migrad()
+
+    # Results
+    valid = minuit.valid
+    shift_min_final = minuit.values['A']
+    shift_min_final_err = minuit.errors['A']
+    summed_diff = np.sum(df1.y - df2.y) # doesn't have much to do with the fit, but just the difference from night to night in counts
+
+    # Plot final shifted values
+    if plot:
+
+        if ax == None:
+            fig, ax = plt.subplots(figsize=(14,6))
+
+        ax.plot(df1.x, df1.y, ".", label=f"df1 ({order}. order)")
+        ax.plot(df2.x, df2.y, ".",label="df2")
+        ax.plot(df2.x + shift_min_final, df2.y, ".", label="Fit")
+        ax.legend(loc="upper right")
+
+        # Zoom:
+        if zoom_plot:
+            mid = np.median(f1.x)
+            ax.set_xlim(mid - 2, mid + 2)
+    
+
+    # Create DataFrame and append
+    data = {
+        'shift_val':    [shift_min_final],
+        'shift_err':    [shift_min_final_err],
+        'minuit_valid': [valid],
+        'summed_diff':  [summed_diff],
+        'order':        [order]
+        }
+    return pd.DataFrame(data)
+
+
+def compute_all_orders_shift(filename1, filename2, plot_overview=False, plot_orders=False, is_peg_51 = False):
+    """Compute shift for all orders in two files.
+
+    Args:
+        filename1 (string path): fits file 1
+        filename2 (string path): fits file 2
+        plot_overview (bool, optional): plot the shifts for all orders in one plot. Defaults to False.
+        plot_orders (bool, optional): plot all orders individually. Defaults to False.
+        is_peg_51 (bool, optional) : True if using data from Peg51, which has other column names. Defaults to False.
+
+    Returns:
+        (float) : weighted mean for all orders
+        (float) : weighted err for all orders
+        (float) : ratio of valid minuit fits
+        (float) : ratio of orders that passed IQR filter
+    """
+    
+
+    f1 = prepare_orders(filename1, is_peg_51=is_peg_51)
+    f2 = prepare_orders(filename2, is_peg_51=is_peg_51)
+
+    # find common orders : interesection of lists of unique orders
+    common_orders = np.intersect1d(np.unique(f1.order), np.unique(f2.order))
+
+    results = []
+    for o in common_orders:
+        r = compute_order_shift(f1[f1.order == o], f2[f2.order == o], order=o, plot=plot_orders)    
+        results.append(r)
+
+    df = pd.concat(results)
+
+    # Filter for outliers
+    vmin, vmax = compute_IQR_bounds(df.shift_val)
+    df["IQR_valid"] = (df.shift_val > vmin) & (df.shift_val < vmax)
+
+    # Split to valid and invalid shifts
+    df_valid = df[(df.IQR_valid == True) & (df.minuit_valid == True) ].copy()
+    df_invalid = df[(df.IQR_valid == False) | (df.minuit_valid == False)].copy()
+
+    # Compute weighted average
+    shift, shift_err = weighted_mean(df_valid.shift_val, df_valid.shift_err)
+
+    # plot
+    if plot_overview:
+
+        fig, ax1 = plt.subplots(figsize=(14, 10))
+        ax1.errorbar(df_valid.shift_val, df_valid.order, xerr=df_valid.shift_err, fmt=".", linewidth=5, color = "C2")
+        ax1.errorbar(df_invalid.shift_val, df_invalid.order, xerr=df_invalid.shift_err, fmt=".", linewidth=5, color = "C3")
+
+        ax1.vlines(shift, min(df.order), max(df.order), linestyle="dashed", alpha=0.5, color="black", label=f"Weighted average = {shift:.3} ± {shift_err:.1}")
+        ax1.axvspan(shift-shift_err, shift+shift_err, alpha=0.2) # too small to see anyway
+
+        ax1.invert_yaxis()  # invert axis so feature 0 starts at the top
+        ax1.set_title("Shift")
+        ax1.set_xlabel("RV [cm/s]")
+        ax1.set_ylabel("Order")
+        ax1.legend()
+
+
+    IQR_valid_ratio = len(df[df.IQR_valid]) / len(df)
+    minuit_valid_ratio = len(df[df.minuit_valid]) / len(df)
+
+    return shift, shift_err, minuit_valid_ratio, IQR_valid_ratio
