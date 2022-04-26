@@ -544,6 +544,9 @@ def plot_features_shift_matrix(result, coords, save_to_filename=None, do_not_sho
 
 
 def compute_matrix_multi_core(N_files = -1):
+    """ doesn't work when put into function, idk why """
+    import multiprocess
+    
     N_processes = 6
     # N_features = 1000
 
