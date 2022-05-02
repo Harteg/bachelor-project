@@ -183,9 +183,11 @@ def find_features(filename,
                     min_peak_dist = 50,                 # minimum distance (in pixels) between peaks  
                     min_peak_prominence = 0.25,         # minimum height of peak from base (not zero)
                     is_51_peg = False,                  # 51Peg doesn't have excalibur column so we need different keywords 
+                    velocity_cms = False,               # if true, will return wavelengths in cm/s
+                    dont_use_excalibur = False          # True if you want to use "wavelength" column filtered by pixel_mask.
     ):
     
-    """ Returns list of features x_values, y_values, y_err_values, x_peak_location, peak_index, order """
+    """ Returns list of features x_values (angstrom by default), y_values, y_err_values, x_peak_location, peak_index, order """
 
     
     feature_slices = []
@@ -205,6 +207,13 @@ def find_features(filename,
             y_err       = fits_data['uncertainty'][order][pixel_mask]
             continuum   = fits_data['continuum'][order][pixel_mask]
             x           = fits_data['bary_wavelength'][order][pixel_mask]
+        elif dont_use_excalibur:
+            excalibur_mask  = fits_data['EXCALIBUR_MASK'][order]    # filter by EXCALIBUR_MASK
+            y           = fits_data['spectrum'][order][excalibur_mask]
+            og_y        = y # copy of original y data before filtering
+            y_err       = fits_data['uncertainty'][order][excalibur_mask]
+            continuum   = fits_data['continuum'][order][excalibur_mask]
+            x           = fits_data['EXCALIBUR'][order][excalibur_mask]
         else:
             excalibur_mask  = fits_data['EXCALIBUR_MASK'][order]    # filter by EXCALIBUR_MASK
             y           = fits_data['spectrum'][order][excalibur_mask]
@@ -222,7 +231,8 @@ def find_features(filename,
         y_err = y_err/continuum
 
         # Convert angstorm to cm/s
-        # x = angstrom_to_velocity(x) # Don't convert just yet
+        if velocity_cms:
+            x = angstrom_to_velocity(x) # Don't convert just yet
 
         # filter by fractional error 
         frac_err = y_err/y
@@ -246,10 +256,13 @@ def find_features(filename,
         # Plot
         if plot_orders is not None and (plot_orders == order).any() or plot_orders == -1:
             plt.figure(figsize=(30,3))
-            plt.plot(velocity_to_angstrom(x), y, ".")
-            plt.plot(velocity_to_angstrom(x[peak_locs]), peak_height, "o", color="C3", label=f"{order}. order")
+            plt.plot(x, y, ".")
+            plt.plot(x[peak_locs], peak_height, "o", color="C3", label=f"{order}. order")
             plt.ylabel("1 - Continuum normalized counts")
-            plt.xlabel("Wavelength [Å]")
+            if velocity_cms:
+                plt.xlabel("Wavelength [cm/s]")
+            else:
+                plt.xlabel("Wavelength [Å]")
             plt.legend(loc = "upper right")
             
             # plt.figure(figsize=(30,1))
@@ -354,10 +367,74 @@ def find_feature_matches(features1, features2, log=True, filter=True, relative_t
     return matches
 
 
+def nth_cloest_match(value, array, n):
+    """ Returns the index of the nth closest match for a given value and a given array"""
+    diff_array = np.abs(array - value)
+    return np.argpartition(diff_array, n)[n]
 
 
+def find_feature_matches2(features1, features2, apply_iqr_filter=False, return_iqr_filter=False):
+    """ This feature match finder simply returns the closest match between two lists of features.
+        
+        set apply_iqr_filter to discard matches where the peak location difference is outside the inter 
+        quartile range. 
+        
+        set return_iqr_filter to return a mask with TRUE for matches with a peak location difference inside
+        the inter quartile range. 
+
+        """
+
+    peaks1 = np.array(features1[:, 3], dtype=float)
+    peaks2 = np.array(features2[:, 3], dtype=float)
+
+    # We should of course only use each peak once, so let's keep track of the peaks we use
+    used_peaks1 = np.asarray([False] * len(peaks1))
+    used_peaks2 = np.asarray([False] * len(peaks2))
+
+    # find matches
+    matches = []
+    for i in np.arange(len(peaks1)):
+        peak1 = peaks1[i]
+        min_index = nth_cloest_match(peak1, peaks2, 0)
+
+        # Append if we have not already used this peak
+        if used_peaks1[i] == False and used_peaks2[min_index] == False:
+            
+            # Append
+            matches.append([features1[i], features2[min_index]])
+
+            # Mark that we used the peaks
+            used_peaks1[i] = True
+            used_peaks2[min_index] = True
+    matches = np.asarray(matches)
+
+    # Filter
+    if apply_iqr_filter or return_iqr_filter:
+        peak_loc_diffs = np.asarray([f1[3] - f2[3] for f1, f2 in matches])
+        iqr_min, iqr_max = compute_IQR_bounds(peak_loc_diffs)
+        iqr_mask = (peak_loc_diffs > iqr_min) & (peak_loc_diffs < iqr_max)
+
+    if apply_iqr_filter:
+        matches = matches[iqr_mask]
+
+    if return_iqr_filter:
+        return matches, iqr_mask
+
+    return matches
 
 
+def plot_feature_matches2(matches, mask):
+    """ Plots an overview of the peak location difference from features matches with a valid/invalid mask """
+    plt.figure(figsize=(10, 16))
+    peak_loc_diffs = np.asarray([f1[3] - f2[3] for f1, f2 in matches])
+    y = np.arange(len(peak_loc_diffs))
+    plt.plot(peak_loc_diffs[mask], y[mask], ".", color="C2", label=f"{len(peak_loc_diffs[mask])} valid matches")
+    plt.plot(peak_loc_diffs[mask == False], y[mask ==  False], ".", color="Red", label=f"{len(peak_loc_diffs[mask==False])} invalid matches")
+    plt.xlabel("Peak shift [A]")
+    plt.ylabel("Peak index")
+    plt.gca().invert_yaxis()
+    plt.legend(bbox_to_anchor=(1.45, 0.99))
+    plt.title("Initial peak match selection with IQR filter")
 
 
 def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=None):
@@ -546,7 +623,7 @@ def plot_features_shift_matrix(result, coords, save_to_filename=None, do_not_sho
 def compute_matrix_multi_core(N_files = -1):
     """ doesn't work when put into function, idk why """
     import multiprocess
-    
+
     N_processes = 6
     # N_features = 1000
 

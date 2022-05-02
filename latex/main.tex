@@ -1,0 +1,72 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{soul}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[colorlinks,allcolors=blue]{hyperref} % for href links
+% \usepackage{marginnote}
+
+% My styles: ===== 
+
+% To type underscores... type \_
+\chardef\_=`_ 
+
+% Result underline 
+\def\result#1{\underline{\underline{#1}}}
+
+% TO DO box
+\usepackage[most]{tcolorbox}
+\tcbset{on line, 
+        boxsep=3pt, left=0pt,right=0pt,top=0pt,bottom=0pt,
+        colframe=white,colback=red!20,  
+        }
+\def\todo#1{\textbf{\small{\tcbox{todo: #1}}}}
+
+% ======= 
+
+\title{Bachelor Project in Physics}
+\author{Jakob Harteg, wmc573}
+\date{June 2022, University of Copenhagen}
+
+
+\begin{document}
+\maketitle
+
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[scale=0.40]{figures/1.4.3.png}
+%     \caption{Shots needed to reach 100 hits with a success probability of 0.03\%.}
+%     \label{1.4.3}
+% \end{figure}
+
+\newpage
+
+% SECTIONS ==========================================
+
+\section{Introduction}
+\input{sections/introduction} 
+
+\section{Theory}
+\input{sections/theory} 
+
+\section{Data Analysis}
+\input{sections/data_analysis} 
+
+\section{Results}
+% \input{sections/results} 
+
+\section{Discusion}
+% \input{sections/discussion} 
+
+\section{Conclusion}
+% \input{sections/conclusion} 
+
+%%%%%%%%%%%%%%%% Bibliography %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{references.bib}
+
+\end{document}

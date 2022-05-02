@@ -1,0 +1,39 @@
+\begin{thebibliography}{1}
+
+\bibitem{barycentric_exposure_meter_blackman}
+Ryan~T Blackman, JM~Joel Ong, and Debra~A Fischer.
+\newblock The measured impact of chromatic atmospheric effects on barycentric
+  corrections: Results from the extreme precision spectrograph.
+\newblock {\em The Astronomical Journal}, 158(1):40, 2019.
+
+\bibitem{EXPRES_technical_details_Jurgenson}
+C~Jurgenson, D~Fischer, T~McCracken, D~Sawyer, A~Szymkowiak, Allen Davis,
+  G~Muller, and F~Santoro.
+\newblock Expres: a next generation rv spectrograph in the search for
+  earth-like worlds.
+\newblock In {\em Ground-based and Airborne Instrumentation for Astronomy VI},
+  volume 9908, page 99086T. International Society for Optics and Photonics,
+  2016.
+
+\bibitem{radial_velocity_techniques}
+Christophe Lovis, Debra Fischer, et~al.
+\newblock Radial velocity techniques for exoplanets.
+\newblock {\em Exoplanets}, pages 27--53, 2010.
+
+\bibitem{CCD_general_info}
+n.~a.
+\newblock What is a ccd detector?, n.d.
+
+\bibitem{nbi_g_in_denmark}
+Malte Olsen.
+\newblock Vejer man mindre ved ækvator?, 2017.
+
+\bibitem{first_RV_from_EXPRES}
+Ryan~R Petersburg, JM~Joel Ong, Lily~L Zhao, Ryan~T Blackman, John~M Brewer,
+  Lars~A Buchhave, Samuel~HC Cabot, Allen~B Davis, Colby~A Jurgenson,
+  Christopher Leet, et~al.
+\newblock An extreme-precision radial-velocity pipeline: First radial
+  velocities from expres.
+\newblock {\em The Astronomical Journal}, 159(5):187, 2020.
+
+\end{thebibliography}
