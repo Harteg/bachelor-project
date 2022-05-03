@@ -20,9 +20,10 @@
 \usepackage[most]{tcolorbox}
 \tcbset{on line, 
         boxsep=3pt, left=0pt,right=0pt,top=0pt,bottom=0pt,
-        colframe=white,colback=red!20,  
+        colframe=white, colback=red!20,  
         }
-\def\todo#1{\textbf{\small{\tcbox{todo: #1}}}}
+\def\todo#1{\textbf{\small{\tcbox[colback=yellow!20]{todo: #1}}}}
+\def\todoNow#1{\textbf{\small{\tcbox[colback=red!20]{todo: #1}}}}
 
 % ======= 
 
@@ -54,7 +55,7 @@
 \section{Data Analysis}
 \input{sections/data_analysis} 
 
-\section{Results}
+\section{(Results)}
 % \input{sections/results} 
 
 \section{Discusion}

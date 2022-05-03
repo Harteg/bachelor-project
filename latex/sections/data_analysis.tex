@@ -1,5 +1,7 @@
 \subsection{Calibration} 
 
+    \todoNow{add error analysis for the calib data}
+
     The calibration is needed to map each pixel on the CCD to a specific wavelength. Such a map is refered to as a wavelength solution. To do this, we need a light source with known frequencies, preferably many discret peaks. EXPRES uses a Thorium Argon lamp for an initial trial wavelength solution and a laser frequency comb (LFC) for an more precise solution.
     
     The Thorium Argon lamp produces 4,000 lines across 82 orders, which can be identified and mapped to a wavelength through a \emph{line atlas}. An intial wavelength solution for all pixels is then produced by linear interpolation. (I this project I have not done this calibration).
@@ -28,7 +30,7 @@
 
     \begin{figure}[ht]
         \centering
-        \includegraphics[scale=0.40]{figures/hist_peak_residuals_poly_and_interp3.png}
+        \includegraphics[scale=0.40]{figures/hist_peak_residuals_poly_and_interp.png}
         \caption{Residuals from calibrations performed through poly-fit and interpolation. Both results contain approximately the same amount of points, but the poly-fit has a much larger spread and therefore appears smaller. \todo{polyfit has 18373 lines, interp has 16888. Why? } \todo{find out x units}}
         \label{fig:calib_poly_vs_interp}
     \end{figure}
@@ -43,7 +45,33 @@
 
     \todo{specify run times for calibration using poly fit and interp}
 
+    \subsubsection{Errors in the calibration data}
+
+    \todoNow{Rewrite this:}
+
+    The chi2 values should be equal to the number of parameters in the fit. We have 5 parameters (although Troels said something about 12 or 14 .... why?). So we can see that the initial errors give a chi2 distribution that is waaay to flat. If we multiply by $\sqrt{3}$ we get something better. $\sqrt{10}$ looks perhaps even better! But, the p-value distribution should be flat (TODO: ask Troels why or look it up), so we can see that the original errors are probably too small and the ones multiplied by $\sqrt{10}$ are too high, because we get a spike at 1 — i.e. the fit is too good. The spike at 0 is okay, those are just all the fits that sucked and should perhaps be removed. 
+
+    The Chi2 values are about a factor 3 too larger, thus the uncertainties are about a factor sqrt(3) too small. My evaluation is based on the notion, that the Prob-distribution should be about flat, when it is right (with peaks at the ends). We then seem to have a good fraction (10%?), which are poor fits, perhaps to be considered either for omission or increased uncertainty.
+
+    With this correction the standard deviation of the residuals of the interpolation decreases from 2.34 to 0.934.
+
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[scale=0.40]{figures/calib_errors.png}
+        \caption{Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors (1, $\sqrt{3}$ and $\sqrt{10}$). As the distribution of P-values generally should be flat, the graphs suggest that the given errors (scale-factor 1) are too small. Multiplying errors by $\sqrt{3}$ is a conservative correction.}
+        \label{fig:calib_errors}
+    \end{figure}
+
+
+    \todo{Check the resulting sigma for different error scale factors}
+
+
 \subsection{RV extraction}
+
+
+
+
+
     \begin{itemize}
         \item Hist fit / cross-correlation
         \begin{itemize}
@@ -57,3 +85,4 @@
             \item Auto encoder
         \end{itemize}
     \end{itemize}
+

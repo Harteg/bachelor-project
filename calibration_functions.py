@@ -256,7 +256,7 @@ def fit_peak_positions(wavel_true_match, peak_fits):
     return minuit.values, minuit.fval
 
 
-def fit_all_peaks_in_all_orders(filename = r"expres_tp/LFC_200907.1063.fits"):
+def fit_all_peaks_in_all_orders(filename = r"expres_tp/LFC_200907.1063.fits", correct_errors=False, custom_error_factor=None):
     
     # Load data
     hdu1 = fits.open(filename)
@@ -268,6 +268,12 @@ def fit_all_peaks_in_all_orders(filename = r"expres_tp/LFC_200907.1063.fits"):
         data_spec       = data['spectrum'][order]
         data_spec_err   = data['uncertainty'][order]
         data_wavel      = data['wavelength'][order]
+
+        if correct_errors:
+            if custom_error_factor is not None:
+                data_spec_err = data_spec_err * custom_error_factor
+            else:
+                data_spec_err = data_spec_err * np.sqrt(3)
 
         # Find peaks
         peak_info = func_find_peaks(data_spec, 11, 0.15)
