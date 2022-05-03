@@ -1,16 +1,15 @@
 \subsection{Radial velocity method for exoplanet detection}
 The radial velocity method is one of the few current methods of detecting exoplanets. Two celestial bodies in orbit around each other, such as a star and a planet, orbit their common center of mass (barycenter). This means that the star, although typically much more massive than the planet, is also in movement relative to an outside observer. The larger the planet is, compared to the star, the larger this movement will be. For now, it is not possible to directly observe exoplanets. One way of indirect detection however is thus measuring the movement of the star. We can measure the relative movement of a star through the doppler effect; the electromagnetic spectrum of the star observed on Earth will be blue shifted when the star is moving toward us and red shifted when moving away. The potential indirect signal of a planet will thus consist of a periodic doppler shift in the spectrum of the host star. For this method in general, several years of data collection is necessary. One should at least have one full orbit of observational data, and, to decrease statistical uncertainties, several orbits is preferential.
 
-A large planet like Jupiter induces a radial velocity (RV) in the Sun of about 12.7 m/s when observed in its plane of orbit. While a small one like Earth only induces an RV of about 9 cm/s. (p. 29, \cite{radial_velocity_techniques}). In the hunt for detecting Earth-sized planets around Sun-like stars, a new generation of spectrographs are appearing called extreme-precision radial velocity (EPRV) spectrographs. The EXtreme PREcision Spectrograph (EXPRES) is one such spectrograph, data from which this project is based on.
+A large planet like Jupiter induces a radial velocity (RV) in the Sun of about 12.7 m/s when observed in its plane of orbit. While a small one like Earth only induces an RV of about 9 cm/s. (p. 29, \cite{radial_velocity_techniques}). In the hunt for detecting Earth-sized planets around Sun-like stars, a new generation of spectrographs are appearing called extreme-precision radial velocity (EPRV) spectrographs. The EXtreme PREcision Spectrograph (EXPRES) is one such spectrograph, data from which this project is based on. \todo{move this to the introduction}
 
-\vspace{1cm}
-
+\vspace{0.5cm}
 \todo{Possibly describe the RV calculation in more \href{http://exoplanets.astro.yale.edu/workshop/EPRV/Bibliography_files/Radial_Velocity.pdf}{detail} and compute Earth K. } 
 
 \subsection{Description of the instrument}
 The EXtreme PREcision Spectrograph or EXPRES is situated at the Lowell Observatory's 4.3m Lowell Discovery Telescope (LDT) near Flagstaff, Arizona, U.S.A. The LDT allows for up to 280 partial nights of observation per year. 
 
-Like in many spectrographs, at the heart of EXPRES is a Charge Coupled Device (CCD). A CCD is a silicon-based multi-channel photon detector consisting of a large number of small light-sensitive areas called pixels. The CCD is EXPRES an STA1600LN CCD backside illuminated image sensor with a $10,560 \times 10,560$ array containing 9µm$\times$9µm pixels. When a photon hits a pixel it is converted into a charge, and each pixel can thus suply independent measurements. Since a one dimensional sensor would be impractical, EXPRES is constructed in such a way, that it wrap the spectrum inside the CDD, meaning that the spectrum starts in the top row of the sensor, and continues in the second row. Short wavelengths are thus to be found in the top of the CCD and long wavelengths at the bottom. \cite{CCD_general_info}. \todo{maybe add illustration}
+Like in many spectrographs, at the heart of EXPRES is a Charge Coupled Device (CCD). A CCD is a silicon-based multi-channel photon detector consisting of a large number of small light-sensitive areas called pixels. The CCD is EXPRES an STA1600LN CCD backside illuminated image sensor with a $10,560 \times 10,560$ array containing 9µm$\times$9µm pixels, designed to with a wavelength range of 3800$-$7800Å. When a photon hits a pixel it is converted into a charge, and each pixel can thus suply independent measurements. Since a one dimensional sensor would be impractical, EXPRES is constructed in such a way, that it wrap the spectrum inside the CDD, meaning that the spectrum starts in the top row of the sensor, and continues in the second row. Short wavelengths are thus to be found in the top of the CCD and long wavelengths at the bottom. \cite{CCD_general_info}. \todo{maybe add illustration}
 
 
 EXPRES is housed in a vacuum enclosure to minimize changes in temperature and pressure, which can otherwise cause the spectra to change position on the CCD and thus lead to errors in the RV mesaurements. 
@@ -35,7 +34,7 @@ For development of RV extraction method, observations from four stars were used:
     \item HD 34411 (188 observations, 58 nights, Oct. 08, 2019 - Nov. 27, 2020)
 \end{itemize}
 
-\todo{For development of a LFC calibration method data from was used}
+\todo{For development of a LFC calibration method data from what was used}
 
 \subsubsection{Data structure}
 The data used in this project consists of already packaged FITS (Flexible Image Transport System) files, which is a portable file standard widely used in the astronomy community to store images and tables. There is a FITS file for each observation, containing a variety of mesaurements for each pixel on the CCD. 
@@ -45,10 +44,22 @@ This would give the CCD the very elonganted dimensions of 86$\times$7920, but as
 
 Furthermore, the CCD is not equally sensitive everywhere, and there are areas along the edges that are deemed unuseful. The data comes with a mask which shows which pixels are should be used. 
 
-To perform the calibration the following variables are used: \verb|spectrum|, \verb|uncertainty|, \verb|wavelength| and \verb|continuum|. To perform the RV extraction on the pre-calibrated data the following variables are used: \verb|bary_excalbur|, \verb|excalibur_mask|, \verb|spectrum|, \verb|uncertainty| and \verb|continuum|.
+To perform the calibration the following variables are used: \verb|spectrum|, \verb|uncertainty|, \verb|wavelength| and \verb|continuum|. To perform the RV extraction on the pre-calibrated data the following variables are used: \verb|bary_excalbur|, 
+\verb|excalibur_mask|, \verb|spectrum|, \verb|uncertainty| and \verb|continuum|.
 
-\subsubsection{Noise and errors}
+\subsubsection{Noise}
+Photon noise and read noise are the two largest contributors to the noise on a given pixel on the EXPRES CCD. These two quantities are measured and summed in quadrature for each pixel. Photon noise is assumed to be poisson distributed and the standard devitation is there teh square root of the photon counts. Read noise is calculated emperically, details of which will not be discussed, but is assumed to be consistent throughout each night of observation. 
+
 \subsubsection{Correction: Scatter / blaze}
+Although manufactures have tried their best to limit it, the CCD still gets hits by scattering light, being the strongest in the center of the detector. It is modelled and subtracted by measureing the photon count in between orders.
+
 \subsubsection{Correction: Tellurics}
+Tellurics (general definition being originating from the Earth) in this context refers to the contamination that ground based spectrographs have to deal with, which occurs as the light passes through the Earth's atmosphere, encountering molecules such as oxygen and water vapor. On EXPRES the technique used is called SELENITE [https://arxiv.org/pdf/1903.08350.pdf].
+
+
 \subsubsection{Correction: Bary centric corrections}
+\todo{not sure what to write here, if anything}
+
+
+
 
