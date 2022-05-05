@@ -1,6 +1,6 @@
 \subsection{Calibration} 
 
-    \todoNow{add error analysis for the calib data}
+    \todoNow{Add matrix plot of LFC data}
 
     The calibration is needed to map each pixel on the CCD to a specific wavelength. Such a map is refered to as a wavelength solution. To do this, we need a light source with known frequencies, preferably many discret peaks. EXPRES uses a Thorium Argon lamp for an initial trial wavelength solution and a laser frequency comb (LFC) for an more precise solution.
     
@@ -15,23 +15,34 @@
 
     for integers $n$. The repetition rate $v_{\text {rep }}$ and offset frequency $v_{\text {offset }}$ are referenced against a GPS-disciplined quartz oscillator, providing calibration stability corresponding to a fractional uncertainty of less than $8 \times 10^{-12}$ for integration times greater than $1 \mathrm{~s}$. (p. 8, \cite{first_RV_from_EXPRES}). The values I have used in the calibration, $v_{\text{rep}} = 14e9$ and $v_{\text{offset}} = 6.19e9$, were provided by Lars Buchhave, but may be outdated. 
 
-    The location of the LFC peaks (also refered to as modes) I determine first with a peak finding algorithm from scipy and then by fitting a super-gauss with a linear background to each peak:
+    The following procedure is followed to determine the location of the LFC peaks on the CCD: 1) Find peaks using scipy peak finding algorithm, 2) make data slices around each peak with the size of the average distance between peaks, 3) using iminuit do a $\chi^2$ minimisation fit to each peak with a super-gauss plus a linear background.
+
+    A super-gauss, defined in eq. (\ref{eq:LFC_super_gauss}), is a regular gaussian but with an extra parameter, here denoted $P$, that allows the top of the gaussian to be flattened. The last two terms here add a linear background and an offset. 
     
     \begin{equation}
         \label{eq:LFC_super_gauss}
-        A \exp \left(-\left(\frac{\left(x-\mu\right)^{2}}{2 \sigma_{x}^{2}}\right)^{P}\right) + B(x-\mu) + C
+        f(x ; A, B, C, P, \mu, \sigma) = A \exp \left(-\left(\frac{\left(x-\mu\right)^{2}}{2 \sigma^{2}}\right)^{P}\right) + B(x-\mu) + C
     \end{equation}
+
+    The fit then is a minimisation of  
+
+    \begin{equation}
+        \label{eq:chi2_super_gauss}
+        \chi^{2}=\sum_{i=1}^{N}\left[\frac{y_{i}-f(x ; A, B, C, P, \mu, \sigma)}{\sigma_{i}}\right]^{2}
+    \end{equation}
+
+    Where $N$ is the number of peaks, $x$ is pixel-space, $y_i$ and $\sigma_i$ is the measured photon count and uncertainty respectively. The fit returns the values and uncertainties for the parameters $A, B, C, P, \mu, \sigma$ when the value of $\chi^2$ is minimized.
+
+    \todoNow{Add plot of super-gauss fit}
     
-    A super-gauss is a regular gaussian but with an extra parameter, here denoted $P$, that allows the top of the peak to be flattened. To map the LFC peaks with the frequencies given by equation (\ref{eq:LFC_freq_eq})
-
-    I can then use the intial wavelength solution (provided in the data that I have used) to map the LFC peaks to the frequencies given by equation (\ref{eq:LFC_freq_eq}). 
-
-    From here, I have explored two approaches to produce a wavelength solution for all pixels: cubic interpolation and polynomial fit. I can evaluate the quality of the interpolation calibration by choosing to omit every second peak from the interpolation and then computing the residuals between the omitted peaks and the resulting interpolation function. For the polynomial, I can compute residuals simply by subtracting the location peaks from the fit function. Residuals from the two methods are compared in figure \ref{fig:calib_poly_vs_interp}.
+    We are most interested in $\mu$, which gives the position of the LFC peak on the CCD (in pixel-space). With the intial rough wavelength solution dervied from the ThAr lamp (precalculated in the data set that I've used) I can determine what the approximate wavelength of the LFC peak should be. To find the better wavelength solution I then go look up the closest frequency given by eq. \ref{eq:LFC_freq_eq}. And we now have a map of ~20,000 points on the CCD with a good wavelength solution. 
+    
+    Of course we need to have a wavelength solution for all points on the CCD and to do that I have explored two approaches: cubic interpolation and polynomial fittting. I can evaluate the quality of the interpolation calibration by choosing to omit every second peak from the interpolation and then computing the residuals between the omitted peaks and the resulting interpolation function. For the polynomial, I can compute residuals simply by subtracting the location peaks from the fit function. Residuals from the two methods are compared in figure \ref{fig:calib_poly_vs_interp}.
 
     \begin{figure}[ht]
         \centering
         \includegraphics[scale=0.40]{figures/hist_peak_residuals_poly_and_interp.png}
-        \caption{Residuals from calibrations performed through poly-fit and interpolation. Both results contain approximately the same amount of points, but the poly-fit has a much larger spread and therefore appears smaller. \todo{polyfit has 18373 lines, interp has 16888. Why? } \todo{find out x units}}
+        \caption{Residuals from calibrations performed through poly-fit and interpolation. Both results contain approximately the same amount of points, but the poly-fit has a much larger spread and therefore appears smaller. \todo{polyfit has 18373 lines, interp has 16888. Why? } Might be because I only use order 40-76 in the interp and all orders with more than 10 peaks for the polyfit. \todoNow{Do new polyfit calib} \todo{find out x units}}
         \label{fig:calib_poly_vs_interp}
     \end{figure}
 
@@ -47,29 +58,40 @@
 
     \subsubsection{Errors in the calibration data}
 
-    \todoNow{Rewrite this:}
+    The LFC fits files come with an uncertatiny on the photon count (spectrum). It appears however that this uncertatiny might be a bit underestimated. We can see this by plotting the $\chi^2$- and P-values for the LFC peak super-gauss fits, as done in figure \ref{fig:calib_errors}. The $\chi^2$ value should be roughly equal to the number of degrees of freedom in the fit, which is: 
 
-    The chi2 values should be equal to the number of parameters in the fit. We have 5 parameters (although Troels said something about 12 or 14 .... why?). So we can see that the initial errors give a chi2 distribution that is waaay to flat. If we multiply by $\sqrt{3}$ we get something better. $\sqrt{10}$ looks perhaps even better! But, the p-value distribution should be flat (TODO: ask Troels why or look it up), so we can see that the original errors are probably too small and the ones multiplied by $\sqrt{10}$ are too high, because we get a spike at 1 — i.e. the fit is too good. The spike at 0 is okay, those are just all the fits that sucked and should perhaps be removed. 
+    \begin{equation}
+        \label{eq:ndof}
+        N_\text{dof} = N_\text{data-points} - N_\text{fit-parameters} =  13 - 5 = 8.
+    \end{equation}
 
-    The Chi2 values are about a factor 3 too larger, thus the uncertainties are about a factor sqrt(3) too small. My evaluation is based on the notion, that the Prob-distribution should be about flat, when it is right (with peaks at the ends). We then seem to have a good fraction (10%?), which are poor fits, perhaps to be considered either for omission or increased uncertainty.
-
-    With this correction the standard deviation of the residuals of the interpolation decreases from 2.34 to 0.934.
-
+    The number of data points per fit I set to be the rounded average distance bewteen peaks in a given order. Although the LFC should generate equadistant peaks, this does vary bewteen 13 and 18 points as we go through orders, most fits having 13 data points (see figure \ref{fig:N_data_points} in \ref{appendix:LFC_errors}). We should therefore see a spike in the $\chi^2$ values roughly around 8, falling of at a slower pace to the right side. Looking again at figure \ref{fig:calib_errors}, this is not the case for the errors as provided (scale-factor 1). But multiplying by $\sqrt{3}$ we get much closer. $\sqrt{10}$ is overdoing it, however. I looked at several other scaling factors bewteen $\sqrt{3}$ and $\sqrt{10}$, see figure \ref{fig:calib_errors_extensive} in \ref{appendix:LFC_errors} for details, and $\sqrt{3}$ comes closest to giving a peak at 8.
+    
+    Another check is that the probability distribution should be roughly flat. \todo{explain why, \href{https://stats.stackexchange.com/a/481843/353364}{help}}.
+    
     \begin{figure}[ht]
         \centering
         \includegraphics[scale=0.40]{figures/calib_errors.png}
-        \caption{Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors (1, $\sqrt{3}$ and $\sqrt{10}$). As the distribution of P-values generally should be flat, the graphs suggest that the given errors (scale-factor 1) are too small. Multiplying errors by $\sqrt{3}$ is a conservative correction.}
+        \caption{Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors (1, $\sqrt{3}$ and $\sqrt{10}$). See text for more datails.}
         \label{fig:calib_errors}
     \end{figure}
 
+    \todo{explain why we use factors of square-root:} Something to do with putting into the chi2 which is a square sum, so the square-root goes away. 
 
-    \todo{Check the resulting sigma for different error scale factors}
+    \bigbreak
 
+    \noindent \textbf{Effects on calibration:} \newline
+    The errors used during the production of the calibration residuals shown in figure \ref{fig:calib_poly_vs_interp} I have already multiplied by $\sqrt{3}$. This gaves us a $\sigma = 0.934$, without this correction I got $\sigma = 2.34$. 
+
+    \todo{Computing the sigma for different error scaling factors gave very jumpy results.. why?} 
 
 \subsection{RV extraction}
-
-
-
+    In my attempt to determine radial velocities (RV), I've take the following very straight forward approach: 
+    \begin{itemize}
+        \item First 
+    \end{itemize}
+    
+    I've taken the very straight forward approach of fitting a shift-parameter to minimize the difference between the spectrum count for two spectra. 
 
 
     \begin{itemize}

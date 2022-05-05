@@ -16,14 +16,15 @@
 % Result underline 
 \def\result#1{\underline{\underline{#1}}}
 
-% TO DO box
+% TO DO and comment boxes
 \usepackage[most]{tcolorbox}
 \tcbset{on line, 
         boxsep=3pt, left=0pt,right=0pt,top=0pt,bottom=0pt,
         colframe=white, colback=red!20,  
         }
-\def\todo#1{\textbf{\small{\tcbox[colback=yellow!20]{todo: #1}}}}
-\def\todoNow#1{\textbf{\small{\tcbox[colback=red!20]{todo: #1}}}}
+\def\todo#1{\textbf{\small{\tcbox[colback=red!10]{todo: #1}}}}
+\def\todoNow#1{\textbf{\small{\tcbox[colback=red!90]{\textcolor{white}{todo now: #1}}}}}
+\def\comment#1{\textbf{\small{\tcbox[colback=yellow!20]{#1}}}}
 
 % ======= 
 
@@ -64,10 +65,17 @@
 \section{Conclusion}
 % \input{sections/conclusion} 
 
-%%%%%%%%%%%%%%%% Bibliography %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bibliography
 \newpage
 \nocite{*}
 \bibliographystyle{plain}
 \bibliography{references.bib}
+
+% Appendix
+\newpage
+\appendix
+\input{sections/appendix} 
+
+
 
 \end{document}

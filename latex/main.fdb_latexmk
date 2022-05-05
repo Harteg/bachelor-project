@@ -1,13 +1,13 @@
 # Fdb version 3
-["bibtex main"] 1651589174 "main.aux" "main.bbl" "main" 1651589184
+["bibtex main"] 1651743995 "main.aux" "main.bbl" "main" 1651744074
   "/usr/local/texlive/2021/texmf-dist/bibtex/bst/base/plain.bst" 1292289607 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "main.aux" 1651589184 5274 60c5ade4e802524aabab1cd18215df96 "pdflatex"
-  "references.bib" 1651486797 2358 0b2448c32772d62de3629f45f34bf265 ""
+  "main.aux" 1651744074 6430 312adee24a45db08d78bc9406d19a1f4 "pdflatex"
+  "references.bib" 1651664267 2146 a0cc4fda647fc6b7ee16bf7fc65c3a9a ""
   (generated)
   "main.bbl"
   "main.blg"
-["pdflatex"] 1651589183 "/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex" "main.pdf" "main" 1651589184
-  "/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex" 1651586431 1605 24bae2226362cbfbc2e3a1d706c56896 ""
+["pdflatex"] 1651744072 "/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex" "main.pdf" "main" 1651744074
+  "/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex" 1651665388 1699 25d909a079596520b651f48c88c0e926 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/tfm/jknappen/ec/ectt1000.tfm" 1136768653 1536 06717a2b50de47d4087ac0e6cd759455 ""
@@ -198,13 +198,16 @@
   "/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1640705816 4374891 c8eaa50db59648610d53abf3959a7b8a ""
   "/usr/local/texlive/2021/texmf-var/web2c/pdftex/pdflatex.fmt" 1640705880 2820130 878530eda49c0c82e5324fa929fa3025 ""
   "/usr/local/texlive/2021/texmf.cnf" 1616695596 577 4c1911a7228e554c6032256d3cf5567d ""
+  "figures/N_data_points.png" 1651666835 9949 9c0c9b05c49ec9cccaebf9b927a00e7c ""
   "figures/calib_errors.png" 1651586779 32427 0f9248bf8567fcb235d3c78de6242c5a ""
+  "figures/calib_errors_extensive.png" 1651668902 84973 83aff5109bfb8a099ba3278d893bb794 ""
   "figures/hist_peak_residuals_poly_and_interp.png" 1651588326 144216 3b4eb6cf88c56425b68cfaaf74f3815f ""
-  "main.aux" 1651589184 5274 60c5ade4e802524aabab1cd18215df96 "pdflatex"
-  "main.bbl" 1651589174 1454 0e03507be1d7623d3b4a4ee82b0c444f "bibtex main"
-  "main.out" 1651589184 2604 7da1ff48264230888a80d52db9c4ec06 "pdflatex"
-  "main.tex" 1651586431 1605 24bae2226362cbfbc2e3a1d706c56896 ""
-  "sections/data_analysis.tex" 1651589182 6669 9b005c354d1d3eb4ea414b13991ccaf8 ""
+  "main.aux" 1651744074 6430 312adee24a45db08d78bc9406d19a1f4 "pdflatex"
+  "main.bbl" 1651743996 1365 cccb583caf4807932577a4b1c43213ef "bibtex main"
+  "main.out" 1651744074 2773 8fcf91f8e1a3644017d037ad3e820202 "pdflatex"
+  "main.tex" 1651665388 1699 25d909a079596520b651f48c88c0e926 ""
+  "sections/appendix.tex" 1651669118 634 092fd7d0ae781343d6a358fac8d63b41 ""
+  "sections/data_analysis.tex" 1651744072 8908 31b28fcf8d5d836d0d5c303bfde29da8 ""
   "sections/introduction.tex" 1651581384 1767 271fcc8f2726d9bb3cc8da1a4ce78870 ""
   "sections/theory.tex" 1651581407 7594 79a884ef995e0d7ff1696001c46e2684 ""
   (generated)
