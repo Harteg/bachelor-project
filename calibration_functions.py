@@ -5,6 +5,7 @@ from iminuit import Minuit
 import sys
 from pylab import *
 from scipy.interpolate import interp1d
+from sympy import degree
 
 sys.path.append('/Users/jakobharteg/Github/MyAppStat/')
 from ExternalFunctions import Chi2Regression
@@ -221,13 +222,38 @@ def peak_position_fit_func(x, c0, c1, c2, c3, c4, c5):
     return c0 + c1*x
 
 
+def get_calib_poly_func(degree):
+    assert (degree == np.arange(1, 7)).any(), "Not within 1-6 degrees"
+    exec(f"function = calib_poly_func_{degree}", globals())
+    return function
+
+def calib_poly_func_1(x, c0, c1):
+    return c0 + c1*x
+
+def calib_poly_func_2(x, c0, c1, c2):
+    return c0 + c1*x + c2*x**2
+
+def calib_poly_func_3(x, c0, c1, c2, c3):
+    return c0 + c1*x + c2*x**2 + c3*x**3
+
+def calib_poly_func_4(x, c0, c1, c2, c3, c4):
+    return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4
+
+def calib_poly_func_5(x, c0, c1, c2, c3, c4, c5):
+    return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4 + c5*x**5
+
+def calib_poly_func_6(x, c0, c1, c2, c3, c4, c5, c6):
+    return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4 + c5*x**5 + c6*x**6
+
+
 # TODO :: rename this
-def fit_peak_positions(wavel_true_match, peak_fits):
+def fit_peak_positions(wavel_true_match, peak_fits, poly_degree):
     x = peak_fits[:,2]
     y = wavel_true_match
-    # ey = np.sqrt(wavel_true_match) * 0.001  # photon noise is possion (?)  # TODO: Use peak width instead
-    # ey = peak_fits[:, 3]    # sigma mu (error on the mean of the peak)
     ey = peak_fits[:, 4]    # sigma (width of the peak)
+
+    fit_func = get_calib_poly_func(poly_degree)
+    init_values = np.ones(poly_degree + 1)
 
     # Plot data in errorbars
     # figPeak, axPeak = plt.subplots(figsize=(16, 8))
@@ -236,24 +262,24 @@ def fit_peak_positions(wavel_true_match, peak_fits):
     # axPeak.plot(x, y, ".", label="Data")
 
     # Quad fit
-    model_chi2 = Chi2Regression(peak_position_fit_func, x, y, ey)
+    model_chi2 = Chi2Regression(fit_func, x, y, ey)
     model_chi2.errordef = 1
 
     # Fit peak with a Gaussian:
-    minuit = Minuit(model_chi2, c0=1, c1=1, c2=1, c3=1, c4=1, c5=1)
+    minuit = Minuit(model_chi2, *init_values)
 
     # Perform the actual fit (and save the parameters):
     minuit.migrad()                                             
         
     # Extract the fitting parameters and their uncertainties:
-    # Npoints = len(x)
-    # Nvar = 2                                        # Number of variables
-    # Ndof_fit = Npoints - Nvar                       # Number of degrees of freedom = Number of data points - Number of variables
-    # Chi2_fit = minuit.fval                          # The chi2 value
-    # Prob_fit = stats.chi2.sf(Chi2_fit, Ndof_fit)    # The chi2 probability given N degrees of freedom
+    Npoints = len(x)
+    Nvar = poly_degree + 1                               # Number of variables
+    Ndof_fit = Npoints - Nvar                       # Number of degrees of freedom = Number of data points - Number of variables
+    chi2_fit = minuit.fval                          # The chi2 value
+    prob_fit = stats.chi2.sf(chi2_fit, Ndof_fit)    # The chi2 probability given N degrees of freedom
     # print(f"  Peak fitted. N = {Npoints:2d}   Chi2 ={Chi2_fit:5.1f}")
 
-    return minuit.values, minuit.fval
+    return minuit.values, chi2_fit, prob_fit, fit_func, minuit.valid
 
 
 def fit_all_peaks_in_all_orders(filename = r"expres_tp/LFC_200907.1063.fits", correct_errors=False, custom_error_factor=None):

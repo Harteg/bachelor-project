@@ -1,12 +1,35 @@
+% \documentclass[twocolumn]{article}
 \documentclass{article}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=1in]{geometry}
+% \usepackage[margin=1in]{geometry}
+\usepackage[a4paper, lmargin = 2 cm , rmargin = 5 cm , tmargin = 2 cm, bmargin = 2 cm]{geometry}
 \usepackage{soul}
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage[colorlinks,allcolors=blue]{hyperref} % for href links
+
+
 % \usepackage{marginnote}
+
+% Preamble for tikzplotlib plots
+% \usepackage[utf8]{inputenc}
+% \usepackage{pgfplots}
+% \DeclareUnicodeCharacter{2212}{−}
+% \usepgfplotslibrary{groupplots,dateplot}
+% \usetikzlibrary{patterns,shapes.arrows}
+% \pgfplotsset{compat=newest}
+% Save in python with: import tikzplotlib, tikzplotlib.save("out.tex")
+% Include in latex with: \input{out.tex} 
+
+% MatPlotLib Plot sizes: 
+% dpi=300
+% format pdf
+% bbox_inches = "tight"
+% for full width, width = 8in
+% scale = 0.8 
+% text-size = 10
+
 
 % My styles: ===== 
 
@@ -22,9 +45,10 @@
         boxsep=3pt, left=0pt,right=0pt,top=0pt,bottom=0pt,
         colframe=white, colback=red!20,  
         }
-\def\todo#1{\textbf{\small{\tcbox[colback=red!10]{todo: #1}}}}
-\def\todoNow#1{\textbf{\small{\tcbox[colback=red!90]{\textcolor{white}{todo now: #1}}}}}
-\def\comment#1{\textbf{\small{\tcbox[colback=yellow!20]{#1}}}}
+\def\todo#1{\textbf{\footnotesize{\tcbox[colback=red!10]{todo: #1}}}}
+\def\todoSmall#1{\textbf{\scriptsize{\tcbox[colback=red!10]{todo: #1}}}}
+\def\todoNow#1{\textbf{\footnotesize{\tcbox[colback=red!90]{\textcolor{white}{todo now: #1}}}}}
+\def\comment#1{\textbf{\footnotesize{\tcbox[colback=yellow!20]{#1}}}}
 
 % ======= 
 
@@ -36,12 +60,12 @@
 \begin{document}
 \maketitle
 
-% \begin{figure}[ht]
-%     \centering
-%     \includegraphics[scale=0.40]{figures/1.4.3.png}
-%     \caption{Shots needed to reach 100 hits with a success probability of 0.03\%.}
-%     \label{1.4.3}
-% \end{figure}
+% TODOs 
+\todo{standardize figure sizes}
+
+
+
+
 
 \newpage
 
@@ -60,7 +84,7 @@
 % \input{sections/results} 
 
 \section{Discusion}
-% \input{sections/discussion} 
+\input{sections/discussion} 
 
 \section{Conclusion}
 % \input{sections/conclusion} 

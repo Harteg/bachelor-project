@@ -9,7 +9,7 @@ A large planet like Jupiter induces a radial velocity (RV) in the Sun of about 1
 \subsection{Description of the instrument}
 The EXtreme PREcision Spectrograph or EXPRES is situated at the Lowell Observatory's 4.3m Lowell Discovery Telescope (LDT) near Flagstaff, Arizona, U.S.A. The LDT allows for up to 280 partial nights of observation per year. 
 
-Like in many spectrographs, at the heart of EXPRES is a Charge Coupled Device (CCD). A CCD is a silicon-based multi-channel photon detector consisting of a large number of small light-sensitive areas called pixels. The CCD is EXPRES an STA1600LN CCD backside illuminated image sensor with a $10,560 \times 10,560$ array containing 9µm$\times$9µm pixels, designed to with a wavelength range of 3800$-$7800Å. When a photon hits a pixel it is converted into a charge, and each pixel can thus suply independent measurements. Since a one dimensional sensor would be impractical, EXPRES is constructed in such a way, that it wrap the spectrum inside the CDD, meaning that the spectrum starts in the top row of the sensor, and continues in the second row. Short wavelengths are thus to be found in the top of the CCD and long wavelengths at the bottom. \cite{CCD_general_info}. \todo{maybe add illustration}
+Like in many spectrographs, at the heart of EXPRES is a Charge Coupled Device (CCD). A CCD is a silicon-based multi-channel photon detector consisting of a large number of small light-sensitive areas called pixels. The CCD is EXPRES an STA1600LN CCD backside illuminated image sensor with a $10,560 \times 10,560$ array containing 9µm$\times$9µm pixels, designed to with a wavelength range of 3800$-$7800Å. When a photon hits a pixel it is converted into a charge, and each pixel can thus suply independent measurements. Since a one dimensional sensor would be impractical, EXPRES is constructed in such a way, that it wrap the spectrum inside the CDD, meaning that the spectrum starts in the top row of the sensor, and continues in the second row. Short wavelengths are thus to be found in the top of the CCD and long wavelengths at the bottom. \todo{maybe add illustration}
 
 
 EXPRES is housed in a vacuum enclosure to minimize changes in temperature and pressure, which can otherwise cause the spectra to change position on the CCD and thus lead to errors in the RV mesaurements. 
@@ -34,6 +34,15 @@ For development of RV extraction method, observations from four stars were used:
     \item HD 34411 (188 observations, 58 nights, Oct. 08, 2019 - Nov. 27, 2020)
 \end{itemize}
 
+The observations for HD34411 are plotted in figure \ref{fig:dates_HD34411}. Most days have 3-4 observations, and there are significant gaps in the data as well.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.80]{figures/dates_HD34411.pdf}
+    \caption{EXPRES observations of HD34411}
+    \label{fig:dates_HD34411}
+\end{figure}
+
 \todo{For development of a LFC calibration method data from what was used}
 
 \subsubsection{Data structure}
@@ -48,7 +57,7 @@ To perform the calibration the following variables are used: \verb|spectrum|, \v
 \verb|excalibur_mask|, \verb|spectrum|, \verb|uncertainty| and \verb|continuum|.
 
 \subsubsection{Noise}
-Photon noise and read noise are the two largest contributors to the noise on a given pixel on the EXPRES CCD. These two quantities are measured and summed in quadrature for each pixel. Photon noise is assumed to be poisson distributed and the standard devitation is there teh square root of the photon counts. Read noise is calculated emperically, details of which will not be discussed, but is assumed to be consistent throughout each night of observation. 
+Photon noise and read noise are the two largest contributors to the noise on a given pixel on the EXPRES CCD. These two quantities are measured and summed in quadrature for each pixel. Photon noise is assumed to be poisson distributed and the standard devitation is then the square root of photon counts. Read noise is calculated emperically, details of which will not be discussed, but is assumed to be consistent throughout each night of observation. 
 
 \subsubsection{Correction: Scatter / blaze}
 Although manufactures have tried their best to limit it, the CCD still gets hits by scattering light, being the strongest in the center of the detector. It is modelled and subtracted by measureing the photon count in between orders.
