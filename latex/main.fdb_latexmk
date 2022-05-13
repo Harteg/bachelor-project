@@ -1,12 +1,12 @@
 # Fdb version 3
-["bibtex main"] 1652193880 "main.aux" "main.bbl" "main" 1652194011
+["bibtex main"] 1652452046 "main.aux" "main.bbl" "main" 1652455357
   "/usr/local/texlive/2021/texmf-dist/bibtex/bst/base/plain.bst" 1292289607 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "main.aux" 1652194010 8472 6f6d70d39ad93f5d29fec9763142bbe2 "pdflatex"
+  "main.aux" 1652455357 8602 72024b27fca993ecf1f7ee07a3acd634 "pdflatex"
   "references.bib" 1652023168 1894 ce5a81aa39aa4256d24cafcec134e8ea ""
   (generated)
   "main.bbl"
   "main.blg"
-["pdflatex"] 1652194010 "/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex" "main.pdf" "main" 1652194011
+["pdflatex"] 1652455356 "/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex" "main.pdf" "main" 1652455357
   "/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex" 1652183698 2253 cd1374c3b18b23d61deef7adcb2811be ""
   "/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -215,16 +215,16 @@
   "figures/calib_errors_extensive.pdf" 1652098524 173805 f040fcf3e30a0ffe3d6a7cb89ea63874 ""
   "figures/dates_HD34411.pdf" 1652103553 90340 071d1781a55bf79232fe19ce960e4be9 ""
   "figures/hist_peak_residuals_poly_and_interp.pdf" 1652180671 106256 47018956e56158823c5bfb255e33e5f5 ""
-  "figures/shift_non_bary_centric.pdf" 1652180443 117200 84ad9f749caf60875355c09edc4c57ce ""
-  "main.aux" 1652194010 8472 6f6d70d39ad93f5d29fec9763142bbe2 "pdflatex"
-  "main.bbl" 1652193880 1291 634cfe83116e2793bdde1676d81694f9 "bibtex main"
-  "main.out" 1652194010 2773 8fcf91f8e1a3644017d037ad3e820202 "pdflatex"
+  "figures/shift_non_bary_centric.pdf" 1652455342 83580 0473860e16d551c37cbb0db7f995897b ""
+  "main.aux" 1652455357 8602 72024b27fca993ecf1f7ee07a3acd634 "pdflatex"
+  "main.bbl" 1652452046 1291 634cfe83116e2793bdde1676d81694f9 "bibtex main"
+  "main.out" 1652455357 2909 ba2faf9415abf43b6f601a87cc6d21e7 "pdflatex"
   "main.tex" 1652183698 2253 cd1374c3b18b23d61deef7adcb2811be ""
   "sections/appendix.tex" 1652098730 707 78f7f03dbce1ca0eed191f5b97b44ad8 ""
-  "sections/data_analysis.tex" 1652194009 15221 2c975ba55a68b3131ea720d5894132a8 ""
+  "sections/data_analysis.tex" 1652448961 15209 f3b59d3e061b83d58d926bab73d6f2a1 ""
   "sections/discussion.tex" 1651829872 75 910e7f16f42db6c23b432fecba05a166 ""
   "sections/introduction.tex" 1651745965 2087 2df3dd3d6d6acd0678e920afd95afcef ""
-  "sections/theory.tex" 1652103785 7909 da0fd7771b67b74b5f7bc4f1aca8fc7e ""
+  "sections/theory.tex" 1652455356 7943 6d7ed729c1c540e88f3bdee664a4c703 ""
   (generated)
   "main.aux"
   "main.log"
