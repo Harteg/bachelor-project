@@ -967,6 +967,8 @@ INPUT sections/theory.tex
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
+INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmbx7.tfm
+INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmbx5.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm
 INPUT ./figures/dates_HD34411.pdf
 INPUT ./figures/dates_HD34411.pdf
@@ -997,7 +999,7 @@ INPUT ./figures/calib_errors2.pdf
 INPUT figures/calib_errors2.pdf
 INPUT ./figures/calib_errors2.pdf
 INPUT ./figures/calib_errors2.pdf
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmbx7.tfm
+INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmbx6.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmti8.tfm
 INPUT ./figures/all_features_34411_angstrom_matrix.pdf
 INPUT ./figures/all_features_34411_angstrom_matrix.pdf

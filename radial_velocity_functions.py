@@ -547,6 +547,12 @@ def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=N
     f1_lower_err = interp1d(x1, y1 - y1_err, kind='cubic', fill_value="extrapolate")
 
     c = 299792458 # m/s
+    G = 6.67e-11 # N m^2 / kg^2
+    M_sun = 2e30
+    R_sun = 696340000
+    M_star = 1.08 * M_sun # kg
+    R_star = 1.28 * R_sun
+    G_pot = G*M_star/R_star
 
     # ChiSquare fit model:
     def model_chi2(A):
@@ -554,6 +560,8 @@ def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=N
         # Interpolate template
         # interp_x2 = x2 + A
         interp_x2 = x2 * (1 + A/c) # this should give proper RV, the wavelength should be stretched by a factor of (1 + v/c)
+        # interp_x2 = x2 * (1 + A/c)/(1 - G_pot/c**2 ) # this should give proper RV, the wavelength should be stretched by a factor of (1 + v/c)
+
         f2 = interp1d(interp_x2, y2, kind='cubic', fill_value="extrapolate")
 
         # Find common x-range
@@ -650,7 +658,9 @@ def compute_all_feature_shifts(matches, log=True, plot=False, ax=[], interp_size
 
     shifts = np.asarray(shifts, dtype=object)
     if log:
-        print(f"{len(shifts[:, 2][shifts[:, 2] == 0])} / {len(shifts)} fits failed")
+        failed_n = len(shifts[:, 2][shifts[:, 2] == 0])
+        if failed_n > 0: # only print if some fits failed
+            print(f"{failed_n} / {len(shifts)} fits failed")
     return shifts
 
 
@@ -1131,36 +1141,35 @@ def matrix_reduce_results_file(filename, plot=True):
     # Center around 0
     final_shifts = final_shifts - np.mean([min(final_shifts), max(final_shifts)])
 
-    if plot == False:
-        return m, final_shifts, final_shifts_err
-
-    # Plot: 
-
-    # The velocity shifts are between days, so let's put the x-error bar as the time span for each data point
-    velocity_shifts = get_above_diagonal(diff_matrix)
-    velocity_shifts_err = get_above_diagonal(diff_matrix_err)
+    # get list of observation days
     dates = get_spectra_dates(get_spectra_filenames_without_duplicate_dates())
     days = convert_dates_to_relative_days(dates)
 
+    if plot == False:
+        return m, final_shifts, final_shifts_err, days
+
+    # Plot: 
+    velocity_shifts = get_above_diagonal(diff_matrix)
+    velocity_shifts_err = get_above_diagonal(diff_matrix_err)
+
     # Center around zero:
-    # velocity_shifts = velocity_shifts - np.mean(velocity_shifts)
     velocity_shifts = velocity_shifts - np.mean([min(velocity_shifts), max(velocity_shifts)])
 
-    fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(14, 6))
+    fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(8, 3))
     ax1.set_xlabel("Time [days]")
     ax1.set_ylabel("Velocity shift [m/s]")
     ax1.set_title("Above diagonal")
     # Plot above-diagonal (days - 1 lenght because above diagonal is one shorter)
-    ax1.errorbar(days[:-1], velocity_shifts, yerr=velocity_shifts_err, fmt=".", color="k")
+    ax1.errorbar(days[:-1], velocity_shifts, yerr=velocity_shifts_err, fmt=".", color="k", ms=1, elinewidth=0.5)
 
     # Plot matrix reduction results
     ax2.set_xlabel("Time [days]")
     ax2.set_title("Matrix chi2 reduction")
-    ax2.errorbar(days, final_shifts, yerr=final_shifts_err, fmt=".", color="k")
+    ax2.errorbar(days, final_shifts, yerr=final_shifts_err, fmt=".", color="k", ms=1, elinewidth=0.5)
 
     fig.tight_layout()
     # fig.savefig("rooo.png", dpi=300)
-    return m, final_shifts, final_shifts_err
+    return m, final_shifts, final_shifts_err, days
 
 
 def matrix_reduce_results_rms(diff_matrix, plot=True, input_is_angstrom=False):

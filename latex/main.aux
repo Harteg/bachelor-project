@@ -23,54 +23,60 @@
 \@writefile{toc}{\contentsline {section}{\numberline {2}Theory}{2}{section.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Radial velocity method for exoplanet detection}{2}{subsection.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}Doppler shift}{2}{subsubsection.2.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Description of the instrument}{2}{subsection.2.2}\protected@file@percent }
+\citation{doppler_shift_GR_formular}
+\citation{star_properties}
 \citation{barycentric_exposure_meter_blackman}
 \citation{EXPRES_technical_details_Jurgenson}
+\newlabel{eq:doppler_GR_SR}{{1}{3}{Doppler shift}{equation.2.1}{}}
+\newlabel{eq:our_doppler}{{2}{3}{Doppler shift}{equation.2.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Description of the instrument}{3}{subsection.2.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Description of the data}{3}{subsection.2.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces EXPRES observations of HD34411}}{3}{figure.1}\protected@file@percent }
-\newlabel{fig:dates_HD34411}{{1}{3}{EXPRES observations of HD34411}{figure.1}{}}
 \citation{first_RV_from_EXPRES}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces EXPRES observations of HD34411}}{4}{figure.1}\protected@file@percent }
+\newlabel{fig:dates_HD34411}{{1}{4}{EXPRES observations of HD34411}{figure.1}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.1}Data structure}{4}{subsubsection.2.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.2}Noise}{4}{subsubsection.2.3.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.3}Correction: Scatter / blaze}{4}{subsubsection.2.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.4}Correction: Tellurics}{4}{subsubsection.2.3.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.5}Correction: Bary centric corrections}{4}{subsubsection.2.3.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Data Analysis}{4}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Calibration}{4}{subsection.3.1}\protected@file@percent }
 \citation{first_RV_from_EXPRES}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.4}Correction: Tellurics}{5}{subsubsection.2.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.5}Correction: Bary centric corrections}{5}{subsubsection.2.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Data Analysis}{5}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Calibration}{5}{subsection.3.1}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Right: Measured intensities for the LFC across the CCD (unitless). Upper left: illustration of a few LFC peaks in order 65. Peaks are identified with scipy peak finder. Lower left: each peak is fitted with a super gauss to find the exact top of the peak with uncertainties.}}{5}{figure.2}\protected@file@percent }
 \newlabel{fig:LFC_CCD}{{2}{5}{Right: Measured intensities for the LFC across the CCD (unitless). Upper left: illustration of a few LFC peaks in order 65. Peaks are identified with scipy peak finder. Lower left: each peak is fitted with a super gauss to find the exact top of the peak with uncertainties}{figure.2}{}}
-\newlabel{eq:LFC_freq_eq}{{1}{5}{Calibration}{equation.3.1}{}}
-\newlabel{eq:LFC_super_gauss}{{2}{5}{Calibration}{equation.3.2}{}}
-\newlabel{eq:chi2_super_gauss}{{3}{5}{Calibration}{equation.3.3}{}}
+\newlabel{eq:LFC_freq_eq}{{3}{5}{Calibration}{equation.3.3}{}}
+\newlabel{eq:LFC_super_gauss}{{4}{6}{Calibration}{equation.3.4}{}}
+\newlabel{eq:chi2_super_gauss}{{5}{6}{Calibration}{equation.3.5}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Residuals from calibrations performed through poly-fit and interpolation. Both results contain approximately the same amount of points, but the poly-fit has a much larger spread and therefore appears smaller. \textbf  {\footnotesize  {\tcbox [colback=red!10]{todo: polyfit has 18373 lines, interp has 16888. Why? }}} Might be because I only use order 40-76 in the interp and all orders with more than 10 peaks for the polyfit. \textbf  {\footnotesize  {\tcbox [colback=red!90]{\leavevmode {\color  {white}todo now: Do new polyfit calib}}}} \textbf  {\footnotesize  {\tcbox [colback=red!10]{todo: find out x units}}}}}{6}{figure.3}\protected@file@percent }
 \newlabel{fig:calib_poly_vs_interp}{{3}{6}{Residuals from calibrations performed through poly-fit and interpolation. Both results contain approximately the same amount of points, but the poly-fit has a much larger spread and therefore appears smaller. \todo {polyfit has 18373 lines, interp has 16888. Why? } Might be because I only use order 40-76 in the interp and all orders with more than 10 peaks for the polyfit. \todoNow {Do new polyfit calib} \todo {find out x units}}{figure.3}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Errors in the calibration data}{6}{subsubsection.3.1.1}\protected@file@percent }
-\newlabel{eq:ndof}{{4}{6}{Errors in the calibration data}{equation.3.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Errors in the calibration data}{7}{subsubsection.3.1.1}\protected@file@percent }
+\newlabel{eq:ndof}{{6}{7}{Errors in the calibration data}{equation.3.6}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors (1, $\sqrt  {3}$ and $\sqrt  {10}$). See text for more datails.}}{7}{figure.4}\protected@file@percent }
 \newlabel{fig:calib_errors}{{4}{7}{Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors (1, $\sqrt {3}$ and $\sqrt {10}$). See text for more datails}{figure.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}RV extraction}{7}{subsection.3.2}\protected@file@percent }
-\newlabel{eq:shift_fit_chi2}{{5}{8}{RV extraction}{equation.3.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Each cell shows the average wavelength shift computed for features between all observations}}{8}{figure.5}\protected@file@percent }
-\newlabel{fig:shift_matrix}{{5}{8}{Each cell shows the average wavelength shift computed for features between all observations}{figure.5}{}}
-\newlabel{eq:matrix_reduction_fit}{{6}{8}{RV extraction}{equation.3.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}RV extraction}{8}{subsection.3.2}\protected@file@percent }
+\newlabel{eq:shift_fit_chi2}{{7}{8}{RV extraction}{equation.3.7}{}}
+\newlabel{eq:matrix_reduction_fit}{{8}{8}{RV extraction}{equation.3.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Each cell shows the average wavelength shift computed for features between all observations}}{9}{figure.5}\protected@file@percent }
+\newlabel{fig:shift_matrix}{{5}{9}{Each cell shows the average wavelength shift computed for features between all observations}{figure.5}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Computed relative wavelength shifts for HD34411 using non-calibrated, non-bary-centric-corrected data (column = "wavelength"). Blue: the shifts from day to day. Black: values computed through the chi2 minimization.}}{9}{figure.6}\protected@file@percent }
 \newlabel{fig:shift_non_bary_centric}{{6}{9}{Computed relative wavelength shifts for HD34411 using non-calibrated, non-bary-centric-corrected data (column = "wavelength"). Blue: the shifts from day to day. Black: values computed through the chi2 minimization}{figure.6}{}}
-\newlabel{eq:delta_velocity}{{7}{9}{RV extraction}{equation.3.7}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}(Results)}{9}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}Discusion}{9}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{9}{section.6}\protected@file@percent }
+\newlabel{eq:delta_velocity}{{9}{9}{RV extraction}{equation.3.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}(Results)}{10}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discusion}{10}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{10}{section.6}\protected@file@percent }
 \citation{*}
 \bibstyle{plain}
 \bibdata{references.bib}
 \bibcite{barycentric_exposure_meter_blackman}{1}
-\bibcite{EXPRES_technical_details_Jurgenson}{2}
-\bibcite{radial_velocity_techniques}{3}
-\bibcite{first_RV_from_EXPRES}{4}
-\@writefile{toc}{\contentsline {section}{\numberline {A}LFC photon count errors}{11}{appendix.A}\protected@file@percent }
-\newlabel{appendix:LFC_errors}{{A}{11}{LFC photon count errors}{appendix.A}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Number of data points in each LFC peak fit, determined by the average distance between peaks in each order.}}{11}{figure.7}\protected@file@percent }
-\newlabel{fig:N_data_points}{{7}{11}{Number of data points in each LFC peak fit, determined by the average distance between peaks in each order}{figure.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors.}}{12}{figure.8}\protected@file@percent }
-\newlabel{fig:calib_errors_extensive}{{8}{12}{Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors}{figure.8}{}}
-\gdef \@abspage@last{12}
+\bibcite{star_properties}{2}
+\bibcite{EXPRES_technical_details_Jurgenson}{3}
+\bibcite{doppler_shift_GR_formular}{4}
+\bibcite{radial_velocity_techniques}{5}
+\bibcite{first_RV_from_EXPRES}{6}
+\@writefile{toc}{\contentsline {section}{\numberline {A}LFC photon count errors}{12}{appendix.A}\protected@file@percent }
+\newlabel{appendix:LFC_errors}{{A}{12}{LFC photon count errors}{appendix.A}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Number of data points in each LFC peak fit, determined by the average distance between peaks in each order.}}{12}{figure.7}\protected@file@percent }
+\newlabel{fig:N_data_points}{{7}{12}{Number of data points in each LFC peak fit, determined by the average distance between peaks in each order}{figure.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors.}}{13}{figure.8}\protected@file@percent }
+\newlabel{fig:calib_errors_extensive}{{8}{13}{Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors}{figure.8}{}}
+\gdef \@abspage@last{13}

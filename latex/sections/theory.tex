@@ -8,7 +8,27 @@ A large planet like Jupiter induces a radial velocity (RV) in the Sun of about 1
 
 \subsubsection{Doppler shift}
 
+The radial velocity method relies on the well-known Doppler effect. Ignoring terms of $c^-4$ and higher, the general shift caused by a relative displacement betweeen the source and an observer at zero gravitatonal potential is given by 
 
+\begin{equation}
+    \label{eq:doppler_GR_SR}
+    \lambda=\lambda_{0} \frac{1+\frac{1}{c} \mathbf{k} \cdot \mathbf{v}}{1-\frac{\Phi}{c^{2}}-\frac{v^{2}}{2 c^{2}}},
+\end{equation}
+
+which accounts for both special relativistic effects and gravitatonal doppler shift described by general relativity. Where $\lambda$ is the observed wavelength, $\lambda_0$ is the emited wavelength, $\Phi$ is the Newtonian gravitational potential at the source $(\Phi=G M / r$ at a distance $r$ of a spherically symmetric mass $M$ ), $\textbf{k}$ is the unit vector pointing from the observer to the source, $\textbf{v}$ is the velocity of the source relative to the observer and $c$ is the speed of light \cite{doppler_shift_GR_formular}.
+
+Special relativistic effects we can safely ignore, as we are dealing with velocity shifts on the order of meters or centimeters per second, and thereby cross out the third term in the denominator. The remaining terms $(1-\Phi/c^2)$ evaluted for HD 34411 ($M = (1.08 \pm 0.14) M_{\odot}$, $R = (1.28 \pm 0.04) R_{\odot}$ \cite{star_properties}) is around $0.999998$. \todo{}I don't quite know how to check analytically if this will have an influence on the errors on A given by imniuit. Runing the program it doesn't... So, we can neglect the denominator completely.
+
+If the unit vector $\textbf{k}$ were pointing directly toward us, it would mean that we were observing the system in the plane of orbit. This is however unlikely. Since we don't know the inclication angle, a possible simplification is to omit $\textbf{k}$ is treat the resulting $\textbf{v}$ as a minimum radial velocity.
+
+Thus we are left with 
+
+\begin{equation}
+    \label{eq:our_doppler}
+    \lambda = \lambda_0 \times \Big(1 + \frac{v}{c} \Big),
+\end{equation}
+
+which is to say that the observed wavelength is simply the emited wavelength scaled by a factor $(1 + v/c)$. This formular allows us to compute the minimum relative velocity shift, $v$, between two observations, $\lambda$ and $\lambda_0$.
 
 
 \subsection{Description of the instrument}

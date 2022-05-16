@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.12.28)  13 MAY 2022 17:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.12.28)  16 MAY 2022 12:21
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -638,19 +638,19 @@ LaTeX Info: Redefining \nameref on input line 60.
 \c@lstlisting=\count329
  [1
 
-{/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./sections/introduction.tex) (./sections/theory.tex [2]
-<figures/dates_HD34411.pdf, id=143, 484.5543pt x 194.06068pt>
+{/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./sections/introduction.tex) (./sections/theory.tex [2] [3]
+<figures/dates_HD34411.pdf, id=163, 484.5543pt x 194.06068pt>
 File: figures/dates_HD34411.pdf Graphic file (type pdf)
 <use figures/dates_HD34411.pdf>
-Package pdftex.def Info: figures/dates_HD34411.pdf  used on input line 46.
+Package pdftex.def Info: figures/dates_HD34411.pdf  used on input line 66.
 (pdftex.def)             Requested size: 387.64397pt x 155.24875pt.
- [3 <./figures/dates_HD34411.pdf>]
-Overfull \hbox (25.37312pt too wide) in paragraph at lines 71--72
+
+Overfull \hbox (25.37312pt too wide) in paragraph at lines 91--92
 \OT1/cmr/m/n/10 por. On EX-PRES the tech-nique used is called SE-LEN-ITE [https://arxiv.org/pdf/1903.08350.pdf]. 
  []
 
-) (./sections/data_analysis.tex
-<figures/LFC_peak_fitting_overview.pdf, id=166, 643.20299pt x 353.91286pt>
+[4 <./figures/dates_HD34411.pdf>]) (./sections/data_analysis.tex
+<figures/LFC_peak_fitting_overview.pdf, id=183, 643.20299pt x 353.91286pt>
 File: figures/LFC_peak_fitting_overview.pdf Graphic file (type pdf)
 <use figures/LFC_peak_fitting_overview.pdf>
 Package pdftex.def Info: figures/LFC_peak_fitting_overview.pdf  used on input line 9.
@@ -660,12 +660,12 @@ Overfull \hbox (116.2245pt too wide) in paragraph at lines 9--10
  [][] 
  []
 
-[4] [5 <./figures/LFC_peak_fitting_overview.pdf>]
+[5 <./figures/LFC_peak_fitting_overview.pdf>]
 Overfull \hbox (78.68706pt too wide) in paragraph at lines 43--44
 \OT1/cmr/m/n/10 have ex-plored two ap-proaches: cu-bic in-ter-po-la-tion and poly-no-mial fit-ting. []
  []
 
-<figures/hist_peak_residuals_poly_and_interp.pdf, id=240, 498.663pt x 209.39743pt>
+<figures/hist_peak_residuals_poly_and_interp.pdf, id=245, 498.663pt x 209.39743pt>
 File: figures/hist_peak_residuals_poly_and_interp.pdf Graphic file (type pdf)
 <use figures/hist_peak_residuals_poly_and_interp.pdf>
 Package pdftex.def Info: figures/hist_peak_residuals_poly_and_interp.pdf  used on input line 47.
@@ -700,18 +700,17 @@ Overfull \hbox (42.09608pt too wide) in paragraph at lines 73--74
 []\OT1/cmr/m/n/10 Another check is that the prob-a-bil-ity dis-tri-bu-tion should be roughly flat. []. 
  []
 
-<figures/calib_errors2.pdf, id=266, 490.2857pt x 316.09227pt>
+<figures/calib_errors2.pdf, id=271, 490.2857pt x 316.09227pt>
 File: figures/calib_errors2.pdf Graphic file (type pdf)
 <use figures/calib_errors2.pdf>
 Package pdftex.def Info: figures/calib_errors2.pdf  used on input line 77.
 (pdftex.def)             Requested size: 392.2291pt x 252.87415pt.
-
+[7 <./figures/calib_errors2.pdf>]
 Overfull \hbox (25.25436pt too wide) in paragraph at lines 89--90
 [][] 
  []
 
-[7 <./figures/calib_errors2.pdf>]
-<figures/all_features_34411_angstrom_matrix.pdf, id=293, 570.93298pt x 253.24959pt>
+<figures/all_features_34411_angstrom_matrix.pdf, id=299, 570.93298pt x 253.24959pt>
 File: figures/all_features_34411_angstrom_matrix.pdf Graphic file (type pdf)
 <use figures/all_features_34411_angstrom_matrix.pdf>
 Package pdftex.def Info: figures/all_features_34411_angstrom_matrix.pdf  used on input line 125.
@@ -721,8 +720,8 @@ Overfull \hbox (58.4084pt too wide) in paragraph at lines 125--126
  [][] 
  []
 
-[8 <./figures/all_features_34411_angstrom_matrix.pdf>]
-<figures/shift_non_bary_centric.pdf, id=344, 501.34709pt x 262.63954pt>
+[8]
+<figures/shift_non_bary_centric.pdf, id=314, 501.34709pt x 262.63954pt>
 File: figures/shift_non_bary_centric.pdf Graphic file (type pdf)
 <use figures/shift_non_bary_centric.pdf>
 Package pdftex.def Info: figures/shift_non_bary_centric.pdf  used on input line 141.
@@ -732,34 +731,34 @@ Overfull \hbox (2.73961pt too wide) in paragraph at lines 141--142
  [][] 
  []
 
-) (./sections/discussion.tex) [9 <./figures/shift_non_bary_centric.pdf>] (./main.bbl) [10] (./sections/appendix.tex
-<figures/N_data_points.pdf, id=403, 265.5173pt x 152.40073pt>
+[9 <./figures/all_features_34411_angstrom_matrix.pdf> <./figures/shift_non_bary_centric.pdf>]) (./sections/discussion.tex) [10] (./main.bbl) [11] (./sections/appendix.tex
+<figures/N_data_points.pdf, id=413, 265.5173pt x 152.40073pt>
 File: figures/N_data_points.pdf Graphic file (type pdf)
 <use figures/N_data_points.pdf>
 Package pdftex.def Info: figures/N_data_points.pdf  used on input line 6.
 (pdftex.def)             Requested size: 212.41412pt x 121.92072pt.
-<figures/calib_errors_extensive.pdf, id=404, 484.5543pt x 701.41797pt>
+<figures/calib_errors_extensive.pdf, id=414, 484.5543pt x 701.41797pt>
 File: figures/calib_errors_extensive.pdf Graphic file (type pdf)
 <use figures/calib_errors_extensive.pdf>
 Package pdftex.def Info: figures/calib_errors_extensive.pdf  used on input line 14.
 (pdftex.def)             Requested size: 387.64397pt x 561.13515pt.
-) [11 <./figures/N_data_points.pdf>] [12 <./figures/calib_errors_extensive.pdf>] (./main.aux)
+) [12 <./figures/N_data_points.pdf>] [13 <./figures/calib_errors_extensive.pdf>] (./main.aux)
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: BA2FAF9415ABF43B6F601A87CC6D21E7;2909.
  ) 
 Here is how much of TeX's memory you used:
- 26888 strings out of 478353
- 545400 string characters out of 5848085
- 861892 words of memory out of 5000000
- 44503 multiletter control sequences out of 15000+600000
- 410946 words of font info for 53 fonts, out of 8000000 for 9000
+ 26902 strings out of 478353
+ 545613 string characters out of 5848085
+ 865054 words of memory out of 5000000
+ 44510 multiletter control sequences out of 15000+600000
+ 411567 words of font info for 55 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  90i,9n,99p,1536b,750s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on main.pdf (12 pages, 997361 bytes).
+Output written on main.pdf (13 pages, 1003149 bytes).
 PDF statistics:
- 535 PDF objects out of 1000 (max. 8388607)
- 366 compressed objects within 4 object streams
- 53 named destinations out of 1000 (max. 500000)
+ 547 PDF objects out of 1000 (max. 8388607)
+ 377 compressed objects within 4 object streams
+ 58 named destinations out of 1000 (max. 500000)
  349 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -6,6 +6,12 @@ Ryan~T Blackman, JM~Joel Ong, and Debra~A Fischer.
   corrections: Results from the extreme precision spectrograph.
 \newblock {\em The Astronomical Journal}, 158(1):40, 2019.
 
+\bibitem{star_properties}
+John~M Brewer, Debra~A Fischer, Jeff~A Valenti, and Nikolai Piskunov.
+\newblock Spectral properties of cool stars: extended abundance analysis of
+  1,617 planet-search stars.
+\newblock {\em The Astrophysical Journal Supplement Series}, 225(2):32, 2016.
+
 \bibitem{EXPRES_technical_details_Jurgenson}
 C~Jurgenson, D~Fischer, T~McCracken, D~Sawyer, A~Szymkowiak, Allen Davis,
   G~Muller, and F~Santoro.
@@ -14,6 +20,11 @@ C~Jurgenson, D~Fischer, T~McCracken, D~Sawyer, A~Szymkowiak, Allen Davis,
 \newblock In {\em Ground-based and Airborne Instrumentation for Astronomy VI},
   volume 9908, page 99086T. International Society for Optics and Photonics,
   2016.
+
+\bibitem{doppler_shift_GR_formular}
+Lennart Lindegren and Dainis Dravins.
+\newblock The fundamental definition of “radial velocity”.
+\newblock {\em Astronomy \& Astrophysics}, 401(3):1185--1201, 2003.
 
 \bibitem{radial_velocity_techniques}
 Christophe Lovis, Debra Fischer, et~al.
