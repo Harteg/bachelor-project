@@ -18,6 +18,10 @@ import pandas as pd
 sys.path.append('/Users/jakobharteg/Github/MyAppStat/')
 from ExternalFunctions import nice_string_output, add_text_to_ax # useful functions to print fit results on figure
 
+
+my_colors_red = "#b43e3e"
+my_colors_blue = "#5168ce"
+
 def angstrom_to_velocity(wavelength_shift):
     """ Converts wavelenth shift in angstrom to velocity shift in cm/s """
     c = 29979245800
@@ -144,7 +148,7 @@ def plot_spectra_dates_from_path(path):
 
 
 
-def plot_matrix(diff_matrix, diff_matrix_err=None, diff_matrix_valid=None, plot_ratio=True):
+def plot_matrix(diff_matrix, diff_matrix_err=None, diff_matrix_valid=None, plot_ratio=True, kms=False, colormap1="coolwarm", colormap2="magma"):
     """ Plot shift matrices """
 
     if plot_ratio:
@@ -153,26 +157,36 @@ def plot_matrix(diff_matrix, diff_matrix_err=None, diff_matrix_valid=None, plot_
         fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(8,4))
 
     def fix_grid_lines(ax, size):
-        ax.hlines(y=np.arange(0, size)+0.5, xmin=np.full(size, 0)-0.5, xmax=np.full(size, size)-0.5, color="black", alpha=0.2)
-        ax.vlines(x=np.arange(0, size)+0.5, ymin=np.full(size, 0)-0.5, ymax=np.full(size, size)-0.5, color="black", alpha=0.2)
+        pass
+        # ax.hlines(y=np.arange(0, size)+0.5, xmin=np.full(size, 0)-0.5, xmax=np.full(size, size)-0.5, color="black", alpha=0.2)
+        # ax.vlines(x=np.arange(0, size)+0.5, ymin=np.full(size, 0)-0.5, ymax=np.full(size, size)-0.5, color="black", alpha=0.2)
 
+    if kms:
+        diff_matrix = diff_matrix[:] / 1000
 
     # ======= PLOT 1 ============ Mean shifts
-    cs = ax1.imshow(-diff_matrix)
+    cs = ax1.imshow(diff_matrix, cmap=plt.get_cmap(colormap1))
     cax = make_axes_locatable(ax1).append_axes('right', size='5%', pad=0.05) # to make color bar same height at plot, needed when making several subplots with each colorbar
     cbar = fig.colorbar(cs, ax=ax1, cax=cax)
     cbar.set_label('m/s', rotation=270)
+    if kms:
+        cbar.set_label('km/s', rotation=270)
     fix_grid_lines(ax1, len(diff_matrix))
-    ax1.set_title("Wavelength shift")
+    ax1.set_title("Relative RV shift")
+    ax1.set_xlabel("$i$")
+    ax1.set_ylabel("$j$", rotation=0, labelpad=10)
 
     # ======= PLOT 2 ============ Errors
     if diff_matrix_err is not None:
-        cs = ax2.imshow(diff_matrix_err)
+
+        cs = ax2.imshow(diff_matrix_err, cmap=plt.get_cmap(colormap2))
         cax = make_axes_locatable(ax2).append_axes('right', size='5%', pad=0.05) # to make color bar same height at plot, needed when making several subplots with each colorbar
         cbar = fig.colorbar(cs, ax=ax2, cax=cax)
-        cbar.set_label('m/s', rotation=270)
+        cbar.set_label('m/s', rotation=270, labelpad=15)
         fix_grid_lines(ax2, len(diff_matrix_err))
         ax2.set_title("Error")
+        ax2.set_xlabel("$i$")
+        ax2.set_ylabel("$j$", rotation=0, labelpad=10)
 
     # ======= PLOT 3 ============ Valid/Convergence ratio
     if diff_matrix_valid is not None:
@@ -188,7 +202,7 @@ def plot_matrix(diff_matrix, diff_matrix_err=None, diff_matrix_valid=None, plot_
 
     # fig.subplots_adjust(wspace=0)
     fig.tight_layout()
-    # fig.savefig("matrx.pdf", bbox_inches="tight", dpi=300)
+    # fig.savefig("shfits_matrix_non_bary.pdf", bbox_inches="tight", dpi=300)
 
 
 

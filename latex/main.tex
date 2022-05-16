@@ -1,13 +1,19 @@
 % \documentclass[twocolumn]{article}
 \documentclass{article}
 \usepackage[utf8]{inputenc}
-% \usepackage[margin=1in]{geometry}
-\usepackage[a4paper, lmargin = 2 cm , rmargin = 5 cm , tmargin = 2 cm, bmargin = 2 cm]{geometry}
+\usepackage[a4paper, lmargin = 1 cm , rmargin = 6 cm , tmargin = 2 cm, bmargin = 2 cm]{geometry}
 \usepackage{soul}
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage[colorlinks,allcolors=blue]{hyperref} % for href links
+
+% For captions in the margin
+\usepackage{sidecap}
+\sidecaptionvpos{figure}{t} % for making that caption vertically top alligned
+\setlength{\marginparwidth}{5cm}
+\setlength{\marginparsep}{0cm}
+\usepackage[font=small,labelfont=bf]{caption}
 
 
 % \usepackage{marginnote}
@@ -61,9 +67,9 @@
 \maketitle
 
 % TODOs 
-\todo{standardize figure sizes}
+\todo{Make cover page}
 
-
+\todo{Add abstract}
 
 
 

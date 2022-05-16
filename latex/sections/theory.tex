@@ -61,14 +61,23 @@ For development of RV extraction method, observations from four stars were used:
 
 The observations for HD34411 are plotted in figure \ref{fig:dates_HD34411}. Most days have 3-4 observations, and there are significant gaps in the data as well.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[scale=0.80]{figures/dates_HD34411.pdf}
-    \caption{EXPRES observations of HD34411}
+\begin{SCfigure}[1][!h]%
+    \begin{wide}  
+        \includegraphics[width=\textwidth]{figures/dates_HD34411.pdf}
+        \caption{EXPRES observations of HD 34411}
     \label{fig:dates_HD34411}
-\end{figure}
+    \end{wide}
+\end{SCfigure}
+        
 
-\todo{For development of a LFC calibration method data from what was used}
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[scale=0.80]{figures/dates_HD34411.pdf}
+%     \caption{EXPRES observations of HD34411}
+%     \label{fig:dates_HD34411}
+% \end{figure}
+
+\todo{Specify which data was used for LFC calibration method development}
 
 \subsubsection{Data structure}
 The data used in this project consists of already packaged FITS (Flexible Image Transport System) files, which is a portable file standard widely used in the astronomy community to store images and tables. There is a FITS file for each observation, containing a variety of mesaurements for each pixel on the CCD. 

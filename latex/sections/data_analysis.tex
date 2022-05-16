@@ -4,12 +4,22 @@
     
     The Thorium Argon lamp produces 4,000 lines across 82 orders, which can be identified and mapped to a wavelength through a \emph{line atlas}. An intial wavelength solution for all pixels is then produced by linear interpolation. (I this project I have not done this calibration).
 
-    \begin{figure}[ht]
-        \centering
-        \includegraphics[scale=0.80]{figures/LFC_peak_fitting_overview.pdf}
-        \caption{Right: Measured intensities for the LFC across the CCD (unitless). Upper left: illustration of a few LFC peaks in order 65. Peaks are identified with scipy peak finder. Lower left: each peak is fitted with a super gauss to find the exact top of the peak with uncertainties.}
-        \label{fig:LFC_CCD}
-    \end{figure}
+    % \begin{figure}[!ht]
+    %     \centering
+    %     \includegraphics[scale=0.80]{figures/LFC_peak_fitting_overview.pdf}
+    %     \caption{Right: Measured intensities for the LFC across the CCD (unitless). Upper left: illustration of a few LFC peaks in order 65. Peaks are identified with scipy peak finder. Lower left: each peak is fitted with a super gauss to find the exact top of the peak with uncertainties.}
+    %     \label{fig:LFC_CCD}
+    % \end{figure}
+
+    \begin{SCfigure}[1][!ht]%
+        \begin{wide}  
+            \includegraphics[width=\textwidth]{figures/LFC_peak_fitting_overview.pdf}
+            \caption{Right: Measured intensities for the LFC across the CCD (unitless). Upper left: illustration of a few LFC peaks in order 65. Peaks are identified with scipy peak finder. Lower left: each peak is fitted with a super gauss to find the exact top of the peak with uncertainties.}
+            \label{fig:LFC_CCD}
+        \end{wide}
+    \end{SCfigure}
+    
+
 
     The LFC generates a series of equadistant (evenly spaced) spectral lines, typically 20,000 lines across 50 orders. The range of the LFC is thus shorter, and for this reason the ThAr exposures can also be used for a rough calibration outside the LFC range. The frequencies of the LFC peaks are given by the relation
     
@@ -42,12 +52,20 @@
     
     Of course we need to have a wavelength solution for all points on the CCD and to do that I have explored two approaches: cubic interpolation and polynomial fitting. \todoNow{why poly-fit? show plot} I can evaluate the quality of the interpolation calibration by choosing to omit every second peak from the interpolation and then computing the residuals between the omitted peaks and the resulting interpolation function. For the polynomial, I can compute residuals simply by subtracting the location peaks from the fit function. Residuals from the two methods are compared in figure \ref{fig:calib_poly_vs_interp}.
 
-    \begin{figure}[ht]
-        \centering
-        \includegraphics[scale=0.80]{figures/hist_peak_residuals_poly_and_interp.pdf}
-        \caption{Residuals from calibrations performed through poly-fit and interpolation. Both results contain approximately the same amount of points, but the poly-fit has a much larger spread and therefore appears smaller. \todo{polyfit has 18373 lines, interp has 16888. Why? } Might be because I only use order 40-76 in the interp and all orders with more than 10 peaks for the polyfit. \todoNow{Do new polyfit calib} \todo{find out x units}}
-        \label{fig:calib_poly_vs_interp}
-    \end{figure}
+    % \begin{figure}[ht]
+    %     \centering
+    %     \includegraphics[scale=0.80]{figures/hist_peak_residuals_poly_and_interp.pdf}
+    %     \caption{Residuals from calibrations performed through poly-fit and interpolation. Both results contain approximately the same amount of points, but the poly-fit has a much larger spread and therefore appears smaller. \todo{polyfit has 18373 lines, interp has 16888. Why? } Might be because I only use order 40-76 in the interp and all orders with more than 10 peaks for the polyfit. \todoNow{Do new polyfit calib} \todo{find out x units}}
+    %     \label{fig:calib_poly_vs_interp}
+    % \end{figure}
+
+    \begin{SCfigure}[1][!ht]%
+        \begin{wide}  
+            \includegraphics[width=\textwidth]{figures/hist_peak_residuals_poly_and_interp.pdf}
+            \caption{Residuals from calibrations performed through poly-fit and interpolation. Both results contain approximately the same amount of points, but the poly-fit has a much larger spread and therefore appears smaller. \todo{polyfit has 18373 lines, interp has 16888. Why? } Might be because I only use order 40-76 in the interp and all orders with more than 10 peaks for the polyfit. \todoNow{Do new polyfit calib} \todo{find out x units}}
+            \label{fig:calib_poly_vs_interp}
+        \end{wide}
+    \end{SCfigure}
 
     The standard deviation of the residuals from the interpolation come out much smaller than that of the polyfit (values specified in figure \ref{fig:calib_poly_vs_interp}), in this example, suggesting that the interpolation method is superior. It is also worth noting that because the interpolation was done on only half the data points, it will be even better when performed on all data points. A similar comparison was done to determine that the polynomial fit got better with increasing degrees until 5th. \todo{specify what file?}
 
@@ -72,12 +90,14 @@
     
     Another check is that the probability distribution should be roughly flat. \todo{explain why, \href{https://stats.stackexchange.com/a/481843/353364}{help}}.
     
-    \begin{figure}[ht]
-        \centering
-        \includegraphics[scale=0.80]{figures/calib_errors2.pdf}
-        \caption{Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors (1, $\sqrt{3}$ and $\sqrt{10}$). See text for more datails.}
+    \begin{SCfigure}[1][!ht]%
+        \begin{wide}  
+            \includegraphics[width=\textwidth]{figures/calib_errors2.pdf}
+            \caption{Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors (1, $\sqrt{3}$ and $\sqrt{10}$). See text for more datails.}
         \label{fig:calib_errors}
-    \end{figure}
+        \end{wide}
+    \end{SCfigure}
+    
 
     \todo{explain why we use factors of square-root:} Something to do with putting into the chi2 which is a square sum, so the square-root goes away. 
 
@@ -92,21 +112,42 @@
 
     \todoSmall{mention that so far I am using pre-calibrated data, because we are missing the right data}
     
-    \todo{include plot of spectrum and continuum normalized spectrum}
+    % \marginpar{
+    %     \includegraphics[width=0.95\marginparwidth]{figures/rv_data_overview.pdf}
+    %     \captionof{figure}{Carl Friedrich Gauss, født 1777, er bedst kendt for normalfordelingen}
+    % }
 
     In signal processing, cross-correlation is a measure of similarity of two series as a function 
     of the displacement of one relative to the other.
 
     To extract radial velocity we need to measure the doppler shift between spectras from different days of observation. The most straight-forward way to do this is to compute the cross-correlation, since, in signal processing in general, the cross-correlation is exactly a measure of the similarity of two data series as a function of the displacement of one relative to the other.
 
-    To perform a smooth minimization of a shift parameter, it is however necessary to have continuous data, so the first step is to perform a cubic interpolation of the spectra data. In practice I do this inside my chi2 minimization function. Taking the spectra data and wavelength solution for from two different files, but adding a shift parameter to the wavelength solution of one of the observations before performing the interpolation. The interpolation functions are then evaluated in the range of wavelength solutions common to both observations, using $N=1000$ steps. \todo{Inset plot of different run times vs. errors} Plot in \verb|rv_fixes.ipynb| but unsure about the units.
+    Due to a lack of access to data consiting of star spectra with associated LFC captures, I've worked on RV extractions using already calibrated data provided by Lily Zhao. This data has been calibrated using a technique called excalibur \cite{zhao2021excalibur}.
+
+    In this project I've worked with data provided by Lily Zhao, specifically for the star HD 34411. This data is already LFC calibrated using a technique called Excalibur. Top left of figure \ref*{fig:rv_data_overview} shows an extract of wavelength vs. intensity data from an observation of HD 34411. The file also includes a model of the continuum function, with which we can normalize the spectrum through division, shown bottom left. On the right side is plotted all normalized data within the EXCALIBUR mask, i.e. data marked as having a proper calibration. 
+
+    \begin{SCfigure}[1][!ht]%
+        \begin{wide}  
+            \includegraphics[width=\textwidth]{figures/rv_data_overview.pdf}
+            \caption{Overview of excalibur calibrated data from an observation of HD 34411. Upper left: extract of wavelength solution vs. intensity. Lower left: continuum normalized spectrum. Right: all continuum normalized data within the excalibur mask.}
+            \label{fig:rv_data_overview}
+        \end{wide}
+    \end{SCfigure}
+            
+    To perform a smooth minimization of a shift parameter, it is however necessary to have continuous data, so the first step is to perform a cubic interpolation of the spectra data. In practice I do this inside my chi2 minimization function. Taking the spectra data and wavelength solution from two different observations, but multiplying one of the wavelength with the doppler shift factor from eq \ref{eq:our_doppler}before performing the interpolation. The interpolation functions are then evaluated in the range of wavelength solutions common to both observations, using $N=1000$ steps.\footnote{1000 steps was chosen as the best balance between run time and resulting uncertainty. See figure \ref{fig:err_vs_run_time} in appendix \ref{appendix:RV_extraction}. \todo{Are errors correct?}} 
     
     \begin{equation}
         \label{eq:shift_fit_chi2}
         \chi^{2}=\sum_{i=1}^{N}\left[\frac{y_{i}-f(x; A)}{\sigma_{i}}\right]^{2}
     \end{equation}
     
-    where $y_i$ are the unshifted interpolated photon counts for one file and $f(x; A)$ returns interpolated photon counts for the same wavelenth solution as $y_i$ but with an added wavelength shift, $A$. The errors, $\sigma_i$, are also computed through interpolation.\footnote{The errors, $\sigma_i$, which of course also need to be continuous, are computed by: 1) computing another two cubic interpolations for the non-shifted observation, one with photon counts \emph{plus} photon count errors and another one with photon counts \emph{minus} photon count errors. Both interpolations are then evaluted on the same common wavelength range with 1000 steps. The error for each data point is then computed as the mean difference between the measured value and the upper and lower error.}
+    where $y_i$ are the unshifted interpolated photon counts for one file and the function $f(x; A)$ is an cubic interpolation function given my the intensity values of the second observation with wavelength values shifted by equation \ref*{eq:our_doppler}, then evaluated on the common wavelength range:
+    
+    \begin{equation}
+        f(x; A) = \textbf{interp}[x \times ( 1 + A/c), y]\,(x_\text{common})
+    \end{equation}
+
+    The errors, $\sigma_i$, are also computed through interpolation.\footnote{The errors, $\sigma_i$, which of course also need to be continuous, are computed by: 1) computing another two cubic interpolations for the non-shifted observation, one with photon counts \emph{plus} photon count errors and another one with photon counts \emph{minus} photon count errors. Both interpolations are then evaluted on the same common wavelength range with $1000$ steps. The error for each data point is then computed as the mean difference between the measured value and the upper and lower error.}
     
     I then compute the cross-correlation and obtain the wavelength shift as a minimization of eq (\ref{eq:shift_fit_chi2}) using iminuit. When it comes to choosing data for fitting there is some freedom. I've explored 2 options: 1) fitting order by order and 2) fiting feature by feature, i.e. locating and individual peaks in the spectra, fitting features obvisouly being the more complicated approach. 
     
@@ -118,31 +159,32 @@
     \bigbreak
     \noindent\textbf{Extracting relative shifts from over constrained system - matrix reduction:}
     
-    The end desired end result is a plot of the relative radial velocities as a function of time or observation. If we were to simply compare each observation with the following one, our results would become correlated in the sense that the difference between day 1 and day 10, let's say, will depend on the quality of all observations in between. To circumvent this, we can compute the relative shift between all observations, yielding an $N\times N$ upper triangular matrix, where each cell is the shift bewteen observations $i$ and $j$, and thus with a diagonal of 0. I will call this matrix $\Delta V_r^{ij}$, see figure \todo{} The following chi2 minimization with the fit parameters $V_r^i$ (an array of length $N$) will then find a list of values that best describe the whole matrix. In other words, it finds the relative shift for each observation with all other observations. 
+    The end desired end result is a plot of the relative radial velocities as a function of time or observation. If we were to simply compare each observation with the following one, our results would become correlated in the sense that the difference between day 1 and day 10, let's say, will depend on the quality of all observations in between. To circumvent this, we can compute the relative shift between all observations, yielding an $N\times N$ upper triangular matrix, where each cell is the shift bewteen observations $i$ and $j$, and thus with a diagonal of 0. I will call this matrix $\Delta V_r^{ij}$, see figure \ref*{fig:shift_matrix}, here non-barycentric-corrected data is used for the sake of illustration. 
     
-    \begin{figure}[ht]
-        \centering
-        \includegraphics[scale=0.8]{figures/all_features_34411_angstrom_matrix.pdf}
-        \caption{Each cell shows the average wavelength shift computed for features between all observations}
+    \begin{SCfigure}[1][!ht]%
+        \begin{wide}  
+            \includegraphics[width=\textwidth]{figures/shfits_matrix_non_bary.pdf}
+            \caption{Wavelength shift matrix computed for data from HD 34411. The data emplyed is from the "wavelength" column in the fits file, meaning it is not bary-centric corrected, nor excalibur calibrated. Each cell shows the median relative radial velocity between feature $i$ and $j$. The diagonal should be zero and has been ommited for the sake of computational speed.}
         \label{fig:shift_matrix}
-    \end{figure}
+        \end{wide}
+    \end{SCfigure}
+            
+    The following chi2 minimization with the fit parameters $V_r^i$ (an array of length $N$) will then find a list of values that best describe the whole matrix. In other words, it finds the relative shift for each observation with all other observations. 
 
     \begin{equation}
         \label{eq:matrix_reduction_fit}
         \chi^{2}=\sum_{i,j = 0}^{N}\left[\frac{ \Delta V_{r}^{ij} - (V_r^i - V_r^j) }{\sigma(\Delta V_{r}^{ij})}\right]^{2} \quad : \quad i < j.
     \end{equation}
     
-    This will give us a list of relative wavelengh shifts in angstroms. In figure \ref{fig:shift_non_bary_centric} is plotted the final result for HD34411, but for un-calibrated and un-barycentric-corrected data. This is purely for illustration of the method, since using this data, we can get a nice signal of the Earth's movement around the bary-center of the solar system. 
+    The resulting fit parameters are plotted in figure \ref{fig:shift_non_bary_centric}, and we see a clear signal of the Earth movement around the barycenter of the solar system. Considering the resulting chi2- and p-value, it is possible that my errors are much too small. But I do get a wavelength/period close to that of one Earth year.
 
-    The fit, in red, with parameters on the right, is not doing very well (considering the chi2- and p-values), the errors are pressumably much too small, but it does yield a period (wavelength) close to one earth year.
-
-    \begin{figure}[ht]
-        \centering
-        \includegraphics[scale=0.8]{figures/shift_non_bary_centric.pdf}
-        \caption{Computed relative wavelength shifts for HD34411 using non-calibrated, non-bary-centric-corrected data (column = "wavelength"). Blue: the shifts from day to day. Black: values computed through the chi2 minimization.}
-        \label{fig:shift_non_bary_centric}
-    \end{figure}
-
+    \begin{SCfigure}[1][!ht]%
+        \begin{wide}  
+            \includegraphics[width=\textwidth]{figures/shift_non_bary_centric.pdf}
+            \caption{Computed relative wavelength shifts for HD34411 using non-calibrated, non-bary-centric-corrected data (column = "wavelength"). Blue: the shifts from day to day. Black: values computed through the chi2 minimization.}
+            \label{fig:shift_non_bary_centric}
+        \end{wide}
+    \end{SCfigure}
     
     But of course we would like to have radial velocities, which allow us to determine the minimum mass of the planet.
     Converting to radial velocity turns out to be more complicated than expected, as there is no direct conversion factor, but it depends on the specific wavelenght. In general a (non-relativistic) shift in velocity from a shift in wavelength is given by
