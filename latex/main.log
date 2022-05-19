@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.12.28)  16 MAY 2022 17:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.12.28)  19 MAY 2022 16:45
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -687,20 +687,20 @@ Package caption Info: End \AtBeginDocument code.
  [1
 
 {/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./sections/introduction.tex) (./sections/theory.tex [2] [3]
-<figures/dates_HD34411.pdf, id=167, 484.5543pt x 194.06068pt>
+<figures/dates_HD34411.pdf, id=176, 484.5543pt x 194.06068pt>
 File: figures/dates_HD34411.pdf Graphic file (type pdf)
 <use figures/dates_HD34411.pdf>
-Package pdftex.def Info: figures/dates_HD34411.pdf  used on input line 66.
+Package pdftex.def Info: figures/dates_HD34411.pdf  used on input line 67.
 (pdftex.def)             Requested size: 398.33861pt x 159.53645pt.
 
 WIDE: inside SCfloat
 
-Overfull \hbox (25.37311pt too wide) in paragraph at lines 100--101
+Overfull \hbox (25.37311pt too wide) in paragraph at lines 93--94
 \OT1/cmr/m/n/10 por. On EX-PRES the tech-nique used is called SE-LEN-ITE [https://arxiv.org/pdf/1903.08350.pdf]. 
  []
 
 [4 <./figures/dates_HD34411.pdf>]) (./sections/data_analysis.tex
-<figures/LFC_peak_fitting_overview.pdf, id=189, 643.20299pt x 353.91286pt>
+<figures/LFC_peak_fitting_overview.pdf, id=197, 643.20299pt x 353.91286pt>
 File: figures/LFC_peak_fitting_overview.pdf Graphic file (type pdf)
 <use figures/LFC_peak_fitting_overview.pdf>
 Package pdftex.def Info: figures/LFC_peak_fitting_overview.pdf  used on input line 16.
@@ -712,7 +712,7 @@ Overfull \hbox (78.68704pt too wide) in paragraph at lines 53--54
 \OT1/cmr/m/n/10 have ex-plored two ap-proaches: cu-bic in-ter-po-la-tion and poly-no-mial fit-ting. []
  []
 
-<figures/hist_peak_residuals_poly_and_interp.pdf, id=251, 498.663pt x 209.39743pt>
+<figures/hist_peak_residuals_poly_and_interp.pdf, id=259, 498.663pt x 209.39743pt>
 File: figures/hist_peak_residuals_poly_and_interp.pdf Graphic file (type pdf)
 <use figures/hist_peak_residuals_poly_and_interp.pdf>
 Package pdftex.def Info: figures/hist_peak_residuals_poly_and_interp.pdf  used on input line 64.
@@ -768,7 +768,7 @@ Overfull \hbox (42.09607pt too wide) in paragraph at lines 91--92
 []\OT1/cmr/m/n/10 Another check is that the prob-a-bil-ity dis-tri-bu-tion should be roughly flat. []. 
  []
 
-<figures/calib_errors2.pdf, id=277, 490.2857pt x 316.09227pt>
+<figures/calib_errors2.pdf, id=285, 490.2857pt x 316.09227pt>
 File: figures/calib_errors2.pdf Graphic file (type pdf)
 <use figures/calib_errors2.pdf>
 Package pdftex.def Info: figures/calib_errors2.pdf  used on input line 95.
@@ -790,68 +790,192 @@ Overfull \hbox (25.25435pt too wide) in paragraph at lines 109--110
  []
 
 [7 <./figures/calib_errors2.pdf>]
-<figures/rv_data_overview.pdf, id=307, 643.20299pt x 354.12299pt>
+<figures/rv_data_overview.pdf, id=314, 643.20299pt x 354.12299pt>
 File: figures/rv_data_overview.pdf Graphic file (type pdf)
 <use figures/rv_data_overview.pdf>
-Package pdftex.def Info: figures/rv_data_overview.pdf  used on input line 131.
+Package pdftex.def Info: figures/rv_data_overview.pdf  used on input line 124.
 (pdftex.def)             Requested size: 398.33861pt x 219.3108pt.
 
 WIDE: inside SCfloat
 
-Underfull \hbox (badness 1014) in paragraph at lines 135--135
+Underfull \hbox (badness 1014) in paragraph at lines 128--128
 [][]\OT1/cmr/bx/n/9 : |\OT1/cmr/m/n/9 Overview of ex-
  []
 
 
-Underfull \hbox (badness 1237) in paragraph at lines 135--135
+Underfull \hbox (badness 1237) in paragraph at lines 128--128
 \OT1/cmr/m/n/9 cal-ibur cal-i-brated data from
  []
 
 [8 <./figures/rv_data_overview.pdf>]
-<figures/shfits_matrix_non_bary.pdf, id=350, 570.93298pt x 251.19382pt>
+<figures/shfits_matrix_non_bary.pdf, id=359, 570.93298pt x 251.19382pt>
 File: figures/shfits_matrix_non_bary.pdf Graphic file (type pdf)
 <use figures/shfits_matrix_non_bary.pdf>
-Package pdftex.def Info: figures/shfits_matrix_non_bary.pdf  used on input line 166.
+Package pdftex.def Info: figures/shfits_matrix_non_bary.pdf  used on input line 162.
 (pdftex.def)             Requested size: 398.33861pt x 175.26335pt.
 
 WIDE: inside SCfloat
-<figures/shift_non_bary_centric.pdf, id=352, 501.34709pt x 262.63954pt>
-File: figures/shift_non_bary_centric.pdf Graphic file (type pdf)
-<use figures/shift_non_bary_centric.pdf>
-Package pdftex.def Info: figures/shift_non_bary_centric.pdf  used on input line 183.
-(pdftex.def)             Requested size: 398.33861pt x 208.6772pt.
-WIDE: inside SCfloat
 
-Underfull \hbox (badness 10000) in paragraph at lines 187--187
+Underfull \hbox (badness 3713) in paragraph at lines 166--166
+[][]\OT1/cmr/bx/n/9 : |\OT1/cmr/m/n/9 RV shifts ma-
+ []
+
+
+Underfull \hbox (badness 2173) in paragraph at lines 166--166
+\OT1/cmr/m/n/9 trix com-puted for HD34411
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 166--166
 \OT1/cmr/m/n/9 us-ing non-calibrated, non-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 187--187
-\OT1/cmr/m/n/9 bary-centric-corrected data
+Underfull \hbox (badness 10000) in paragraph at lines 166--166
+\OT1/cmr/m/n/9 barycentric-corrected data
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 187--187
-\OT1/cmr/m/n/9 (col-umn = "wave-length").
+Underfull \hbox (badness 3343) in paragraph at lines 166--166
+\OT1/cmr/m/n/9 cell shows the me-dian rel-
  []
 
-[9 <./figures/shfits_matrix_non_bary.pdf> <./figures/shift_non_bary_centric.pdf>]) (./sections/discussion.tex) [10] (./main.bbl) [11] (./sections/appendix.tex
-<figures/N_data_points.pdf, id=443, 265.5173pt x 152.40073pt>
+
+Underfull \hbox (badness 5217) in paragraph at lines 166--166
+\OT1/cmr/m/n/9 a-tive ra-dial ve-loc-ity across
+ []
+
+
+Underfull \hbox (badness 6268) in paragraph at lines 166--166
+\OT1/cmr/m/n/9 all fea-tures found be-tween
+ []
+
+
+Underfull \hbox (badness 1112) in paragraph at lines 166--166
+\OT1/cmr/m/n/9 ob-ser-va-tions $\OML/cmm/m/it/9 i$ \OT1/cmr/m/n/9 and $\OML/cmm/m/it/9 j$\OT1/cmr/m/n/9 . The
+ []
+
+<figures/shift_non_bary_centric.pdf, id=361, 501.34709pt x 262.63954pt>
+File: figures/shift_non_bary_centric.pdf Graphic file (type pdf)
+<use figures/shift_non_bary_centric.pdf>
+Package pdftex.def Info: figures/shift_non_bary_centric.pdf  used on input line 179.
+(pdftex.def)             Requested size: 398.33861pt x 208.6772pt.
+WIDE: inside SCfloat
+
+Underfull \hbox (badness 5388) in paragraph at lines 183--183
+[][]\OT1/cmr/bx/n/9 : |\OT1/cmr/m/n/9 Com-puted rel-
+ []
+
+
+Underfull \hbox (badness 6493) in paragraph at lines 183--183
+\OT1/cmr/m/n/9 a-tive wave-length shifts for
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 183--183
+\OT1/cmr/m/n/9 non-barycentric-corrected
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 183--183
+\OT1/cmr/m/n/9 data (col-umn \OT1/cmtt/m/n/9 wavelength\OT1/cmr/m/n/9 ).
+ []
+
+) (./sections/results.tex
+<figures/shfits_matrix_bary.pdf, id=362, 570.93298pt x 250.69798pt>
+File: figures/shfits_matrix_bary.pdf Graphic file (type pdf)
+<use figures/shfits_matrix_bary.pdf>
+Package pdftex.def Info: figures/shfits_matrix_bary.pdf  used on input line 6.
+(pdftex.def)             Requested size: 398.33861pt x 174.9174pt.
+
+WIDE: inside SCfloat
+
+Underfull \hbox (badness 3713) in paragraph at lines 10--10
+[][]\OT1/cmr/bx/n/9 : |\OT1/cmr/m/n/9 RV shifts ma-
+ []
+
+
+Underfull \hbox (badness 2173) in paragraph at lines 10--10
+\OT1/cmr/m/n/9 trix com-puted for HD34411
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 10--10
+\OT1/cmr/m/n/9 us-ing ex-cal-ibur cal-i-brated,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 10--10
+\OT1/cmr/m/n/9 barycentric-corrected data
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 10--10
+\OT1/cmr/m/n/9 (col-umn \OT1/cmtt/m/n/9 bary_excalibur\OT1/cmr/m/n/9 ).
+ []
+
+
+Underfull \hbox (badness 1014) in paragraph at lines 10--10
+\OT1/cmr/m/n/9 Each cell shows the me-dian
+ []
+
+
+Underfull \hbox (badness 6268) in paragraph at lines 10--10
+\OT1/cmr/m/n/9 all fea-tures found be-tween
+ []
+
+
+Underfull \hbox (badness 1112) in paragraph at lines 10--10
+\OT1/cmr/m/n/9 ob-ser-va-tions $\OML/cmm/m/it/9 i$ \OT1/cmr/m/n/9 and $\OML/cmm/m/it/9 j$\OT1/cmr/m/n/9 . The
+ []
+
+<figures/HD34411_barycentric_rv_vs_lily.pdf, id=363, 496.34706pt x 320.67561pt>
+File: figures/HD34411_barycentric_rv_vs_lily.pdf Graphic file (type pdf)
+<use figures/HD34411_barycentric_rv_vs_lily.pdf>
+Package pdftex.def Info: figures/HD34411_barycentric_rv_vs_lily.pdf  used on input line 16.
+(pdftex.def)             Requested size: 398.33861pt x 257.35309pt.
+WIDE: inside SCfloat
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--20
+\OT1/cmr/m/n/9 us-ing ex-cal-ibur cal-i-brated,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--20
+\OT1/cmr/m/n/9 barycentric-corrected data
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--20
+\OT1/cmr/m/n/9 (col-umn \OT1/cmtt/m/n/9 bary_excalibur\OT1/cmr/m/n/9 ).
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--20
+\OT1/cmr/m/n/9 Top: my re-sults
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--20
+[]\OT1/cmr/m/n/9 .
+ []
+
+) (./sections/discussion.tex [9 <./figures/shfits_matrix_non_bary.pdf> <./figures/shift_non_bary_centric.pdf>]) [10 <./figures/shfits_matrix_bary.pdf> <./figures/HD34411_barycentric_rv_vs_lily.pdf>] (./main.bbl) [11] (./sections/appendix.tex
+<figures/N_data_points.pdf, id=493, 265.5173pt x 152.40073pt>
 File: figures/N_data_points.pdf Graphic file (type pdf)
 <use figures/N_data_points.pdf>
 Package pdftex.def Info: figures/N_data_points.pdf  used on input line 12.
 (pdftex.def)             Requested size: 265.51665pt x 152.40033pt.
 
 WIDE: inside SCfloat
-<figures/calib_errors_extensive.pdf, id=444, 484.5543pt x 701.41797pt>
+<figures/calib_errors_extensive.pdf, id=494, 484.5543pt x 701.41797pt>
 File: figures/calib_errors_extensive.pdf Graphic file (type pdf)
 <use figures/calib_errors_extensive.pdf>
 Package pdftex.def Info: figures/calib_errors_extensive.pdf  used on input line 21.
 (pdftex.def)             Requested size: 348.87883pt x 505.02055pt.
 WIDE: inside SCfloat
 [12 <./figures/N_data_points.pdf> <./figures/calib_errors_extensive.pdf>]
-<figures/err_vs_run_time.pdf, id=466, 425.89659pt x 209.58301pt>
+<figures/err_vs_run_time.pdf, id=517, 425.89659pt x 209.58301pt>
 File: figures/err_vs_run_time.pdf Graphic file (type pdf)
 <use figures/err_vs_run_time.pdf>
 Package pdftex.def Info: figures/err_vs_run_time.pdf  used on input line 40.
@@ -860,21 +984,21 @@ Package pdftex.def Info: figures/err_vs_run_time.pdf  used on input line 40.
 WIDE: inside SCfloat
 ) [13 <./figures/err_vs_run_time.pdf>] (./main.aux)
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 52B719552A2C936AC3910A8FB1EE0755;3027.
+(rerunfilecheck)             Checksum: B6A22019ED33DA6605F4C9F80FCBF514;3295.
  ) 
 Here is how much of TeX's memory you used:
- 28414 strings out of 478353
- 575142 string characters out of 5848085
- 890967 words of memory out of 5000000
- 45992 multiletter control sequences out of 15000+600000
- 413012 words of font info for 60 fonts, out of 8000000 for 9000
+ 28443 strings out of 478353
+ 575988 string characters out of 5848085
+ 890691 words of memory out of 5000000
+ 46012 multiletter control sequences out of 15000+600000
+ 413179 words of font info for 61 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 90i,12n,99p,1536b,1005s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on main.pdf (13 pages, 1403031 bytes).
+ 90i,12n,99p,1230b,1009s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on main.pdf (13 pages, 1450854 bytes).
 PDF statistics:
- 604 PDF objects out of 1000 (max. 8388607)
- 420 compressed objects within 5 object streams
- 64 named destinations out of 1000 (max. 500000)
- 367 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 650 PDF objects out of 1000 (max. 8388607)
+ 458 compressed objects within 5 object streams
+ 67 named destinations out of 1000 (max. 500000)
+ 393 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,6 +1,6 @@
 \subsection{Calibration} 
 
-    The calibration is needed to map each pixel on the CCD to a specific wavelength. Such a map is refered to as a wavelength solution. To do this, we need a light source with known frequencies, preferably many discret peaks. EXPRES uses a Thorium Argon lamp for an initial trial wavelength solution and then a laser frequency comb (LFC) for an more precise solution.
+    The calibration is needed to map each pixel on the CCD to a specific wavelength. Such a map is referred to as a wavelength solution. To do this, we need a light source with known frequencies, preferably many discrete peaks. EXPRES uses a Thorium Argon lamp for an initial trial wavelength solution and then a laser frequency comb (LFC) for an more precise solution.
     
     The Thorium Argon lamp produces 4,000 lines across 82 orders, which can be identified and mapped to a wavelength through a \emph{line atlas}. An intial wavelength solution for all pixels is then produced by linear interpolation. (I this project I have not done this calibration).
 
@@ -79,21 +79,21 @@
 
     \subsubsection{Errors in the calibration data}
 
-    The LFC fits files come with an uncertatiny on the photon count (spectrum). It appears however that this uncertatiny might be a bit underestimated. We can see this by plotting the $\chi^2$- and P-values for the LFC peak super-gauss fits, as done in figure \ref{fig:calib_errors}. The $\chi^2$ value should be roughly equal to the number of degrees of freedom in the fit, which is: 
+    The LFC fits files come with an uncertainty on the photon count (spectrum). It appears however that this uncertainty might be a bit underestimated. We can see this by plotting the $\chi^2$- and P-values for the LFC peak super-gauss fits, as done in figure \ref{fig:calib_errors}. The $\chi^2$ value should be roughly equal to the number of degrees of freedom in the fit, which is: 
 
     \begin{equation}
         \label{eq:ndof}
         N_\text{dof} = N_\text{data-points} - N_\text{fit-parameters} =  13 - 5 = 8.
     \end{equation}
 
-    The number of data points per fit I set to be the rounded average distance bewteen peaks in a given order. Although the LFC should generate equadistant peaks, this does vary bewteen 13 and 18 points as we go through orders, most fits having 13 data points (see figure \ref{fig:N_data_points} in appendix \ref{appendix:LFC_errors}). We should therefore see a spike in the $\chi^2$ values roughly around 8, falling of at a slower pace to the right side. Looking again at figure \ref{fig:calib_errors}, this is not the case for the errors as provided (scale-factor 1). But multiplying by $\sqrt{3}$ we get much closer. $\sqrt{10}$ is overdoing it, however. I looked at several other scaling factors bewteen $\sqrt{3}$ and $\sqrt{10}$, see figure \ref{fig:calib_errors_extensive} in appendix \ref{appendix:LFC_errors} for details, and $\sqrt{3}$ comes closest to giving a peak at 8.
+    The number of data points per fit I set to be the rounded average distance between peaks in a given order. Although the LFC should generate equadistant peaks, this does vary between 13 and 18 points as we go through orders, most fits having 13 data points (see figure \ref{fig:N_data_points} in appendix \ref{appendix:LFC_errors}). We should therefore see a spike in the $\chi^2$ values roughly around 8, falling of at a slower pace to the right side. Looking again at figure \ref{fig:calib_errors}, this is not the case for the errors as provided (scale-factor 1). But multiplying by $\sqrt{3}$ we get much closer. $\sqrt{10}$ is overdoing it, however. I looked at several other scaling factors between $\sqrt{3}$ and $\sqrt{10}$, see figure \ref{fig:calib_errors_extensive} in appendix \ref{appendix:LFC_errors} for details, and $\sqrt{3}$ comes closest to giving a peak at 8.
     
     Another check is that the probability distribution should be roughly flat. \todo{explain why, \href{https://stats.stackexchange.com/a/481843/353364}{help}}.
     
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
             \includegraphics[width=\textwidth]{figures/calib_errors2.pdf}
-            \caption{Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors (1, $\sqrt{3}$ and $\sqrt{10}$). See text for more datails.}
+            \caption{Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors (1, $\sqrt{3}$ and $\sqrt{10}$). See text for more details.}
         \label{fig:calib_errors}
         \end{wide}
     \end{SCfigure}
@@ -104,25 +104,18 @@
     \bigbreak
 
     \noindent \textbf{Effects on calibration:} \newline
-    The errors used during the production of the calibration residuals shown in figure \ref{fig:calib_poly_vs_interp} I have already multiplied by $\sqrt{3}$. This gaves us a $\sigma = 0.934$, without this correction I got $\sigma = 2.34$. 
+    The errors used during the production of the calibration residuals shown in figure \ref{fig:calib_poly_vs_interp} I have already multiplied by $\sqrt{3}$. This gave a $\sigma = 0.934$, without this correction I got $\sigma = 2.34$. 
 
     \todo{Computing the sigma for different error scaling factors gave very jumpy results.. why?} 
 
 \subsection{RV extraction}
 
-    \todoSmall{mention that so far I am using pre-calibrated data, because we are missing the right data}
-    
-    % \marginpar{
-    %     \includegraphics[width=0.95\marginparwidth]{figures/rv_data_overview.pdf}
-    %     \captionof{figure}{Carl Friedrich Gauss, født 1777, er bedst kendt for normalfordelingen}
-    % }
-
     In signal processing, cross-correlation is a measure of similarity of two series as a function 
     of the displacement of one relative to the other.
 
-    To extract radial velocity we need to measure the doppler shift between spectras from different days of observation. The most straight-forward way to do this is to compute the cross-correlation, since, in signal processing in general, the cross-correlation is exactly a measure of the similarity of two data series as a function of the displacement of one relative to the other.
+    To extract radial velocity we need to measure the doppler shift between spectra from different days of observation. The most straight-forward way to do this is to compute the cross-correlation, since, in signal processing in general, the cross-correlation is exactly a measure of the similarity of two data series as a function of the displacement of one relative to the other.
 
-    Due to a lack of access to data consiting of star spectra with associated LFC captures, I've worked on RV extractions using already calibrated data provided by Lily Zhao. This data has been calibrated using a technique called excalibur \cite{zhao2021excalibur}.
+    Due to a lack of access to data consisting of star spectra with associated LFC captures, I've worked on RV extractions using already calibrated data provided by Lily Zhao. This data has been calibrated using a technique called excalibur \cite{zhao2021excalibur}.
 
     In this project I've worked with data provided by Lily Zhao, specifically for the star HD 34411. This data is already LFC calibrated using a technique called Excalibur. Top left of figure \ref*{fig:rv_data_overview} shows an extract of wavelength vs. intensity data from an observation of HD 34411. The file also includes a model of the continuum function, with which we can normalize the spectrum through division, shown bottom left. On the right side is plotted all normalized data within the EXCALIBUR mask, i.e. data marked as having a proper calibration. 
 
@@ -134,7 +127,7 @@
         \end{wide}
     \end{SCfigure}
             
-    To perform a smooth minimization of a shift parameter, it is however necessary to have continuous data, so the first step is to perform a cubic interpolation of the spectra data. In practice I do this inside my chi2 minimization function. Taking the spectra data and wavelength solution from two different observations, but multiplying one of the wavelength with the doppler shift factor from eq \ref{eq:our_doppler}before performing the interpolation. The interpolation functions are then evaluated in the range of wavelength solutions common to both observations, using $N=1000$ steps.\footnote{1000 steps was chosen as the best balance between run time and resulting uncertainty. See figure \ref{fig:err_vs_run_time} in appendix \ref{appendix:RV_extraction}. \todo{Are errors correct?}} 
+    To perform a smooth minimization of a shift parameter, it is however necessary to have continuous data, so the first step is to perform a cubic interpolation of the spectra data. In practice I do this inside my chi2 minimization function. Taking the spectra data and wavelength solution from two different observations, but multiplying one of the wavelength with the doppler shift factor from eq \ref{eq:our_doppler} before performing the interpolation. The interpolation functions are then evaluated in the range of wavelength solutions common to both observations, using $N=1000$ steps.\footnote{1000 steps was chosen as the best balance between run time and resulting uncertainty. See figure \ref{fig:err_vs_run_time} in appendix \ref{appendix:RV_extraction}. \todo{Are errors correct?}} 
     
     \begin{equation}
         \label{eq:shift_fit_chi2}
@@ -149,22 +142,25 @@
 
     The errors, $\sigma_i$, are also computed through interpolation.\footnote{The errors, $\sigma_i$, which of course also need to be continuous, are computed by: 1) computing another two cubic interpolations for the non-shifted observation, one with photon counts \emph{plus} photon count errors and another one with photon counts \emph{minus} photon count errors. Both interpolations are then evaluted on the same common wavelength range with $1000$ steps. The error for each data point is then computed as the mean difference between the measured value and the upper and lower error.}
     
-    I then compute the cross-correlation and obtain the wavelength shift as a minimization of eq (\ref{eq:shift_fit_chi2}) using iminuit. When it comes to choosing data for fitting there is some freedom. I've explored 2 options: 1) fitting order by order and 2) fiting feature by feature, i.e. locating and individual peaks in the spectra, fitting features obvisouly being the more complicated approach. 
+    I then compute the cross-correlation and obtain the radial velocity, $A$, as a minimization of eq (\ref{eq:shift_fit_chi2}) using iminuit.
+
+    When it comes to selecting data I've tried three approaches: order by order, chunk by chunk (chunks of ~2Å, inspired by Lily Zhao's approach \cite{first_RV_from_EXPRES}) and feature by feature. So far, I've only managed to get noteworthy results fitting feature by feature, which I will discuss a bit below. 
     
     \bigbreak
     \noindent\textbf{Finding and matching features across observations}
+
     
     \todo{}
 
     \bigbreak
     \noindent\textbf{Extracting relative shifts from over constrained system - matrix reduction:}
     
-    The end desired end result is a plot of the relative radial velocities as a function of time or observation. If we were to simply compare each observation with the following one, our results would become correlated in the sense that the difference between day 1 and day 10, let's say, will depend on the quality of all observations in between. To circumvent this, we can compute the relative shift between all observations, yielding an $N\times N$ upper triangular matrix, where each cell is the shift bewteen observations $i$ and $j$, and thus with a diagonal of 0. I will call this matrix $\Delta V_r^{ij}$, see figure \ref*{fig:shift_matrix}, here non-barycentric-corrected data is used for the sake of illustration. 
+    The end desired end result is a plot of the relative radial velocities as a function of time or observation. If we were to simply compare each observation with the following one, our results would become correlated in the sense that the difference between day 1 and day 10, let's say, will depend on the quality of all observations in between. To circumvent this, we can compute the relative shift between all observations, yielding an $N\times N$ upper triangular matrix, where each cell is the shift between observations $i$ and $j$, and thus with a diagonal of 0. I will call this matrix $\Delta V_r^{ij}$, see figure \ref*{fig:shift_matrix}, here non-barycentric-corrected data is used for the sake of illustration. 
     
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
             \includegraphics[width=\textwidth]{figures/shfits_matrix_non_bary.pdf}
-            \caption{Wavelength shift matrix computed for data from HD 34411. The data emplyed is from the "wavelength" column in the fits file, meaning it is not bary-centric corrected, nor excalibur calibrated. Each cell shows the median relative radial velocity between feature $i$ and $j$. The diagonal should be zero and has been ommited for the sake of computational speed.}
+            \caption{RV shifts matrix computed for HD34411 using non-calibrated, non-barycentric-corrected data (column \texttt{wavelength}). Each cell shows the median relative radial velocity across all features found between observations $i$ and $j$. The diagonal should be zero and has been omitted for the sake of computational speed. I only used one out of the several exposures from each day.}
         \label{fig:shift_matrix}
         \end{wide}
     \end{SCfigure}
@@ -176,31 +172,15 @@
         \chi^{2}=\sum_{i,j = 0}^{N}\left[\frac{ \Delta V_{r}^{ij} - (V_r^i - V_r^j) }{\sigma(\Delta V_{r}^{ij})}\right]^{2} \quad : \quad i < j.
     \end{equation}
     
-    The resulting fit parameters are plotted in figure \ref{fig:shift_non_bary_centric}, and we see a clear signal of the Earth movement around the barycenter of the solar system. Considering the resulting chi2- and p-value, it is possible that my errors are much too small. But I do get a wavelength/period close to that of one Earth year.
+    The resulting fit parameters are plotted in figure \ref{fig:RV_results_non_barycentric}, and we see a clear signal of the Earth movement around the barycenter of the solar system. Considering the resulting chi2- and p-value, it is possible that my errors are much too small. But I do get a wavelength/period close to that of one earth year.
 
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
             \includegraphics[width=\textwidth]{figures/shift_non_bary_centric.pdf}
-            \caption{Computed relative wavelength shifts for HD34411 using non-calibrated, non-bary-centric-corrected data (column = "wavelength"). Blue: the shifts from day to day. Black: values computed through the chi2 minimization.}
-            \label{fig:shift_non_bary_centric}
+            \caption{Computed relative wavelength shifts for HD34411 using non-calibrated, non-barycentric-corrected data (column \texttt{wavelength}). Blue: the shifts from day to day. Black: values computed through the chi2 minimization.}
+            \label{fig:RV_results_non_barycentric}
         \end{wide}
     \end{SCfigure}
-    
-    But of course we would like to have radial velocities, which allow us to determine the minimum mass of the planet.
-    Converting to radial velocity turns out to be more complicated than expected, as there is no direct conversion factor, but it depends on the specific wavelenght. In general a (non-relativistic) shift in velocity from a shift in wavelength is given by
-
-    \begin{equation}
-        \label{eq:delta_velocity}
-        \Delta v = \frac{\lambda_1 - \lambda_0}{\lambda_0} \times c.
-    \end{equation}
-
-    But as mentioned for this we not just the shift but also the actual position of each of the peaks. 
-
-    \todo{} So I need to do gauss fits (?) for the features and find the exact location. Perhaps compute the RMS per line, like they do in eq 5 of excalibur paper:
-
-    $$
-        \mathrm{RMS} / \text { line }\left[\mathrm{m} \mathrm{s}^{-1}\right]=\sqrt{\sum_{n=1}^{N} \sum_{p=1}^{P} \frac{\left[\frac{\left(\lambda_{n, p, \text { pred. }}-\lambda_{p, \text { theory }}\right)}{\lambda_{p, \text { theory }}} \times c\right]^{2}}{N \times P}}
-    $$
 
     \todo{add run times}
 
