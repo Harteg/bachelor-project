@@ -1,3 +1,4 @@
+from calendar import c
 from curses import A_INVIS
 from tkinter import X
 import numpy as np
@@ -23,25 +24,15 @@ from ExternalFunctions import nice_string_output, add_text_to_ax # useful functi
 my_colors_red = "#b43e3e"
 my_colors_blue = "#5168ce"
 
-def angstrom_to_velocity(wavelength_shift):
-    """ Converts wavelenth shift in angstrom to velocity shift in cm/s """
-    c = 29979245800
-    angstrom_to_cm = 1e-8
-    return wavelength_shift * angstrom_to_cm * c
-
-
-def velocity_to_angstrom(velocity):
-    """ Converts velocity in cm/s to wavelength in angstrom"""
-    c = 29979245800
-    angstrom_to_cm = 1e-8
-    return velocity / angstrom_to_cm / c
-
-
 def make_nan_matrix(size):
     matrix = np.empty((size,size))
     matrix[:] = np.nan
     return matrix
 
+
+def compute_rms(x):
+    x = x - np.mean(x)
+    return np.sqrt(np.sum(x ** 2) / len(x - 1))
 
 
 SPECTRA_PATH_34411 = "/Users/jakobharteg/Data/34411_spectra/"
@@ -215,14 +206,16 @@ def find_features(filename,
                     log=True, 
                     max_frac_err = 0.1,                 # maximum fractional error in intensity
                     min_order_goodness = 0.7,           # Min fraction of data in an order that should be left after filtering for the order to be included. 
-                    min_peak_dist = 50,                 # minimum distance (in pixels) between peaks  
+                    # min_peak_dist = 50,               # minimum distance (in pixels) between peaks  
+                    min_peak_dist = 5,                  # minimum distance (in pixels) between peaks  
                     min_peak_prominence = 0.25,         # minimum height of peak from base (not zero)
                     is_51_peg = False,                  # 51Peg doesn't have excalibur column so we need different keywords 
-                    use_bary_correction = True,          # True if you want to use "wavelength" column filtered by pixel_mask.
-                    scale_up_errors = False            # scale errors by sqrt{3}
+                    use_bary_correction = True,         # True if you want to use "wavelength" column filtered by pixel_mask.
+                    scale_up_errors = False             # scale errors by sqrt{3}
     ):
     
     """ Returns list of features x_values (angstrom by default), y_values, y_err_values, x_peak_location, peak_index, order """
+    """                          0                               1         2             3                4           5     """
 
     
     feature_slices = []
@@ -268,7 +261,7 @@ def find_features(filename,
         y = y/continuum
         y_err = y_err/continuum
 
-        # filter by fractional error 
+        # filter by fractional error (10% doesn't actually remove anything)
         frac_err = y_err/y
         frac_err_mask = (0 < frac_err) & (frac_err < max_frac_err) # reject if larger than 10% and negative
         y = y[frac_err_mask]
@@ -277,7 +270,7 @@ def find_features(filename,
 
         # Skip order if we filtered out more than 1 - min_order_goodness of the data (bad order ... )
         if len(y) / len(og_y) < min_order_goodness:
-            # print("Order sucks:", len(y), "/", len(og_y), "=", len(y) / len(og_y))
+            # print("Order bad:", len(y), "/", len(og_y), "=", len(y) / len(og_y))
             continue
 
         # Now invert peaks
@@ -400,15 +393,8 @@ def nth_cloest_match(value, array, n):
     return np.argpartition(diff_array, n)[n]
 
 
-def find_feature_matches2(features1, features2, log=True):
+def find_feature_matches2(features1, features2, log=True, filter=True, max_dist=0.5, max_area_diff=0.1):
     """ This feature match finder simply returns the closest match between two lists of features.
-        
-        set apply_iqr_filter to discard matches where the peak location difference is outside the inter 
-        quartile range. 
-        
-        set return_iqr_filter to return a mask with TRUE for matches with a peak location difference inside
-        the inter quartile range. 
-
         """
 
     peaks1 = np.array(features1[:, 3], dtype=float)
@@ -420,35 +406,45 @@ def find_feature_matches2(features1, features2, log=True):
 
     # find matches
     matches = []
+    N_reject = 0
+    N_reject_area = 0
     for i in np.arange(len(peaks1)):
         peak1 = peaks1[i]
         min_index = nth_cloest_match(peak1, peaks2, 0)
 
+        # define feature
+        f1, f2 = features1[i], features2[min_index]
+
+        if filter:
+            # Check if peak wavel location diff is larger than 0.5 A, that would be equivalant to about 30 km/s
+            # (very generous cut, because, since the data is not continous sometimes the difference is quite large, 
+            # before we do the cross correlation)
+            if max_dist != -1:
+                if np.abs(f1[3] - f2[3]) > max_dist:
+                    N_reject += 1
+                    continue
+
+            # Check if the integral/area under the graph of the peaks is about the same
+            if max_area_diff != -1:
+                if np.abs(np.sum(f1[1]) - np.sum(f2[1])) > max_area_diff:
+                    N_reject_area += 1
+                    continue
+        
         # Append if we have not already used this peak
         if used_peaks1[i] == False and used_peaks2[min_index] == False:
             
             # Append
-            matches.append([features1[i], features2[min_index]])
+            matches.append([f1, f2])
 
             # Mark that we used the peaks
             used_peaks1[i] = True
             used_peaks2[min_index] = True
     matches = np.asarray(matches)
 
-    # # Filter
-    # if apply_iqr_filter or return_iqr_filter:
-    #     peak_loc_diffs = np.asarray([f1[3] - f2[3] for f1, f2 in matches])
-    #     iqr_min, iqr_max = compute_IQR_bounds(peak_loc_diffs)
-    #     iqr_mask = (peak_loc_diffs > iqr_min) & (peak_loc_diffs < iqr_max)
-
-    # if apply_iqr_filter:
-    #     matches = matches[iqr_mask]
-
     if log:
         print(f"{len(matches)} matches found")
-
-    # if return_iqr_filter:
-    #     return matches, iqr_mask
+        print(f"Rejected {N_reject} proposed matches")
+        print(f"Rejected {N_reject_area} proposed matches based on area")
 
     return matches
 
@@ -464,12 +460,23 @@ def plot_feature_matches2(matches, mask):
     plt.ylabel("Peak index")
     plt.gca().invert_yaxis()
     plt.legend(bbox_to_anchor=(1.45, 0.99))
-    plt.title("Initial peak match selection with IQR filter")
+    plt.title("Initial peak match selection")
+
+
+def compute_match_filter_mask(matches, max_dist, max_area_diff):
+    """ Returns a mask with TRUE if matches pass the filter of max_dist and max_area_diff """
+    mask = []
+    for match in matches:
+        f1, f2 = match[0], match[1]
+        dist_ok = np.abs(f1[3] - f2[3]) < max_dist
+        area_ok = np.abs(np.sum(f1[1]) - np.sum(f2[1])) < max_area_diff
+        mask.append((dist_ok and area_ok))
+    return np.asarray(mask)
 
 
 def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=None, return_df=False, interp_size = 1000):
     """ Attempts to fit two features with based on a shift parameter.
-        Returns shift_min_final, shift_min_final_err, valid 
+        Returns shift_min_final (m/s), shift_min_final_err (m/s), valid 
         """
     
     c = 299792458 # m/s
@@ -560,7 +567,8 @@ def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=N
             'valid': [valid],
             })
     else:
-        return shift_min_final, shift_min_final_err, valid#, minuit
+        # return shift_min_final, shift_min_final_err, valid#, minuit
+        return shift_min_final, shift_min_final_err, valid, minuit.fval
 
 
 def compute_all_feature_shifts(matches, log=True, plot=False, ax=[], interp_size = 1000):
@@ -594,12 +602,15 @@ def compute_all_feature_shifts(matches, log=True, plot=False, ax=[], interp_size
     return shifts
 
 
-def analyse_and_plot_shifts(path, file_index1, file_index2, bary=True):
+def analyse_and_plot_shifts(path, file_index1, file_index2, bary=True, match_function=1):
     """ Short hand function to compute and plot shifts between two files """
 
     filenames = get_spectra_filenames_without_duplicate_dates(path)
     file1, file2 = filenames[file_index1], filenames[file_index2]
-    matches = find_feature_matches(find_features(file1, use_bary_correction=bary), find_features(file2, use_bary_correction=bary))
+    if match_function == 1:
+        matches = find_feature_matches(find_features(file1, use_bary_correction=bary), find_features(file2, use_bary_correction=bary))
+    elif match_function == 2:
+        matches = find_feature_matches2(find_features(file1, use_bary_correction=bary), find_features(file2, use_bary_correction=bary))
 
     # Compute how many rows we need to display all
     height = 1
@@ -624,7 +635,7 @@ def analyse_and_plot_shifts(path, file_index1, file_index2, bary=True):
     return shifts
 
 
-def plot_features_shift(shifts, ax=None, labels=True):
+def plot_features_shift(shifts, ax=None, labels=True, title=None):
 
     s, s_err, s_valid = shifts[:, 0], shifts[:, 1], shifts[:, 2]
 
@@ -633,7 +644,7 @@ def plot_features_shift(shifts, ax=None, labels=True):
     invalid_shifts, invalid_shifts_err, invalid_features    = s[s_valid == 0], s_err[s_valid == 0], feature_n[s_valid == 0]
 
     if ax == None:
-            fig, ax = plt.subplots(figsize=(8, 12))
+        fig, ax = plt.subplots(figsize=(8, 12))
 
     ax.errorbar(valid_shifts, valid_features, xerr=valid_shifts_err, fmt="none", linewidth=1, color = "C2", label=rf'{len(valid_shifts)} valid fits, with errors')
     ax.errorbar(invalid_shifts, invalid_features, xerr=invalid_shifts_err, fmt="none", linewidth=1, color = "C3", label=rf'{len(invalid_shifts)} invalid fits, with errors')
@@ -669,7 +680,11 @@ def plot_features_shift(shifts, ax=None, labels=True):
                     horizontalalignment='left',
                     verticalalignment='top',
                     transform=ax.transAxes)
-            ax.set_title("all_features_34411_ms_non_bary.npy for coord 42")
+            
+            if title is not None:
+                ax.set_title(title)
+                
+            # ax.set_title("all_features_34411_ms_non_bary.npy for coord 42")
     else:
             # hide ticks
             ax.axes.xaxis.set_ticklabels([])
@@ -678,6 +693,7 @@ def plot_features_shift(shifts, ax=None, labels=True):
             ax.axes.yaxis.set_ticks([])
 
 
+    return fig
     # fig.savefig("fdsfds.png", dpi=400)
 
 
@@ -972,83 +988,6 @@ def filter_z_test_result(result, set_to_nan=False):
     filtered_result = np.asarray(filtered_result, dtype=object)
     return filtered_result
 
-
-
-def filter_IQR(shifts, set_to_nan=False):
-    """ Filter shift results for outliers by IQR, taking only the ones that are within the 25-75 percentile.
-        if set_to_nan is true, values outside will be set to np.nan, otherwise 0, marking them as invalid.
-
-        https://www.askpython.com/python/examples/detection-removal-outliers-in-python
-        https://stackoverflow.com/a/53338192/1692590
-        """
-    
-    # Compute IQR range
-    q25 = np.percentile(shifts[:, 0], 25, interpolation='midpoint')
-    q75 = np.percentile(shifts[:, 0], 75, interpolation='midpoint')
-    intr_qr = q75-q25
-    vmin = q25-(1.5*intr_qr)
-    vmax = q75+(1.5*intr_qr)
-
-    # Filter
-    df = pd.DataFrame(shifts, copy=True)
-    df.columns = ["x", "err", "valid"]
-    if set_to_nan:
-        df.valid[df.x < vmin] = np.nan 
-        df.valid[df.x > vmax] = np.nan
-    else:
-        df.valid[df.x < vmin] = 0 
-        df.valid[df.x > vmax] = 0 
-
-    return np.asarray(df)
-
-
-def filter_IQR_result(result, set_to_nan=False):
-    """ Takes in the "result" object from the compute_all_feature_shifts and
-    applies the IQR filter. """
-    filtered_result = []
-    for file_result in result:
-        s = filter_IQR(file_result, set_to_nan=set_to_nan)
-        filtered_result.append(s)
-    filtered_result = np.asarray(filtered_result, dtype=object)
-    return filtered_result
-
-
-def filter_IQR_dataframe_from_summed_diff(df, set_to_nan=False):
-    """ Filter shift results for outliers by IQR, taking only the ones that are within the 25-75 percentile.
-        if set_to_nan is true, values outside will be set to np.nan, otherwise 0, marking them as invalid.
-
-        https://www.askpython.com/python/examples/detection-removal-outliers-in-python
-        https://stackoverflow.com/a/53338192/1692590
-    """
-    
-    # Compute IQR range
-    q25 = np.percentile(df.summed_diff, 25, interpolation='midpoint')
-    q75 = np.percentile(df.summed_diff, 75, interpolation='midpoint')
-    intr_qr = q75-q25
-    vmin = q25-(1.5*intr_qr)
-    vmax = q75+(1.5*intr_qr)
-
-    # Filter
-    if set_to_nan:
-        df.valid[df.summed_diff < vmin] = np.nan 
-        df.valid[df.summed_diff > vmax] = np.nan
-    else:
-        df.valid[df.summed_diff < vmin] = False 
-        df.valid[df.summed_diff > vmax] = False 
-    
-    return df
-
-
-def compute_IQR_bounds(x):
-    q25 = np.percentile(x, 25, interpolation='midpoint')
-    q75 = np.percentile(x, 75, interpolation='midpoint')
-    intr_qr = q75-q25
-    vmin = q25-(1.5*intr_qr)
-    vmax = q75+(1.5*intr_qr)
-    return vmin, vmax
-
-
-
 def matrix_reduce_results_file_df(filename, path, plot=True):
     """ Takes a file of our cross-correlation results (matrix) and reduces"""
 
@@ -1123,18 +1062,30 @@ def matrix_reduce(diff_matrix, diff_matrix_err, diff_matrix_valid, path, plot=Tr
     ax1.set_title("Above diagonal")
     # Plot above-diagonal (days - 1 lenght because above diagonal is one shorter)
     ax1.errorbar(days[:-1], velocity_shifts, yerr=velocity_shifts_err, fmt=".", color="k", ms=1, elinewidth=0.5)
+    text = f"mean error = {np.mean(velocity_shifts_err):.3} m/s, rms = {(compute_rms(velocity_shifts)):.3} m/s"
+    ax1.text(0.05, 0.95, text,
+                    size = 8,
+                    horizontalalignment='left',
+                    verticalalignment='top',
+                    transform=ax1.transAxes)
 
     # Plot matrix reduction results
     ax2.set_xlabel("Time [days]")
     ax2.set_title("Matrix chi2 reduction")
     ax2.errorbar(days, final_shifts, yerr=final_shifts_err, fmt=".", color="k", ms=1, elinewidth=0.5)
+    text = f"mean error = {np.mean(final_shifts_err):.3} m/s, rms = {(compute_rms(final_shifts)):.3} m/s"
+    ax2.text(0.05, 0.95, text,
+                    size = 8,
+                    horizontalalignment='left',
+                    verticalalignment='top',
+                    transform=ax2.transAxes)
 
     fig.tight_layout()
-    # fig.savefig("rooo.png", dpi=300)
+    fig.savefig("rooo.png", dpi=300)
     return m, final_shifts, final_shifts_err, days
 
 
-def matrix_reduce_results_rms(diff_matrix, plot=True, input_is_angstrom=False):
+def matrix_reduce_results_rms(diff_matrix, plot=True):
 
     def model_chi2(*V):
         V = np.asarray([*V])
@@ -1184,14 +1135,10 @@ def matrix_reduce_results_rms(diff_matrix, plot=True, input_is_angstrom=False):
 
     # Plot above-diagonal
     for shift, shift_err, d in zip(velocity_shifts, velocity_shifts_err, days):
-        if input_is_angstrom:
-            shift = angstrom_to_velocity(shift)
         ax1.errorbar(d, shift, yerr=shift_err, fmt=".", color="k")
 
     # Plot matrix reduction results
     for shift, shift_err, d in zip(final_shifts, final_shifts_err, days):
-        if input_is_angstrom:
-            shift = angstrom_to_velocity(shift)
         ax2.errorbar(d, shift, yerr=0, fmt=".", color="k")
 
 
@@ -1535,7 +1482,6 @@ def compute_all_orders_shift(filename1, filename2, plot_overview=False, plot_ord
         (float) : weighted mean for all orders
         (float) : weighted err for all orders
         (float) : ratio of valid minuit fits
-        (float) : ratio of orders that passed IQR filter
     """
     
 
@@ -1551,17 +1497,6 @@ def compute_all_orders_shift(filename1, filename2, plot_overview=False, plot_ord
         results.append(r)
 
     df = pd.concat(results)
-
-    # # Filter for outliers
-    # vmin, vmax = compute_IQR_bounds(df.shift_val)
-    # df["IQR_valid"] = (df.shift_val > vmin) & (df.shift_val < vmax)
-
-    # # Split to valid and invalid shifts
-    # df_valid = df[(df.IQR_valid == True) & (df.minuit_valid == True) ].copy()
-    # df_invalid = df[(df.IQR_valid == False) | (df.minuit_valid == False)].copy()
-
-    # Compute weighted average
-    # shift, shift_err = weighted_mean(df_valid.shift_val, df_valid.shift_err)
 
     # plot
     if plot_overview:
@@ -1584,7 +1519,6 @@ def compute_all_orders_shift(filename1, filename2, plot_overview=False, plot_ord
         ax1.set_xlabel("RV [cm/s]")
         ax1.set_ylabel("Order")
         ax1.legend()
-
 
     return df
 
@@ -1610,52 +1544,26 @@ def compute_all_orders_shift(filename1, filename2, plot_overview=False, plot_ord
 
 # ================================================================================================
 
-
-
-
-
-
-
-def plot_matches(matches, valid_matches_mask=None):
+def plot_matches(matches, valid_matches_mask=None, ncols=10, nrows=-1, return_fig=False):
     """ Plots matches """
 
-    height = 1
-    while height * 10 < len(matches):
-        height += 1
+    if nrows == -1:
+        nrows = 1
+        while nrows * ncols < len(matches):
+            nrows += 1
 
-    assert height < 100, "Height is higher than 100"
+    assert nrows < 100, "Height is higher than 100"
 
     # Plot matches
-    fig, axs = plt.subplots(nrows=height, ncols=10, figsize=(10 * 2.5, height * 2))
+    fig, axs = plt.subplots(nrows=nrows, ncols=ncols, figsize=(ncols * 2.5, nrows * 2))
     for k in np.arange(len(matches)):
-        f1 = matches[k][0]
-        f2 = matches[k][1]
+        match = matches[k]
 
-        if k > len(axs.flat):
+        if k >= len(axs.flat):
             break
 
         ax = axs.flat[k]
-
-        wavel1 = f1[0]
-        spec1 = f1[1]
-        peak1 = f1[3]
-        wavel2 = f2[0]
-        spec2 = f2[1]
-        peak2 = f2[3]
-
-        # Plot difference
-        # ax.plot(wavel1, spec1-spec2, color="k")
-
-        # Plot
-        ax.plot(wavel1, spec1, color="C0")
-        ax.vlines(peak1, 0, 1, linestyle="dashed", color="C0")
-        ax.plot(wavel2, spec2, color="C3")
-        ax.vlines(peak2, 0, 1, linestyle="dashed", color="C3")
-
-        # Plot peak difference
-        diff = peak1 - peak2
-        diff = np.round(diff, 3)
-        ax.text(0.25, 0.8, diff, horizontalalignment='center', verticalalignment='center', transform=ax.transAxes)
+        plot_match(match, ax)
 
         # if np.isclose(np.sum(spec1), np.sum(spec2), 0.1) == False:
         #     ax.set_facecolor('pink')
@@ -1663,9 +1571,43 @@ def plot_matches(matches, valid_matches_mask=None):
         if valid_matches_mask is not None and (valid_matches_mask[k] == False):
             ax.set_facecolor('pink')
 
+    fig.subplots_adjust(top = 0.99, bottom=0.01, hspace=0.4, wspace=0.05)
+
     # Remove ticks
     for ax in axs.flat:
         ax.axes.xaxis.set_ticklabels([])
         ax.axes.yaxis.set_ticklabels([])
         ax.axes.xaxis.set_ticks([])
         ax.axes.yaxis.set_ticks([])
+
+    if return_fig:
+        return fig
+
+
+def plot_match(match, ax=None):
+    matplotlib.rcParams["text.usetex"] = False
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(6,3))
+    
+    f1 = match[0]
+    f2 = match[1]
+    wavel1 = f1[0]
+    spec1 = f1[1]
+    peak1 = f1[3]
+    wavel2 = f2[0]
+    spec2 = f2[1]
+    peak2 = f2[3]
+
+    # Plot
+    ax.plot(wavel1, spec1, color="C0")
+    ax.vlines(peak1, 0, 1, linestyle="dashed", color="C0")
+    ax.plot(wavel2, spec2, color="C3")
+    ax.vlines(peak2, 0, 1, linestyle="dashed", color="C3")
+
+    # Plot peak difference
+    diff = peak1 - peak2
+    area_diff = np.abs(np.sum(spec1) - np.sum(spec2))
+    text = f"Δλ = {diff:.3f} Å \nΔA = {area_diff:.3f}"
+    ax.text(0.02, -0.2, text, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
+    matplotlib.rcParams["text.usetex"] = True

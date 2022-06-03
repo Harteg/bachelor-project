@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.12.28)  19 MAY 2022 16:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.12.28)  31 MAY 2022 14:04
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex
+**/Users/jakobharteg/GitHub/bachelor-project/latex/main
 (/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex
 LaTeX2e <2021-11-15> patch level 1
 L3 programming layer <2021-11-22> (/usr/local/texlive/2021/texmf-dist/tex/latex/base/article.cls
@@ -247,7 +247,12 @@ Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 286.
 )
 \Hy@SectionHShift=\skip53
-) (/usr/local/texlive/2021/texmf-dist/tex/latex/sidecap/sidecap.sty
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/bookmark/bookmark.sty
+Package: bookmark 2020-11-06 v1.29 PDF bookmarks (HO)
+ (/usr/local/texlive/2021/texmf-dist/tex/latex/bookmark/bkm-pdftex.def
+File: bkm-pdftex.def 2020-11-06 v1.29 bookmark driver for pdfTeX (HO)
+\BKM@id=\count282
+)) (/usr/local/texlive/2021/texmf-dist/tex/latex/sidecap/sidecap.sty
 Package: sidecap 2003/06/06 v1.6f SideCap Package (RN/HjG)
  (/usr/local/texlive/2021/texmf-dist/tex/latex/base/ifthen.sty
 Package: ifthen 2020/11/24 v1.1c Standard LaTeX ifthen package (DPC)
@@ -256,7 +261,7 @@ Package: ifthen 2020/11/24 v1.1c Standard LaTeX ifthen package (DPC)
 \SC@CAPWD=\dimen166
 \SC@tempdima=\dimen167
 \SC@tempdimb=\dimen168
-\c@SC@C=\count282
+\c@SC@C=\count283
 \SC@BOX=\box52
 ) (/usr/local/texlive/2021/texmf-dist/tex/latex/caption/caption.sty
 Package: caption 2020/10/26 v3.5g Customizing captions (AR)
@@ -271,8 +276,8 @@ Package: caption3 2020/10/21 v2.2e caption3 kernel (AR)
 \caption@hangindent=\dimen175
 Package caption Info: Standard document class detected.
 )
-\c@caption@flags=\count283
-\c@continuedfloat=\count284
+\c@caption@flags=\count284
+\c@continuedfloat=\count285
 Package caption Info: hyperref package is loaded.
 Package caption Info: sidecap package is loaded.
 ) (/usr/local/texlive/2021/texmf-dist/tex/latex/tcolorbox/tcolorbox.sty
@@ -307,14 +312,14 @@ Package: pgfsys 2021/05/15 v3.1.9a (3.1.9a)
 \pgf@yd=\dimen187
 \w@pgf@writea=\write3
 \r@pgf@reada=\read2
-\c@pgf@counta=\count285
-\c@pgf@countb=\count286
-\c@pgf@countc=\count287
-\c@pgf@countd=\count288
+\c@pgf@counta=\count286
+\c@pgf@countb=\count287
+\c@pgf@countc=\count288
+\c@pgf@countd=\count289
 \t@pgf@toka=\toks34
 \t@pgf@tokb=\toks35
 \t@pgf@tokc=\toks36
-\pgf@sys@id@count=\count289
+\pgf@sys@id@count=\count290
  (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg
 File: pgf.cfg 2021/05/15 v3.1.9a (3.1.9a)
 )
@@ -325,21 +330,21 @@ File: pgfsys-pdftex.def 2021/05/15 v3.1.9a (3.1.9a)
 File: pgfsys-common-pdf.def 2021/05/15 v3.1.9a (3.1.9a)
 ))) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.tex
 File: pgfsyssoftpath.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgfsyssoftpath@smallbuffer@items=\count290
-\pgfsyssoftpath@bigbuffer@items=\count291
+\pgfsyssoftpath@smallbuffer@items=\count291
+\pgfsyssoftpath@bigbuffer@items=\count292
 ) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.tex
 File: pgfsysprotocol.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 )) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
 Package: pgfcore 2021/05/15 v3.1.9a (3.1.9a)
  (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
 \pgfmath@dimen=\dimen188
-\pgfmath@count=\count292
+\pgfmath@count=\count293
 \pgfmath@box=\box54
 \pgfmath@toks=\toks37
 \pgfmath@stack@operand=\toks38
 \pgfmath@stack@operation=\toks39
 ) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code.tex) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonometric.code.tex) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.code.tex) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison.code.tex) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.tex) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code.tex) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.tex) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerarithmetics.code.tex))) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex
-\c@pgfmathroundto@lastzeros=\count293
+\c@pgfmathroundto@lastzeros=\count294
 )) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfint.code.tex) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.tex
 File: pgfcorepoints.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 \pgf@picminx=\dimen189
@@ -369,7 +374,7 @@ File: pgfcorescopes.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 \pgfpic=\box55
 \pgf@hbox=\box56
 \pgf@layerbox@main=\box57
-\pgf@picture@serial@count=\count294
+\pgf@picture@serial@count=\count295
 ) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.code.tex
 File: pgfcoregraphicstate.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 \pgflinewidth=\dimen263
@@ -390,8 +395,8 @@ File: pgfcorearrows.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 ) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
 File: pgfcoreshade.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 \pgf@max=\dimen268
-\pgf@sys@shading@range@num=\count295
-\pgf@shadingcount=\count296
+\pgf@sys@shading@range@num=\count296
+\pgf@shadingcount=\count297
 ) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
 File: pgfcoreimage.code.tex 2021/05/15 v3.1.9a (3.1.9a)
  (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.tex
@@ -427,25 +432,25 @@ Package: environ 2014/05/04 v0.3 A new way to define environments
 Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 )) (/usr/local/texlive/2021/texmf-dist/tex/latex/etoolbox/etoolbox.sty
 Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count297
+\etb@tempcnta=\count298
 )
 \tcb@titlebox=\box60
 \tcb@upperbox=\box61
 \tcb@lowerbox=\box62
 \tcb@phantombox=\box63
-\c@tcbbreakpart=\count298
-\c@tcblayer=\count299
-\c@tcolorbox@number=\count300
+\c@tcbbreakpart=\count299
+\c@tcblayer=\count300
+\c@tcolorbox@number=\count301
 \tcb@temp=\box64
 \tcb@temp=\box65
 \tcb@temp=\box66
 \tcb@temp=\box67
  (/usr/local/texlive/2021/texmf-dist/tex/latex/tcolorbox/tcbraster.code.tex
 Library (tcolorbox): 'tcbraster.code.tex' version '5.0.1'
-\c@tcbrastercolumn=\count301
-\c@tcbrasterrow=\count302
-\c@tcbrasternum=\count303
-\c@tcbraster=\count304
+\c@tcbrastercolumn=\count302
+\c@tcbrasterrow=\count303
+\c@tcbrasternum=\count304
+\c@tcbraster=\count305
 ) (/usr/local/texlive/2021/texmf-dist/tex/latex/tcolorbox/tcbskins.code.tex
 Library (tcolorbox): 'tcbskins.code.tex' version '5.0.1'
 (/usr/local/texlive/2021/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty (/usr/local/texlive/2021/texmf-dist/tex/latex/pgf/utilities/pgffor.sty (/usr/local/texlive/2021/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex)) (/usr/local/texlive/2021/texmf-dist/tex/latex/pgf/math/pgfmath.sty (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)) (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
@@ -459,7 +464,7 @@ Package: pgffor 2021/05/15 v3.1.9a (3.1.9a)
 Package: tikz 2021/05/15 v3.1.9a (3.1.9a)
  (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers.code.tex
 File: pgflibraryplothandlers.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgf@plot@mark@count=\count305
+\pgf@plot@mark@count=\count306
 \pgfplotmarksize=\dimen273
 )
 \tikz@lastx=\dimen274
@@ -474,17 +479,17 @@ File: pgflibraryplothandlers.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 \tikz@figbox@bg=\box69
 \tikz@tempbox=\box70
 \tikz@tempbox@bg=\box71
-\tikztreelevel=\count306
-\tikznumberofchildren=\count307
-\tikznumberofcurrentchild=\count308
-\tikz@fig@count=\count309
+\tikztreelevel=\count307
+\tikznumberofchildren=\count308
+\tikznumberofcurrentchild=\count309
+\tikz@fig@count=\count310
  (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
 File: pgfmodulematrix.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgfmatrixcurrentrow=\count310
-\pgfmatrixcurrentcolumn=\count311
-\pgf@matrix@numberofcolumns=\count312
+\pgfmatrixcurrentrow=\count311
+\pgfmatrixcurrentcolumn=\count312
+\pgf@matrix@numberofcolumns=\count313
 )
-\tikz@expandcount=\count313
+\tikz@expandcount=\count314
  (/usr/local/texlive/2021/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 )))
@@ -509,14 +514,14 @@ Library (tcolorbox): 'tcbfitting.code.tex' version '5.0.1'
 \tcbfitdim=\dimen282
 \tcb@lowerfitdim=\dimen283
 \tcb@upperfitdim=\dimen284
-\tcb@cur@hbadness=\count314
+\tcb@cur@hbadness=\count315
 ) (/usr/local/texlive/2021/texmf-dist/tex/latex/tcolorbox/tcbxparse.code.tex
 Library (tcolorbox): 'tcbxparse.code.tex' version '5.0.1'
 (/usr/local/texlive/2021/texmf-dist/tex/latex/l3packages/xparse/xparse.sty (/usr/local/texlive/2021/texmf-dist/tex/latex/l3kernel/expl3.sty
 Package: expl3 2021-11-22 L3 programming layer (loader) 
  (/usr/local/texlive/2021/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2021-12-14 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count315
+\l__color_backend_stack_int=\count316
 \l__pdf_internal_box=\box76
 ))
 Package: xparse 2021-11-12 L3 Experimental document command parser
@@ -525,22 +530,22 @@ Library (tcolorbox): 'tcblistingsutf8.code.tex' version '5.0.1'
 (/usr/local/texlive/2021/texmf-dist/tex/latex/tcolorbox/tcblistings.code.tex
 Library (tcolorbox): 'tcblistings.code.tex' version '5.0.1'
 (/usr/local/texlive/2021/texmf-dist/tex/latex/listings/listings.sty
-\lst@mode=\count316
+\lst@mode=\count317
 \lst@gtempboxa=\box77
 \lst@token=\toks44
-\lst@length=\count317
+\lst@length=\count318
 \lst@currlwidth=\dimen285
-\lst@column=\count318
-\lst@pos=\count319
+\lst@column=\count319
+\lst@pos=\count320
 \lst@lostspace=\dimen286
 \lst@width=\dimen287
-\lst@newlines=\count320
-\lst@lineno=\count321
+\lst@newlines=\count321
+\lst@lineno=\count322
 \lst@maxwidth=\dimen288
  (/usr/local/texlive/2021/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
-\c@lstnumber=\count322
-\lst@skipnumbers=\count323
+\c@lstnumber=\count323
+\lst@skipnumbers=\count324
 \lst@framebox=\box78
 ) (/usr/local/texlive/2021/texmf-dist/tex/latex/listings/listings.cfg
 File: listings.cfg 2020/03/24 1.8d listings configuration
@@ -554,7 +559,7 @@ Library (tcolorbox): 'tcbprocessing.code.tex' version '5.0.1'
 Package: shellesc 2019/11/08 v1.0c unified shell escape interface for LaTeX
 Package shellesc Info: Restricted shell escape enabled on input line 77.
 ))
-\c@tcblisting=\count324
+\c@tcblisting=\count325
 )) (/usr/local/texlive/2021/texmf-dist/tex/latex/listingsutf8/listingsutf8.sty
 Package: listingsutf8 2019-12-10 v1.5 Allow UTF-8 in listings input (HO)
  (/usr/local/texlive/2021/texmf-dist/tex/generic/stringenc/stringenc.sty
@@ -574,24 +579,24 @@ Library (tcolorbox): 'tcbposter.code.tex' version '5.0.1'
 )) (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 66.
-LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -629,16 +634,16 @@ LaTeX Font Info:    ... okay on input line 66.
 
 (/usr/local/texlive/2021/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count325
+\scratchcounter=\count326
 \scratchdimen=\dimen289
 \scratchbox=\box79
-\nofMPsegments=\count326
-\nofMParguments=\count327
+\nofMPsegments=\count327
+\nofMParguments=\count328
 \everyMPshowfont=\toks45
-\MPscratchCnt=\count328
+\MPscratchCnt=\count329
 \MPscratchDim=\dimen290
-\MPnumerator=\count329
-\makeMPintoPDFobject=\count330
+\MPnumerator=\count330
+\makeMPintoPDFobject=\count331
 \everyMPtoPDFconversion=\toks46
 ) (/usr/local/texlive/2021/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
@@ -646,7 +651,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 48
  (/usr/local/texlive/2021/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-Package hyperref Info: Link coloring ON on input line 66.
+Package hyperref Info: Link coloring ON on input line 53.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
  (/usr/local/texlive/2021/texmf-dist/tex/latex/refcount/refcount.sty
@@ -654,15 +659,11 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ) (/usr/local/texlive/2021/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count331
+\c@section@level=\count332
 )
-LaTeX Info: Redefining \ref on input line 66.
-LaTeX Info: Redefining \pageref on input line 66.
-LaTeX Info: Redefining \nameref on input line 66.
- (./main.out) (./main.out)
-\@outlinefile=\write4
-\openout4 = `main.out'.
-
+LaTeX Info: Redefining \ref on input line 53.
+LaTeX Info: Redefining \pageref on input line 53.
+LaTeX Info: Redefining \nameref on input line 53.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/ragged2e/ragged2e.sty
 Package: ragged2e 2021/12/15 v3.1 ragged2e Package
 \CenteringLeftskip=\skip54
@@ -683,206 +684,193 @@ Package: ragged2e 2021/12/15 v3.1 ragged2e Package
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
-\c@lstlisting=\count332
+\c@lstlisting=\count333
  [1
 
 {/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./sections/introduction.tex) (./sections/theory.tex [2] [3]
-<figures/dates_HD34411.pdf, id=176, 484.5543pt x 194.06068pt>
+<figures/dates_HD34411.pdf, id=92, 484.5543pt x 194.06068pt>
 File: figures/dates_HD34411.pdf Graphic file (type pdf)
 <use figures/dates_HD34411.pdf>
-Package pdftex.def Info: figures/dates_HD34411.pdf  used on input line 67.
+Package pdftex.def Info: figures/dates_HD34411.pdf  used on input line 72.
 (pdftex.def)             Requested size: 398.33861pt x 159.53645pt.
 
 WIDE: inside SCfloat
-
-Overfull \hbox (25.37311pt too wide) in paragraph at lines 93--94
+[4 <./figures/dates_HD34411.pdf>]
+Overfull \hbox (25.37311pt too wide) in paragraph at lines 98--99
 \OT1/cmr/m/n/10 por. On EX-PRES the tech-nique used is called SE-LEN-ITE [https://arxiv.org/pdf/1903.08350.pdf]. 
  []
 
-[4 <./figures/dates_HD34411.pdf>]) (./sections/data_analysis.tex
-<figures/LFC_peak_fitting_overview.pdf, id=197, 643.20299pt x 353.91286pt>
+) (./sections/data_analysis.tex
+<figures/LFC_peak_fitting_overview.pdf, id=117, 643.20299pt x 353.91286pt>
 File: figures/LFC_peak_fitting_overview.pdf Graphic file (type pdf)
 <use figures/LFC_peak_fitting_overview.pdf>
-Package pdftex.def Info: figures/LFC_peak_fitting_overview.pdf  used on input line 16.
+Package pdftex.def Info: figures/LFC_peak_fitting_overview.pdf  used on input line 9.
 (pdftex.def)             Requested size: 398.33861pt x 219.18068pt.
 
 WIDE: inside SCfloat
 [5 <./figures/LFC_peak_fitting_overview.pdf>]
-Overfull \hbox (78.68704pt too wide) in paragraph at lines 53--54
-\OT1/cmr/m/n/10 have ex-plored two ap-proaches: cu-bic in-ter-po-la-tion and poly-no-mial fit-ting. []
- []
+<figures/calib/calib_poly_fit_degrees_order44_residuals_ang.pdf, id=184, 570.93298pt x 354.05661pt>
+File: figures/calib/calib_poly_fit_degrees_order44_residuals_ang.pdf Graphic file (type pdf)
+<use figures/calib/calib_poly_fit_degrees_order44_residuals_ang.pdf>
+Package pdftex.def Info: figures/calib/calib_poly_fit_degrees_order44_residuals_ang.pdf  used on input line 51.
+(pdftex.def)             Requested size: 398.33861pt x 247.03296pt.
 
-<figures/hist_peak_residuals_poly_and_interp.pdf, id=259, 498.663pt x 209.39743pt>
+WIDE: inside SCfloat
+<figures/calib/calib_poly_5th_res.pdf, id=186, 426.39299pt x 137.313pt>
+File: figures/calib/calib_poly_5th_res.pdf Graphic file (type pdf)
+<use figures/calib/calib_poly_5th_res.pdf>
+Package pdftex.def Info: figures/calib/calib_poly_5th_res.pdf  used on input line 61.
+(pdftex.def)             Requested size: 398.33861pt x 128.28223pt.
+WIDE: inside SCfloat
+<figures/hist_peak_residuals_poly_and_interp.pdf, id=188, 426.39299pt x 224.55568pt>
 File: figures/hist_peak_residuals_poly_and_interp.pdf Graphic file (type pdf)
 <use figures/hist_peak_residuals_poly_and_interp.pdf>
-Package pdftex.def Info: figures/hist_peak_residuals_poly_and_interp.pdf  used on input line 64.
-(pdftex.def)             Requested size: 398.33861pt x 167.26894pt.
+Package pdftex.def Info: figures/hist_peak_residuals_poly_and_interp.pdf  used on input line 73.
+(pdftex.def)             Requested size: 398.33861pt x 209.78716pt.
 WIDE: inside SCfloat
 
-Underfull \hbox (badness 3260) in paragraph at lines 68--68
+Underfull \hbox (badness 3260) in paragraph at lines 77--77
 \OT1/cmr/m/n/9 i-bra-tions per-formed through
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 68--68
-\OT1/cmr/m/n/9 poly-fit and in-ter-po-la-tion.
+Underfull \hbox (badness 1005) in paragraph at lines 77--77
+\OT1/cmr/m/n/9 a 5th de-gree poly-fit and a
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 68--68
-\OT1/cmr/m/n/9 i-mately the same amount
+Underfull \hbox (badness 4479) in paragraph at lines 77--77
+\OT1/cmr/m/n/9 cu-bic in-ter-po-la-tion. Both
  []
 
-
-Underfull \hbox (badness 3525) in paragraph at lines 68--68
-\OT1/cmr/m/n/9 of points, but the poly-fit
- []
-
-
-Underfull \hbox (badness 5302) in paragraph at lines 68--68
-\OT1/cmr/m/n/9 has a much larger spread
- []
-
-
-Overfull \hbox (114.97444pt too wide) in paragraph at lines 68--68
-[]
- []
-
-
-Underfull \hbox (badness 6725) in paragraph at lines 68--68
-\OT1/cmr/m/n/9 or-der 40-76 in the in-terp
- []
-
-
-Underfull \hbox (badness 6477) in paragraph at lines 68--68
-\OT1/cmr/m/n/9 and all or-ders with more
- []
-
-
-Overfull \hbox (18.05756pt too wide) in paragraph at lines 68--68
-[]
- []
-
-[6 <./figures/hist_peak_residuals_poly_and_interp.pdf>]
-Overfull \hbox (42.09607pt too wide) in paragraph at lines 91--92
+[6] [7 <./figures/calib/calib_poly_fit_degrees_order44_residuals_ang.pdf> <./figures/calib/calib_poly_5th_res.pdf> <./figures/hist_peak_residuals_poly_and_interp.pdf>]
+Overfull \hbox (42.09607pt too wide) in paragraph at lines 110--111
 []\OT1/cmr/m/n/10 Another check is that the prob-a-bil-ity dis-tri-bu-tion should be roughly flat. []. 
  []
 
-<figures/calib_errors2.pdf, id=285, 490.2857pt x 316.09227pt>
+<figures/calib_errors2.pdf, id=268, 490.2857pt x 316.09227pt>
 File: figures/calib_errors2.pdf Graphic file (type pdf)
 <use figures/calib_errors2.pdf>
-Package pdftex.def Info: figures/calib_errors2.pdf  used on input line 95.
+Package pdftex.def Info: figures/calib_errors2.pdf  used on input line 114.
 (pdftex.def)             Requested size: 398.33861pt x 256.81468pt.
 WIDE: inside SCfloat
 
-Underfull \hbox (badness 1783) in paragraph at lines 99--99
+Underfull \hbox (badness 1783) in paragraph at lines 118--118
 [][]\OT1/cmr/bx/n/9 : |\OT1/cmr/m/n/9 Chi2-values and
  []
 
 
-Underfull \hbox (badness 1681) in paragraph at lines 99--99
+Underfull \hbox (badness 1681) in paragraph at lines 118--118
 \OT1/cmr/m/n/9 ton count (spec-trum) er-rors
  []
 
 
-Overfull \hbox (25.25435pt too wide) in paragraph at lines 109--110
+Overfull \hbox (25.25435pt too wide) in paragraph at lines 125--126
 [][] 
  []
 
-[7 <./figures/calib_errors2.pdf>]
-<figures/rv_data_overview.pdf, id=314, 643.20299pt x 354.12299pt>
+[8 <./figures/calib_errors2.pdf>]
+<figures/rv_data_overview.pdf, id=296, 643.20299pt x 354.12299pt>
 File: figures/rv_data_overview.pdf Graphic file (type pdf)
 <use figures/rv_data_overview.pdf>
-Package pdftex.def Info: figures/rv_data_overview.pdf  used on input line 124.
+Package pdftex.def Info: figures/rv_data_overview.pdf  used on input line 140.
 (pdftex.def)             Requested size: 398.33861pt x 219.3108pt.
 
 WIDE: inside SCfloat
 
-Underfull \hbox (badness 1014) in paragraph at lines 128--128
+Underfull \hbox (badness 1014) in paragraph at lines 144--144
 [][]\OT1/cmr/bx/n/9 : |\OT1/cmr/m/n/9 Overview of ex-
  []
 
 
-Underfull \hbox (badness 1237) in paragraph at lines 128--128
+Underfull \hbox (badness 1237) in paragraph at lines 144--144
 \OT1/cmr/m/n/9 cal-ibur cal-i-brated data from
  []
 
-[8 <./figures/rv_data_overview.pdf>]
-<figures/shfits_matrix_non_bary.pdf, id=359, 570.93298pt x 251.19382pt>
+[9 <./figures/rv_data_overview.pdf>]
+<figures/max_peak_area_diff_vs_Nmatches.pdf, id=330, 502.4582pt x 152.40073pt>
+File: figures/max_peak_area_diff_vs_Nmatches.pdf Graphic file (type pdf)
+<use figures/max_peak_area_diff_vs_Nmatches.pdf>
+Package pdftex.def Info: figures/max_peak_area_diff_vs_Nmatches.pdf  used on input line 169.
+(pdftex.def)             Requested size: 398.33861pt x 120.8231pt.
+
+WIDE: inside SCfloat
+[10 <./figures/max_peak_area_diff_vs_Nmatches.pdf>]
+<figures/shfits_matrix_non_bary.pdf, id=361, 570.93298pt x 251.19382pt>
 File: figures/shfits_matrix_non_bary.pdf Graphic file (type pdf)
 <use figures/shfits_matrix_non_bary.pdf>
-Package pdftex.def Info: figures/shfits_matrix_non_bary.pdf  used on input line 162.
+Package pdftex.def Info: figures/shfits_matrix_non_bary.pdf  used on input line 207.
 (pdftex.def)             Requested size: 398.33861pt x 175.26335pt.
 
 WIDE: inside SCfloat
 
-Underfull \hbox (badness 3713) in paragraph at lines 166--166
+Underfull \hbox (badness 3713) in paragraph at lines 211--211
 [][]\OT1/cmr/bx/n/9 : |\OT1/cmr/m/n/9 RV shifts ma-
  []
 
 
-Underfull \hbox (badness 2173) in paragraph at lines 166--166
+Underfull \hbox (badness 2173) in paragraph at lines 211--211
 \OT1/cmr/m/n/9 trix com-puted for HD34411
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 166--166
+Underfull \hbox (badness 10000) in paragraph at lines 211--211
 \OT1/cmr/m/n/9 us-ing non-calibrated, non-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 166--166
+Underfull \hbox (badness 10000) in paragraph at lines 211--211
 \OT1/cmr/m/n/9 barycentric-corrected data
  []
 
 
-Underfull \hbox (badness 3343) in paragraph at lines 166--166
+Underfull \hbox (badness 3343) in paragraph at lines 211--211
 \OT1/cmr/m/n/9 cell shows the me-dian rel-
  []
 
 
-Underfull \hbox (badness 5217) in paragraph at lines 166--166
+Underfull \hbox (badness 5217) in paragraph at lines 211--211
 \OT1/cmr/m/n/9 a-tive ra-dial ve-loc-ity across
  []
 
 
-Underfull \hbox (badness 6268) in paragraph at lines 166--166
+Underfull \hbox (badness 6268) in paragraph at lines 211--211
 \OT1/cmr/m/n/9 all fea-tures found be-tween
  []
 
 
-Underfull \hbox (badness 1112) in paragraph at lines 166--166
+Underfull \hbox (badness 1112) in paragraph at lines 211--211
 \OT1/cmr/m/n/9 ob-ser-va-tions $\OML/cmm/m/it/9 i$ \OT1/cmr/m/n/9 and $\OML/cmm/m/it/9 j$\OT1/cmr/m/n/9 . The
  []
 
-<figures/shift_non_bary_centric.pdf, id=361, 501.34709pt x 262.63954pt>
+<figures/shift_non_bary_centric.pdf, id=363, 501.34709pt x 262.63954pt>
 File: figures/shift_non_bary_centric.pdf Graphic file (type pdf)
 <use figures/shift_non_bary_centric.pdf>
-Package pdftex.def Info: figures/shift_non_bary_centric.pdf  used on input line 179.
+Package pdftex.def Info: figures/shift_non_bary_centric.pdf  used on input line 224.
 (pdftex.def)             Requested size: 398.33861pt x 208.6772pt.
 WIDE: inside SCfloat
 
-Underfull \hbox (badness 5388) in paragraph at lines 183--183
+Underfull \hbox (badness 2042) in paragraph at lines 228--228
 [][]\OT1/cmr/bx/n/9 : |\OT1/cmr/m/n/9 Com-puted rel-
  []
 
 
-Underfull \hbox (badness 6493) in paragraph at lines 183--183
+Underfull \hbox (badness 6493) in paragraph at lines 228--228
 \OT1/cmr/m/n/9 a-tive wave-length shifts for
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 183--183
+Underfull \hbox (badness 10000) in paragraph at lines 228--228
 \OT1/cmr/m/n/9 non-barycentric-corrected
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 183--183
+Underfull \hbox (badness 10000) in paragraph at lines 228--228
 \OT1/cmr/m/n/9 data (col-umn \OT1/cmtt/m/n/9 wavelength\OT1/cmr/m/n/9 ).
  []
 
 ) (./sections/results.tex
-<figures/shfits_matrix_bary.pdf, id=362, 570.93298pt x 250.69798pt>
+<figures/shfits_matrix_bary.pdf, id=364, 570.93298pt x 250.69798pt>
 File: figures/shfits_matrix_bary.pdf Graphic file (type pdf)
 <use figures/shfits_matrix_bary.pdf>
 Package pdftex.def Info: figures/shfits_matrix_bary.pdf  used on input line 6.
@@ -890,7 +878,7 @@ Package pdftex.def Info: figures/shfits_matrix_bary.pdf  used on input line 6.
 
 WIDE: inside SCfloat
 
-Underfull \hbox (badness 3713) in paragraph at lines 10--10
+Underfull \hbox (badness 1622) in paragraph at lines 10--10
 [][]\OT1/cmr/bx/n/9 : |\OT1/cmr/m/n/9 RV shifts ma-
  []
 
@@ -929,25 +917,40 @@ Underfull \hbox (badness 1112) in paragraph at lines 10--10
 \OT1/cmr/m/n/9 ob-ser-va-tions $\OML/cmm/m/it/9 i$ \OT1/cmr/m/n/9 and $\OML/cmm/m/it/9 j$\OT1/cmr/m/n/9 . The
  []
 
-<figures/HD34411_barycentric_rv_vs_lily.pdf, id=363, 496.34706pt x 320.67561pt>
+<figures/HD34411_barycentric_rv_vs_lily.pdf, id=365, 496.34706pt x 320.67561pt>
 File: figures/HD34411_barycentric_rv_vs_lily.pdf Graphic file (type pdf)
 <use figures/HD34411_barycentric_rv_vs_lily.pdf>
 Package pdftex.def Info: figures/HD34411_barycentric_rv_vs_lily.pdf  used on input line 16.
 (pdftex.def)             Requested size: 398.33861pt x 257.35309pt.
 WIDE: inside SCfloat
 
-Underfull \hbox (badness 10000) in paragraph at lines 20--20
-\OT1/cmr/m/n/9 us-ing ex-cal-ibur cal-i-brated,
+Underfull \hbox (badness 2042) in paragraph at lines 20--20
+[][]\OT1/cmr/bx/n/9 : |\OT1/cmr/m/n/9 Com-puted rel-
+ []
+
+
+Underfull \hbox (badness 6493) in paragraph at lines 20--20
+\OT1/cmr/m/n/9 a-tive wave-length shifts for
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 20--20
-\OT1/cmr/m/n/9 barycentric-corrected data
+\OT1/cmr/m/n/9 HD34411 us-ing ex-cal-ibur
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 20--20
-\OT1/cmr/m/n/9 (col-umn \OT1/cmtt/m/n/9 bary_excalibur\OT1/cmr/m/n/9 ).
+\OT1/cmr/m/n/9 cal-i-brated, barycentric-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--20
+\OT1/cmr/m/n/9 corrected data (col-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--20
+\OT1/cmr/m/n/9 umn \OT1/cmtt/m/n/9 bary_excalibur\OT1/cmr/m/n/9 ).
  []
 
 
@@ -960,45 +963,42 @@ Underfull \hbox (badness 10000) in paragraph at lines 20--20
 []\OT1/cmr/m/n/9 .
  []
 
-) (./sections/discussion.tex [9 <./figures/shfits_matrix_non_bary.pdf> <./figures/shift_non_bary_centric.pdf>]) [10 <./figures/shfits_matrix_bary.pdf> <./figures/HD34411_barycentric_rv_vs_lily.pdf>] (./main.bbl) [11] (./sections/appendix.tex
-<figures/N_data_points.pdf, id=493, 265.5173pt x 152.40073pt>
+) (./sections/discussion.tex [11 <./figures/shfits_matrix_non_bary.pdf> <./figures/shift_non_bary_centric.pdf>]) [12 <./figures/shfits_matrix_bary.pdf> <./figures/HD34411_barycentric_rv_vs_lily.pdf>] (./main.bbl) [13] (./sections/appendix.tex
+<figures/N_data_points.pdf, id=501, 265.5173pt x 152.40073pt>
 File: figures/N_data_points.pdf Graphic file (type pdf)
 <use figures/N_data_points.pdf>
 Package pdftex.def Info: figures/N_data_points.pdf  used on input line 12.
 (pdftex.def)             Requested size: 265.51665pt x 152.40033pt.
 
 WIDE: inside SCfloat
-<figures/calib_errors_extensive.pdf, id=494, 484.5543pt x 701.41797pt>
+<figures/calib_errors_extensive.pdf, id=502, 484.5543pt x 701.41797pt>
 File: figures/calib_errors_extensive.pdf Graphic file (type pdf)
 <use figures/calib_errors_extensive.pdf>
 Package pdftex.def Info: figures/calib_errors_extensive.pdf  used on input line 21.
 (pdftex.def)             Requested size: 348.87883pt x 505.02055pt.
 WIDE: inside SCfloat
-[12 <./figures/N_data_points.pdf> <./figures/calib_errors_extensive.pdf>]
-<figures/err_vs_run_time.pdf, id=517, 425.89659pt x 209.58301pt>
+[14 <./figures/N_data_points.pdf> <./figures/calib_errors_extensive.pdf>]
+<figures/err_vs_run_time.pdf, id=524, 425.89659pt x 209.58301pt>
 File: figures/err_vs_run_time.pdf Graphic file (type pdf)
 <use figures/err_vs_run_time.pdf>
 Package pdftex.def Info: figures/err_vs_run_time.pdf  used on input line 40.
 (pdftex.def)             Requested size: 306.64531pt x 150.89964pt.
 
 WIDE: inside SCfloat
-) [13 <./figures/err_vs_run_time.pdf>] (./main.aux)
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: B6A22019ED33DA6605F4C9F80FCBF514;3295.
- ) 
+) [15 <./figures/err_vs_run_time.pdf>] (./main.aux) ) 
 Here is how much of TeX's memory you used:
- 28443 strings out of 478353
- 575988 string characters out of 5848085
- 890691 words of memory out of 5000000
- 46012 multiletter control sequences out of 15000+600000
+ 28737 strings out of 478353
+ 581459 string characters out of 5848085
+ 895523 words of memory out of 5000000
+ 46289 multiletter control sequences out of 15000+600000
  413179 words of font info for 61 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 90i,12n,99p,1230b,1009s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 90i,12n,99p,1271b,1009s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on main.pdf (13 pages, 1450854 bytes).
+Output written on main.pdf (15 pages, 1587955 bytes).
 PDF statistics:
- 650 PDF objects out of 1000 (max. 8388607)
- 458 compressed objects within 5 object streams
- 67 named destinations out of 1000 (max. 500000)
- 393 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 738 PDF objects out of 1000 (max. 8388607)
+ 533 compressed objects within 6 object streams
+ 78 named destinations out of 1000 (max. 500000)
+ 448 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -2,14 +2,7 @@
 
     The calibration is needed to map each pixel on the CCD to a specific wavelength. Such a map is referred to as a wavelength solution. To do this, we need a light source with known frequencies, preferably many discrete peaks. EXPRES uses a Thorium Argon lamp for an initial trial wavelength solution and then a laser frequency comb (LFC) for an more precise solution.
     
-    The Thorium Argon lamp produces 4,000 lines across 82 orders, which can be identified and mapped to a wavelength through a \emph{line atlas}. An intial wavelength solution for all pixels is then produced by linear interpolation. (I this project I have not done this calibration).
-
-    % \begin{figure}[!ht]
-    %     \centering
-    %     \includegraphics[scale=0.80]{figures/LFC_peak_fitting_overview.pdf}
-    %     \caption{Right: Measured intensities for the LFC across the CCD (unitless). Upper left: illustration of a few LFC peaks in order 65. Peaks are identified with scipy peak finder. Lower left: each peak is fitted with a super gauss to find the exact top of the peak with uncertainties.}
-    %     \label{fig:LFC_CCD}
-    % \end{figure}
+    The Thorium Argon lamp produces 4,000 lines across 82 orders, which can be identified and mapped to a wavelength through a \emph{line atlas}. An intial wavelength solution for all pixels is then produced by linear interpolation. (In this project I have not done this calibration).
 
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
@@ -18,8 +11,6 @@
             \label{fig:LFC_CCD}
         \end{wide}
     \end{SCfigure}
-    
-
 
     The LFC generates a series of equadistant (evenly spaced) spectral lines, typically 20,000 lines across 50 orders. The range of the LFC is thus shorter, and for this reason the ThAr exposures can also be used for a rough calibration outside the LFC range. The frequencies of the LFC peaks are given by the relation
     
@@ -50,43 +41,71 @@
     
     We are most interested in $\mu$, which gives the position of the LFC peak on the CCD (in pixel-space). With the intial rough wavelength solution dervied from the ThAr lamp (precalculated in the data set that I've used) I can determine what the approximate wavelength of the LFC peak should be. To find the better wavelength solution I then go look up the closest frequency given by eq. \ref{eq:LFC_freq_eq}. And we now have a map of ~20,000 points on the CCD with a good wavelength solution. 
     
-    Of course we need to have a wavelength solution for all points on the CCD and to do that I have explored two approaches: cubic interpolation and polynomial fitting. \todoNow{why poly-fit? show plot} I can evaluate the quality of the interpolation calibration by choosing to omit every second peak from the interpolation and then computing the residuals between the omitted peaks and the resulting interpolation function. For the polynomial, I can compute residuals simply by subtracting the location peaks from the fit function. Residuals from the two methods are compared in figure \ref{fig:calib_poly_vs_interp}.
+    Of course we need to have a wavelength solution for all points on the CCD and to do that I have explored two approaches: polynomial fitting and cubic interpolation.
+    
+    \subsubsection{Poly-fit calibration}
+    Since the LFC peak positions, as seen in the right plot in figure \ref{fig:LFC_CCD}, appear to exhibit a certain periodic behavour, my initial approach to compute a wavelength solution across the whole CCD was to fit the LFC peak positions with a polynomial. Looking at the residuals of fitting the LFC peaks with polynomial of increasing degree revealed smaller and smaller periodic variations, until reaching 5th degree, see figure \ref{fig:LFC_calib_poly_degrees}. 
 
-    % \begin{figure}[ht]
-    %     \centering
-    %     \includegraphics[scale=0.80]{figures/hist_peak_residuals_poly_and_interp.pdf}
-    %     \caption{Residuals from calibrations performed through poly-fit and interpolation. Both results contain approximately the same amount of points, but the poly-fit has a much larger spread and therefore appears smaller. \todo{polyfit has 18373 lines, interp has 16888. Why? } Might be because I only use order 40-76 in the interp and all orders with more than 10 peaks for the polyfit. \todoNow{Do new polyfit calib} \todo{find out x units}}
-    %     \label{fig:calib_poly_vs_interp}
-    % \end{figure}
+    \begin{SCfigure}[1][!ht]%
+        \begin{wide}  
+            \includegraphics[width=\textwidth]{figures/calib/calib_poly_fit_degrees_order44_residuals_ang.pdf}
+            \caption{Residuals from fitting LFC peak positions with polynomials of increasing degree. Pixels on the x-axis and residuals in ångstrom on the y-axis}
+            \label{fig:LFC_calib_poly_degrees}
+        \end{wide}
+    \end{SCfigure}
+
+    But, as the orders are far from idential, this turns out not to work very well across the CCD, see figure \ref{fig:LFC_calib_5th_res}. So I decided to turn to interpolation.
+
+    \begin{SCfigure}[1][!ht]%
+        \begin{wide}  
+            \includegraphics[width=\textwidth]{figures/calib/calib_poly_5th_res.pdf}
+            \caption{RMS of residuals from fitting LFC peak positions with 5. degree polynomial. Pixels on the x-axis and residuals in ångstrom on the y-axis}
+            \label{fig:LFC_calib_5th_res}
+        \end{wide}
+    \end{SCfigure}
+
+
+    \subsubsection{Interpolation calibration}
+    A cubic interpolation would force all the residuals to be zero, so in order to evaluate the quality of the method, we can for instance omit every second peak from the interpolation and then compute the residual between the omitted peaks and the resulting interpolation function. We can additionally flip the data set and interpolate the peaks we left out before and compute residuals for the rest, thus ending up with an array of residuals equal to the length of the results from the poly-fit method, allowing us to compare the two, as is done in figure \ref{fig:calib_poly_vs_interp}.
 
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
             \includegraphics[width=\textwidth]{figures/hist_peak_residuals_poly_and_interp.pdf}
-            \caption{Residuals from calibrations performed through poly-fit and interpolation. Both results contain approximately the same amount of points, but the poly-fit has a much larger spread and therefore appears smaller. \todo{polyfit has 18373 lines, interp has 16888. Why? } Might be because I only use order 40-76 in the interp and all orders with more than 10 peaks for the polyfit. \todoNow{Do new polyfit calib} \todo{find out x units}}
+            \caption{Residuals from calibrations performed through a 5th degree poly-fit and a cubic interpolation. Both results contain approximately the same amount of points.}
             \label{fig:calib_poly_vs_interp}
         \end{wide}
     \end{SCfigure}
 
-    The standard deviation of the residuals from the interpolation come out much smaller than that of the polyfit (values specified in figure \ref{fig:calib_poly_vs_interp}), in this example, suggesting that the interpolation method is superior. It is also worth noting that because the interpolation was done on only half the data points, it will be even better when performed on all data points. A similar comparison was done to determine that the polynomial fit got better with increasing degrees until 5th. \todo{specify what file?}
+    The RMS of the residuals from the interpolation come out much smaller than that of the polyfit (values specified in figure \ref{fig:calib_poly_vs_interp}), in this example, suggesting that the interpolation method is superior. It is also worth noting that because the interpolation was done on only half the data points at a time, it will be even better when performed on all data points, as it would be, when used for calibrating data before an RV analysis.
 
     \vspace{0.5cm}
 
-    \todo{add graph comparing residuals using gauss vs super gauss}
+    \todo{Can we convert this RMS to an RV error ?}
 
+    \todo{add graph comparing residuals using gauss vs super gauss}
+    
     \todo{perhaps add plot of changes in parameters across the CCD}
 
-    \todo{specify run times for calibration using poly fit and interp}
+
+
 
     \subsubsection{Errors in the calibration data}
 
-    The LFC fits files come with an uncertainty on the photon count (spectrum). It appears however that this uncertainty might be a bit underestimated. We can see this by plotting the $\chi^2$- and P-values for the LFC peak super-gauss fits, as done in figure \ref{fig:calib_errors}. The $\chi^2$ value should be roughly equal to the number of degrees of freedom in the fit, which is: 
+    The LFC fits files come with an uncertainty on the spectrum-variable. It appears however that this uncertainty might be a bit underestimated. We can see this by plotting the $\chi^2$- and P-values for the LFC peak super-gauss fits, as done in figure \ref{fig:calib_errors}. The $\chi^2$ value should be roughly equal to the number of degrees of freedom in the fit (eq. \ref{eq:LFC_super_gauss}), which is: 
 
     \begin{equation}
         \label{eq:ndof}
         N_\text{dof} = N_\text{data-points} - N_\text{fit-parameters} =  13 - 5 = 8.
     \end{equation}
 
-    The number of data points per fit I set to be the rounded average distance between peaks in a given order. Although the LFC should generate equadistant peaks, this does vary between 13 and 18 points as we go through orders, most fits having 13 data points (see figure \ref{fig:N_data_points} in appendix \ref{appendix:LFC_errors}). We should therefore see a spike in the $\chi^2$ values roughly around 8, falling of at a slower pace to the right side. Looking again at figure \ref{fig:calib_errors}, this is not the case for the errors as provided (scale-factor 1). But multiplying by $\sqrt{3}$ we get much closer. $\sqrt{10}$ is overdoing it, however. I looked at several other scaling factors between $\sqrt{3}$ and $\sqrt{10}$, see figure \ref{fig:calib_errors_extensive} in appendix \ref{appendix:LFC_errors} for details, and $\sqrt{3}$ comes closest to giving a peak at 8.
+    I set the rounded average distance between peaks in a given order to be the number of data points per fit. Although the LFC should generate equadistant peaks, this does vary between 13 and 18 points as we go through orders, most fits having 13 data points (see figure \ref{fig:N_data_points} in appendix \ref{appendix:LFC_errors}). We should therefore see a spike in the $\chi^2$ distribution roughly around 8, falling of at a slower pace to the right side. Looking again at figure \ref{fig:calib_errors}. This is not the case for the errors as provided (scale-factor 1, red). The distribution is very flat but peaks somewhere around 25, which suggests that the errors are about a factor $\sqrt{3}$ too small (square-root because $\chi^2$ of course is squared and $25/3 \sim 8$). 
+    Another check to make is whether the p-value distribution is approximiately flat. For a 
+
+    
+    Also in figure \ref{fig:calib_errors} I've plotted the resulting $\chi^2$ distributions if we scale up the erorrs, here by $\sqrt{3}$ (green) or $\sqrt{10} (blue)$. Looking at several other factors in between (see figure \ref{fig:calib_errors_extensive}) I would argue that scaling the errors by $\sqrt{3}$ is appropriate as this gives a peak in the $\chi^2$ distribution at 7.5 and furthermore 
+    
+    
+    $\sqrt{10}$ is overdoing it, however. I looked at several other scaling factors between $\sqrt{3}$ and $\sqrt{10}$, see figure \ref{fig:calib_errors_extensive} in appendix \ref{appendix:LFC_errors} for details, and $\sqrt{3}$ comes closest to giving a peak at 8.
     
     Another check is that the probability distribution should be roughly flat. \todo{explain why, \href{https://stats.stackexchange.com/a/481843/353364}{help}}.
     
@@ -98,9 +117,6 @@
         \end{wide}
     \end{SCfigure}
     
-
-    \todo{explain why we use factors of square-root:} Something to do with putting into the chi2 which is a square sum, so the square-root goes away. 
-
     \bigbreak
 
     \noindent \textbf{Effects on calibration:} \newline
@@ -116,8 +132,8 @@
     To extract radial velocity we need to measure the doppler shift between spectra from different days of observation. The most straight-forward way to do this is to compute the cross-correlation, since, in signal processing in general, the cross-correlation is exactly a measure of the similarity of two data series as a function of the displacement of one relative to the other.
 
     Due to a lack of access to data consisting of star spectra with associated LFC captures, I've worked on RV extractions using already calibrated data provided by Lily Zhao. This data has been calibrated using a technique called excalibur \cite{zhao2021excalibur}.
-
-    In this project I've worked with data provided by Lily Zhao, specifically for the star HD 34411. This data is already LFC calibrated using a technique called Excalibur. Top left of figure \ref*{fig:rv_data_overview} shows an extract of wavelength vs. intensity data from an observation of HD 34411. The file also includes a model of the continuum function, with which we can normalize the spectrum through division, shown bottom left. On the right side is plotted all normalized data within the EXCALIBUR mask, i.e. data marked as having a proper calibration. 
+    
+    Top left of figure \ref{fig:rv_data_overview} shows an extract of wavelength vs. intensity data from an observation of HD 34411. The file also includes a model of the continuum function, with which we can normalize the spectrum through division, shown bottom left. On the right side is plotted all normalized data within the EXCALIBUR mask, i.e. data marked as having a proper calibration. 
 
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
@@ -127,6 +143,42 @@
         \end{wide}
     \end{SCfigure}
             
+    \subsubsection{Finding and matching features across observations}
+
+    In order to measure how much individual peaks move in between observations the first challenge is to find the "same" peak in both observations. The following procedure is followed: 
+    
+    
+    First I invert the spectrum so absorption lines becomes peaks, and then I use scipy peak finder to find individual peak locations. 
+
+    \begin{itemize}
+        \item Load intensity/spectrum from \verb|spectrum| and err from \verb|uncertainty| as well as excalibur calibrated barycentric-corrected wavelengths from \verb|bary_excalibur|, all masked by \verb|excalibur_mask|.
+        \item Normalize spectrum and error with continuum from \verb|continuum|.
+        \item Then invert spectrum to turn absorption lines into peak by $y = 1 - y$.
+        \item Locate peaks \verb|find_peaks| from scipy.signal
+    \end{itemize}
+
+    And to match features/peaks between two observations:
+    \begin{itemize}
+        \item Iterate through the peaks of file1 and find the closest peak in file2. With excalibur calibrated data, peaks should not shift so much that they overlap. However we can add at least two filters to bypass bad matches:
+        \item Maximum peak distance: 0.5 Å is a very generous cut, equivalant to about 20-30 km/s depending on the wavelength. Since the peak location we are using here however is not the actual peak but the neartest data-point, setting the cut smaller, cuts away many good matches.
+        \item Maximum difference between the area under the graph of two peaks: i.e. the sum of the intensity values. Peaks with similar shapes will give a low difference. Some bad matches can be avoided with this filter, but it also excludes a lot of good matches.\footnote{To increase computaton run time, I'm not sad about cutting away some good matches though.}. Ideally I would keep the filter as strict as possible while maintaining a generous amount of matches. In figure \ref{fig:max_area_diff_vs_n_matches} is plotted the number of matches found between all files as a function of the maximum area difference. From that I conclude that 0.1 or 0.2 are good options, as the number of matches doesn't rise much with a looser restriction.
+    \end{itemize}
+
+    \begin{SCfigure}[1][!ht]%
+        \begin{wide}  
+            \includegraphics[width=\textwidth]{figures/max_peak_area_diff_vs_Nmatches.pdf}
+            \caption{Number of matches found as a function of max peak area difference for all features in all files for HD 34411.}
+            \label{fig:max_area_diff_vs_n_matches}
+        \end{wide}
+    \end{SCfigure}
+
+    \todo{Add feature feature shift plot (median, mean??)}
+
+    \todo{Add examples of bad matches}
+
+
+    \subsubsection{Cross correlation}
+
     To perform a smooth minimization of a shift parameter, it is however necessary to have continuous data, so the first step is to perform a cubic interpolation of the spectra data. In practice I do this inside my chi2 minimization function. Taking the spectra data and wavelength solution from two different observations, but multiplying one of the wavelength with the doppler shift factor from eq \ref{eq:our_doppler} before performing the interpolation. The interpolation functions are then evaluated in the range of wavelength solutions common to both observations, using $N=1000$ steps.\footnote{1000 steps was chosen as the best balance between run time and resulting uncertainty. See figure \ref{fig:err_vs_run_time} in appendix \ref{appendix:RV_extraction}. \todo{Are errors correct?}} 
     
     \begin{equation}
@@ -134,7 +186,7 @@
         \chi^{2}=\sum_{i=1}^{N}\left[\frac{y_{i}-f(x; A)}{\sigma_{i}}\right]^{2}
     \end{equation}
     
-    where $y_i$ are the unshifted interpolated photon counts for one file and the function $f(x; A)$ is an cubic interpolation function given my the intensity values of the second observation with wavelength values shifted by equation \ref*{eq:our_doppler}, then evaluated on the common wavelength range:
+    where $y_i$ are the unshifted interpolated photon counts for one file and the function $f(x; A)$ is an cubic interpolation function given my the intensity values of the second observation with wavelength values shifted by equation \ref{eq:our_doppler}, then evaluated on the common wavelength range:
     
     \begin{equation}
         f(x; A) = \textbf{interp}[x \times ( 1 + A/c), y]\,(x_\text{common})
@@ -144,18 +196,11 @@
     
     I then compute the cross-correlation and obtain the radial velocity, $A$, as a minimization of eq (\ref{eq:shift_fit_chi2}) using iminuit.
 
-    When it comes to selecting data I've tried three approaches: order by order, chunk by chunk (chunks of ~2Å, inspired by Lily Zhao's approach \cite{first_RV_from_EXPRES}) and feature by feature. So far, I've only managed to get noteworthy results fitting feature by feature, which I will discuss a bit below. 
+    When it comes to selecting data I've tried three approaches: order by order, chunk by chunk (chunks of ~2Å, inspired by Lily Zhao's approach \cite{first_RV_from_EXPRES}) and feature by feature. So far, I've only managed to get good results fitting feature by feature, which I will go through in more detail below.
     
-    \bigbreak
-    \noindent\textbf{Finding and matching features across observations}
-
+    \subsubsection{Extracting relative shifts from over constrained system - matrix reduction:}
     
-    \todo{}
-
-    \bigbreak
-    \noindent\textbf{Extracting relative shifts from over constrained system - matrix reduction:}
-    
-    The end desired end result is a plot of the relative radial velocities as a function of time or observation. If we were to simply compare each observation with the following one, our results would become correlated in the sense that the difference between day 1 and day 10, let's say, will depend on the quality of all observations in between. To circumvent this, we can compute the relative shift between all observations, yielding an $N\times N$ upper triangular matrix, where each cell is the shift between observations $i$ and $j$, and thus with a diagonal of 0. I will call this matrix $\Delta V_r^{ij}$, see figure \ref*{fig:shift_matrix}, here non-barycentric-corrected data is used for the sake of illustration. 
+    The end desired end result is a plot of the relative radial velocities as a function of time or observation. If we were to simply compare each observation with the following one, our results would become correlated in the sense that the difference between day 1 and day 10, let's say, will depend on the quality of all observations in between. To circumvent this, we can compute the relative shift between all observations, yielding an $N\times N$ upper triangular matrix, where each cell is the shift between observations $i$ and $j$, and thus with a diagonal of 0. I will call this matrix $\Delta V_r^{ij}$, see figure \ref{fig:shift_matrix}, here non-barycentric-corrected data is used for the sake of illustration. 
     
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  

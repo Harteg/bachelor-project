@@ -23,7 +23,7 @@ def func_find_peaks(y, required_dist, required_prominence):  # height, required_
         [0] peak index in initial array, [1] prominences, [2] left index for widths, [3] right index for widths ,
         [4] length of the width, [5] peak height 0 reference """
 
-    peaks, dict_peak = signal.find_peaks(x=y, distance=required_dist, height=np.zeros(len(y)), prominence=required_prominence)  # height=height,
+    peaks, dict_peak = signal.find_peaks(x=y, distance=required_dist, prominence=required_prominence, height=np.zeros(len(y)))  # height=height,
     prom = signal.peak_prominences(x=y, peaks=peaks, wlen=20)
     widths = signal.peak_widths(x=y, peaks=peaks, rel_height=1, prominence_data=prom)
     return peaks, prom[0], np.round(widths[2]).astype(int), np.round(widths[3]).astype(int), widths[0], dict_peak['peak_heights']
@@ -63,26 +63,6 @@ def fit_peaks(data_spec, data_spec_err, peak_index_ranges, print=False):
         x = np.arange(index_start, index_end) # range from the start of the peak index to the end of the peak index (index ~ nPix)
         y = np.array(data_spec[index_start:index_end])
         ey = np.array(data_spec_err[index_start:index_end])
-
-        # # Fitting functions:
-        # def func_GaussConst(x, A, mu, sigma, C) :
-        #     return A * np.exp(-0.5 * ((x-mu)/sigma)**2)  +  C
-        #     # return A * stats.norm.pdf(x, mu, sigma) + C       # doesn't seem to work  ... 
-
-
-        # # ChiSquare fit model:
-        # def model_chi2(A, mu, sigma, C) :
-        #     y_fit = func_GaussConst(x, A, mu, sigma, C)
-        #     chi2 = np.sum(((y - y_fit) / ey)**2)
-        #     return chi2
-        # model_chi2.errordef = 1
-
-        # # Fit peak with a Gaussian:
-        # A_init     = 0.45
-        # mu_init    = np.mean(x)
-        # sigma_init = -1.6
-        # C_init     = 0.02
-        # minuit = Minuit(model_chi2, A=A_init, mu=mu_init, sigma=sigma_init, C=C_init)
 
         # From Christian
         def super_gauss(x, A, mu, sigma, P, C, b = 0):
@@ -134,7 +114,9 @@ def fit_peaks(data_spec, data_spec_err, peak_index_ranges, print=False):
             converged,
             index_start, 
             index_end,
-            Prob
+            Prob,
+            minuit.values['P'],
+            minuit.errors['P'],
         ])
         
         if print:
@@ -223,7 +205,7 @@ def peak_position_fit_func(x, c0, c1, c2, c3, c4, c5):
 
 
 def get_calib_poly_func(degree):
-    assert (degree == np.arange(1, 7)).any(), "Not within 1-6 degrees"
+    assert (degree == np.arange(1, 10)).any(), "Not within 1-9 degrees"
     exec(f"function = calib_poly_func_{degree}", globals())
     return function
 
@@ -245,8 +227,16 @@ def calib_poly_func_5(x, c0, c1, c2, c3, c4, c5):
 def calib_poly_func_6(x, c0, c1, c2, c3, c4, c5, c6):
     return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4 + c5*x**5 + c6*x**6
 
+def calib_poly_func_7(x, c0, c1, c2, c3, c4, c5, c6, c7):
+    return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4 + c5*x**5 + c6*x**6 + c7*x**7
 
-# TODO :: rename this
+def calib_poly_func_8(x, c0, c1, c2, c3, c4, c5, c6, c7, c8):
+    return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4 + c5*x**5 + c6*x**6 + c7*x**7 + c8*x**8
+
+def calib_poly_func_9(x, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9):
+    return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4 + c5*x**5 + c6*x**6 + c7*x**7 + c8*x**8 + c9*x**9
+
+
 def fit_peak_positions(wavel_true_match, peak_fits, poly_degree):
     x = peak_fits[:,2]
     y = wavel_true_match
@@ -339,13 +329,6 @@ def weighted_mean(x, errors):
     mean = m1/m2
     err = np.sqrt(1/np.sum([1/(x**2) for x in errors]))
     return (mean, err)
-
-
-def angstrom_to_velocity(wavelength_shift):
-    """ Converts wavelenth shift in angstrom to velocity shift in cm/s """
-    c = 299792458
-    angstrom_to_cm = 1e-8
-    return wavelength_shift * angstrom_to_cm * c
 
 
 def make_nan_matrix(size):

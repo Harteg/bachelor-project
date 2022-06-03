@@ -17,7 +17,7 @@ The radial velocity method relies on the well-known Doppler effect. Ignoring ter
 
 which accounts for both special relativistic effects and gravitatonal doppler shift described by general relativity. Where $\lambda$ is the observed wavelength, $\lambda_0$ is the emitted wavelength, $\Phi$ is the Newtonian gravitational potential at the source $(\Phi=G M / r$ at a distance $r$ of a spherically symmetric mass $M$ ), $\textbf{k}$ is the unit vector pointing from the observer to the source, $\textbf{v}$ is the velocity of the source relative to the observer and $c$ is the speed of light \cite{doppler_shift_GR_formula}.
 
-Special relativistic effects we can safely ignore, as we are dealing with velocity shifts on the order of meters or centimeters per second, and thereby cross out the third term in the denominator. The remaining terms $(1-\Phi/c^2)$ evaluted for HD 34411 ($M = (1.08 \pm 0.14) M_{\odot}$, $R = (1.28 \pm 0.04) R_{\odot}$ \cite{star_properties}) is around $0.999998$. \todo{}I don't quite know how to check analytically if this will have an influence on the errors on A given by imniuit. Running the program it doesn't... So, we can neglect the denominator completely.
+Special relativistic effects we can safely ignore, as we are dealing with velocity shifts on the order of meters or centimeters per second, and thereby cross out the third term in the denominator. The remaining terms $(1-\Phi/c^2)$ evaluted for HD 34411 ($M = (1.08 \pm 0.14) M_{\odot}$, $R = (1.28 \pm 0.04) R_{\odot}$ \cite{star_properties}) is around $0.999998$. Adding this term to the computation of RV does not change my results, so we can neglect the denominator completely. \todo{How to check analytically though?}
 
 If the unit vector $\textbf{k}$ were pointing directly toward us, it would mean that we were observing the system in the plane of orbit. This is however unlikely. Since we don't know the inclication angle, a possible simplification is to omit $\textbf{k}$ is treat the resulting $\textbf{v}$ as a minimum radial velocity.
 
@@ -35,14 +35,19 @@ which is to say that the observed wavelength is simply the emitted wavelength sc
 The EXtreme PREcision Spectrograph or EXPRES is an extreme-precision spectrograph situated at the Lowell Observatory's 4.3m Lowell Discovery Telescope (LDT) near Flagstaff, Arizona, USA. The LDT allows for up to 280 partial nights of observation per year.
 
 Like in many spectrographs, at the heart of EXPRES is a Charge Coupled Device (CCD). A CCD is a silicon-based multi-channel photon detector consisting of a large number of small light-sensitive areas called pixels. The CCD is EXPRES an STA1600LN CCD backside illuminated image sensor with a $10,560 \times 10,560$ array containing 9µm$\times$9µm pixels, designed to with a wavelength range of 3800$-$7800Å. When a photon hits a pixel it is converted into a charge, and each pixel can thus supply independent measurements. Since a one dimensional sensor would be impractical, EXPRES is constructed in such a way, that it wrap the spectrum inside the CDD, meaning that the spectrum starts in the top row of the sensor, and continues in the second row. Short wavelengths are thus to be found in the top of the CCD and long wavelengths at the bottom.
-
-EXPRES has a spectral resolution of $R = 150'000$, where R is defined as $R = \lambda / \Delta\lambda$, such that, say at a wavelength of $\lambda = 5000$Å, EXPRES should be able to detect a wavelength shift of $\Delta\lambda = 5000\text{Å}/150'000 \approx 0.033 $Å. \todo{Add m/s}. 
-
 EXPRES is housed in a vacuum enclosure to minimize changes in temperature and pressure, which can otherwise cause the spectra to change position on the CCD and thus lead to errors in the RV mesaurements. 
 
+\bigbreak
+\noindent\textbf{Calibration device:}
 Wavelength calibrations are performed with the use of a Laser Frequency Comb 
 (LFC), produced by Menlo Systems, which is a laser source whose spectrum consists of a series of discrete, equally spaced frequency lines. The LFC however also needs calibration for which a Thorium Argon (ThAr) lamp with known frequencies is used.
 
+\bigbreak
+\noindent\textbf{Spectral resolution:}
+EXPRES has a spectral resolution of $R = 150'000$, where R is defined as $R = \lambda / \Delta\lambda$. Inverting this we get what's called the resolution element of the Instrumental Spread Function (ISF) (or Line Spread Function (LSF)), $\Delta\lambda = \lambda/R$. For a wavelength of say of $\lambda = 5000$Å, this comes out to $\Delta\lambda = 5000\text{Å}/150,000 \approx 0.033 $Å, and it describes the "blurring" of monochromatic beams on the detector. Absorption features narrower than $\Delta\lambda$ can, in a well-behaved spectrograph, be approximated as a normalized, symmetric Gausssian function with $\text{FWHM} = \Delta\lambda$. Specifically for EXPRES, a super-gauss is however a better fit. LFC lines being monochromatic and thus very narrow will appear on the detector as a super-gaussian with $\Delta\lambda$ ranging from 3.9-5 pixels across the detector. By fitting, the center of the peak can be identified to a fraction of a pixel. The LFC peaks are seperated by about 10 pixels to remain distinct after this blurring. For star-spectra however some emission and absorption lines will be too close together and will appear "blended" on the detector. 
+
+\bigbreak
+\noindent\textbf{Barycentric correction:}
 Barycentric corrections are derived from the EXPRES exposure-meter, which is essentially a smaller, less precise spectrograph. Described in detail in \cite{barycentric_exposure_meter_blackman}. EXPRES as a whole is described in technical detail in \cite{EXPRES_technical_details_Jurgenson}.
 
 

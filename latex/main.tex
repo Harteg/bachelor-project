@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage[colorlinks,allcolors=blue]{hyperref} % for href links
+\usepackage{bookmark} % to avoid rerun at every change, because standard ref package is crap... 
 
 % For captions in the margin
 \usepackage{sidecap}
@@ -15,19 +16,6 @@
 \setlength{\marginparsep}{0cm}
 \usepackage[font=small,labelfont=bf]{caption}
 
-
-% \usepackage{marginnote}
-
-% Preamble for tikzplotlib plots
-% \usepackage[utf8]{inputenc}
-% \usepackage{pgfplots}
-% \DeclareUnicodeCharacter{2212}{−}
-% \usepgfplotslibrary{groupplots,dateplot}
-% \usetikzlibrary{patterns,shapes.arrows}
-% \pgfplotsset{compat=newest}
-% Save in python with: import tikzplotlib, tikzplotlib.save("out.tex")
-% Include in latex with: \input{out.tex} 
-
 % MatPlotLib Plot sizes: 
 % dpi=300
 % format pdf
@@ -35,7 +23,6 @@
 % for full width, width = 8in
 % scale = 0.8 
 % text-size = 10
-
 
 % My styles: ===== 
 
@@ -101,7 +88,6 @@ together to improve computational LFC calibration methods, and Troels invited me
 
 \section{Acknowledgements}
 
-
 % Bibliography
 \newpage
 \nocite{*}
@@ -112,7 +98,5 @@ together to improve computational LFC calibration methods, and Troels invited me
 \newpage
 \appendix
 \input{sections/appendix} 
-
-
 
 \end{document}
