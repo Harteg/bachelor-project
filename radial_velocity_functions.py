@@ -1,5 +1,6 @@
 from calendar import c
 from curses import A_INVIS
+from re import L
 from tkinter import X
 import numpy as np
 from scipy import stats
@@ -33,6 +34,16 @@ def make_nan_matrix(size):
 def compute_rms(x):
     x = x - np.mean(x)
     return np.sqrt(np.sum(x ** 2) / len(x - 1))
+
+
+def compute_coords(filenames):
+    size = len(filenames)
+    coords = []
+    for x in np.arange(size):
+        for y in np.arange(x, size):
+            if x != y:
+                coords.append((x, y)) 
+    return coords
 
 
 SPECTRA_PATH_34411 = "/Users/jakobharteg/Data/34411_spectra/"
@@ -72,12 +83,18 @@ def get_spec_wavel(data, order, continuum_normalized=False):
     return data_spec, data_spec_err, data_wavel
 
 
-def get_spektra_date(filename):
-    """ Returns the date of observation for a given fits filename """
+def get_spektra_date_and_time(filename):
+    """ Returns the date and time of observation for a given fits filename """
     hdul = fits.open(filename)
     header = hdul[0].header
     hdul.close()
     date = header["DATE-OBS"]
+    return date
+
+
+def get_spektra_date(filename):
+    """ Returns the date of observation for a given fits filename """
+    date = get_spektra_date_and_time(filename)
     date = date[:date.index(" ")]
     return date
 
@@ -197,9 +214,6 @@ def plot_matrix(diff_matrix, diff_matrix_err=None, diff_matrix_valid=None, plot_
     # fig.savefig("shfits_matrix_bary.pdf", bbox_inches="tight", dpi=300)
 
 
-
-
-# def find_features(filename, plot_orders = None, plot_features_in_order = None, log=True):
 def find_features(filename, 
                     plot_orders = None, 
                     plot_features_in_order = None, 
@@ -211,7 +225,8 @@ def find_features(filename,
                     min_peak_prominence = 0.25,         # minimum height of peak from base (not zero)
                     is_51_peg = False,                  # 51Peg doesn't have excalibur column so we need different keywords 
                     use_bary_correction = True,         # True if you want to use "wavelength" column filtered by pixel_mask.
-                    scale_up_errors = False             # scale errors by sqrt{3}
+                    scale_up_errors = False,            # scale errors by sqrt{3}
+                    custom_error_scale = None           # scale errors by a constant
     ):
     
     """ Returns list of features x_values (angstrom by default), y_values, y_err_values, x_peak_location, peak_index, order """
@@ -241,7 +256,8 @@ def find_features(filename,
             og_y        = y # copy of original y data before filtering
             y_err       = fits_data['uncertainty'][order][pixel_mask]
             continuum   = fits_data['continuum'][order][pixel_mask]
-            x           = fits_data['wavelength'][order][pixel_mask]
+            # x           = fits_data['wavelength'][order][pixel_mask]
+            x           = fits_data['excalibur'][order][pixel_mask]
         else:
             excalibur_mask  = fits_data['EXCALIBUR_MASK'][order]    # filter by EXCALIBUR_MASK
             y           = fits_data['spectrum'][order][excalibur_mask]
@@ -256,6 +272,9 @@ def find_features(filename,
 
         if scale_up_errors:
             y_err = y_err * np.sqrt(3)
+
+        if custom_error_scale is not None:
+            y_err = y_err * custom_error_scale
 
         # Normalize intensity by continuum 
         y = y/continuum
@@ -293,7 +312,7 @@ def find_features(filename,
         if len(peak_locs) < 5:
             continue
 
-        peak_index_ranges = get_peak_index_ranges(peak_locs, peak_range_size=50)
+        peak_index_ranges = get_peak_index_ranges(peak_locs, peak_range_size=30)
 
         # feature_slices = []
         for index, range in enumerate(peak_index_ranges):
@@ -312,7 +331,6 @@ def find_features(filename,
         print(len(feature_slices), "peaks found")
 
     return np.asarray(feature_slices, dtype=object)
-
 
 
 def find_feature_matches(features1, features2, log=True, filter=True, relative_tolerance=0.0003):
@@ -393,7 +411,7 @@ def nth_cloest_match(value, array, n):
     return np.argpartition(diff_array, n)[n]
 
 
-def find_feature_matches2(features1, features2, log=True, filter=True, max_dist=0.5, max_area_diff=0.1):
+def find_feature_matches2(features1, features2, log=True, filter=True, max_dist=0.5, max_area_diff=0.2):
     """ This feature match finder simply returns the closest match between two lists of features.
         """
 
@@ -474,7 +492,7 @@ def compute_match_filter_mask(matches, max_dist, max_area_diff):
     return np.asarray(mask)
 
 
-def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=None, return_df=False, interp_size = 1000):
+def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=None, return_df=False, interp_size = 1000, return_extra=False):
     """ Attempts to fit two features with based on a shift parameter.
         Returns shift_min_final (m/s), shift_min_final_err (m/s), valid 
         """
@@ -489,15 +507,13 @@ def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=N
 
     # Interp first file
     f1 = interp1d(x1, y1, kind='cubic', fill_value="extrapolate")
-    f1_upper_err = interp1d(x1, y1 + y1_err, kind='cubic', fill_value="extrapolate")
-    f1_lower_err = interp1d(x1, y1 - y1_err, kind='cubic', fill_value="extrapolate")
+    f1_err = interp1d(x1, y1_err, kind='cubic', fill_value="extrapolate")
 
     # ChiSquare fit model:
     def model_chi2(A):
 
         # Interpolate template
-        # interp_x2 = x2 + A
-        # interp_x2 = x2 * (1 + A/c)/(1 - G_pot/c**2 ) # this should give proper RV, the wavelength should be stretched by a factor of (1 + v/c)
+        # interp_x2 = x2 * (1 + A/c)/(1 - G_pot/c**2 ) # with GR ... neglibible
         interp_x2 = x2 * (1 + A/c) # Wavelengths are be stretched by a factor of (1 + v/c)
         f2 = interp1d(interp_x2, y2, kind='cubic', fill_value="extrapolate")
 
@@ -509,15 +525,10 @@ def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=N
         # Evaluate interpolation
         ynew1 = f1(xnewCommon)
         ynew2 = f2(xnewCommon)
-
-        # Evalute error interpolation
-        ynew1_upper_err = f1_upper_err(xnewCommon)
-        ynew1_lower_err = f1_lower_err(xnewCommon)
-
-        ynew1_upper_err_abs = np.abs(ynew1 - ynew1_upper_err)
-        ynew1_lower_err_abs = np.abs(ynew1 - ynew1_lower_err)
-        ynew1_err = np.mean([ynew1_upper_err_abs, ynew1_lower_err_abs], axis=0) # pairwise mean 
         
+        # Interpolate errors
+        ynew1_err = f1_err(xnewCommon)
+
         # Compute chi2
         chi2 = np.sum(((ynew1 - ynew2) / ynew1_err)**2)
         return chi2
@@ -546,7 +557,6 @@ def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=N
     if forced or at_limit:
         valid = False
 
-    
     # Plot final shifted values
     if plot:
 
@@ -566,12 +576,24 @@ def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=N
             'err':    [shift_min_final_err],
             'valid': [valid],
             })
+    elif return_extra:
+
+        # Interpolate and return the peak wavelength (should be better than nearest pixel)
+        f1 = interp1d(x1, y1, kind='cubic', fill_value="extrapolate")
+        f2 = interp1d(x2, y2, kind='cubic', fill_value="extrapolate")
+        new_x1 = np.linspace(min(x1), max(x1), 1000)
+        new_x2 = np.linspace(min(x2), max(x2), 1000)
+        interp_y1 = f1(new_x1)
+        interp_y2 = f2(new_x2)
+        new_peak1_wavel = new_x1[np.argmax(interp_y1)]
+        new_peak2_wavel = new_x2[np.argmax(interp_y2)]
+
+        return shift_min_final, shift_min_final_err, valid, minuit.fval, new_peak1_wavel, new_peak2_wavel
     else:
-        # return shift_min_final, shift_min_final_err, valid#, minuit
-        return shift_min_final, shift_min_final_err, valid, minuit.fval
+        return shift_min_final, shift_min_final_err, valid#, minuit
 
 
-def compute_all_feature_shifts(matches, log=True, plot=False, ax=[], interp_size = 1000):
+def compute_all_feature_shifts(matches, log=True, plot=False, ax=[], interp_size = 1000, return_extra=False, return_df=False):
     """ Calls compute_feature_shift for a list of matches """
 
     shifts = []
@@ -589,9 +611,9 @@ def compute_all_feature_shifts(matches, log=True, plot=False, ax=[], interp_size
         peak2   = f2[3]
 
         if len(ax) == 0:
-            shifts.append(compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=plot, interp_size = interp_size))
+            shifts.append(compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=plot, interp_size = interp_size, return_df=return_df, return_extra=return_extra))
         else:
-            shifts.append(compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=plot, ax=ax[k], interp_size = interp_size))
+            shifts.append(compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=plot, ax=ax[k], interp_size = interp_size, return_df=return_df, return_extra=return_extra))
 
 
     shifts = np.asarray(shifts, dtype=object)
@@ -635,7 +657,7 @@ def analyse_and_plot_shifts(path, file_index1, file_index2, bary=True, match_fun
     return shifts
 
 
-def plot_features_shift(shifts, ax=None, labels=True, title=None):
+def plot_features_shift(shifts, ax=None, labels=True, title=None, legend=True, side_info = True, draw_guides=True):
 
     s, s_err, s_valid = shifts[:, 0], shifts[:, 1], shifts[:, 2]
 
@@ -658,28 +680,33 @@ def plot_features_shift(shifts, ax=None, labels=True, title=None):
     median = np.median(valid_shifts)
 
     # # Plot mean and err
-    ax.vlines(shift_mean, -20, len(s) + 20, linestyle="dashed", alpha=0.5, color="black", label="Weighted average")
-    ax.vlines(shift_mean_np, -20, len(s) + 20, linestyle="dashed", alpha=0.5, color="green", label="np.mean")
-    ax.vlines(median, -20, len(s) + 20, linestyle="dashed", alpha=0.5, color="red", label="np.median")
+    if draw_guides:
+        ax.vlines(shift_mean, -20, len(s) + 20, linestyle="dashed", alpha=0.5, color="black", label="Weighted average")
+        ax.vlines(shift_mean_np, -20, len(s) + 20, linestyle="dashed", alpha=0.5, color="green", label="np.mean")
+        ax.vlines(median, -20, len(s) + 20, linestyle="dashed", alpha=0.5, color="red", label="np.median")
     # ax.axvspan(shift_mean-shift_mean_err, shift_mean+shift_mean_err, alpha=0.2) # too small to see anyway
 
     # invert axis so feature 0 starts at the top
     plt.gca().invert_yaxis()
 
     if labels:
-            ax.legend(bbox_to_anchor=(1.4, 0.99))
+            if legend:
+                ax.legend(bbox_to_anchor=(1.4, 0.99))
+
             ax.set_xlabel("Velocity Shift [m/s]")
             ax.set_ylabel("Feature")
-            std_err = np.std(valid_shifts)/np.sqrt(len(valid_shifts))
-            text = f'''Weighted average RV = ({shift_mean:.3} ± {shift_mean_err:.1}) m/s 
-                    \n np.median = {median:.1f} m/s
-                    \n np.mean = {shift_mean_np:.1f} m/s
-                    \n np.std = {np.std(valid_shifts):.3} m/s
-                    \n np.std/sqrt(N) = {std_err:.3} m/s '''
-            ax.text(1.08, 0.84, text,
-                    horizontalalignment='left',
-                    verticalalignment='top',
-                    transform=ax.transAxes)
+            
+            if side_info:
+                std_err = np.std(valid_shifts)/np.sqrt(len(valid_shifts))
+                text = f'''Weighted average RV = ({shift_mean:.3} ± {shift_mean_err:.1}) m/s 
+                        \n np.median = {median:.1f} m/s
+                        \n np.mean = {shift_mean_np:.1f} m/s
+                        \n np.std = {np.std(valid_shifts):.3} m/s
+                        \n np.std/sqrt(N) = {std_err:.3} m/s '''
+                ax.text(1.08, 0.84, text,
+                        horizontalalignment='left',
+                        verticalalignment='top',
+                        transform=ax.transAxes)
             
             if title is not None:
                 ax.set_title(title)
@@ -693,7 +720,7 @@ def plot_features_shift(shifts, ax=None, labels=True, title=None):
             ax.axes.yaxis.set_ticks([])
 
 
-    return fig
+    # return fig
     # fig.savefig("fdsfds.png", dpi=400)
 
 
@@ -792,7 +819,7 @@ def compute_matrix_multi_core(N_files = -1):
         return result, coords
 
 
-def parse_matrix_results(result, coords):
+def parse_matrix_results(result, coords, median_err=False, use_median=True):
     
     size = np.max(np.max(coords)) + 1
     diff_matrix, diff_matrix_err, diff_matrix_valid = make_nan_matrix(size), make_nan_matrix(size), make_nan_matrix(size)
@@ -805,20 +832,28 @@ def parse_matrix_results(result, coords):
 
         # Split 
         shifts_list, shifts_err_list, shifts_valid_list = shifts[:, 0], shifts[:, 1], shifts[:, 2]
+
+        rv_valid = shifts_list[shifts_valid_list == 1]
+        rv_valid_err = shifts_err_list[shifts_valid_list == 1]
         
         # Compute weighted average
-        shift_mean, shift_mean_err = weighted_mean(shifts_list[shifts_valid_list == 1], shifts_err_list[[shifts_valid_list == 1]])
-        median = np.median(shifts_list[shifts_valid_list == 1])
+        rv, err = weighted_mean(rv_valid, rv_valid_err)
+
+        if use_median:
+            rv = np.median(rv_valid)
+
+        if median_err:
+            err = np.std(rv_valid) / np.sqrt(len(rv_valid)) * np.sqrt(np.pi/2)
 
         x = coord[0]
         y = coord[1]
 
-        # diff_matrix[x, y] = shift_mean
-        diff_matrix[x, y] = median
-        diff_matrix_err[x, y] = shift_mean_err
+        diff_matrix[x, y] = rv
+        diff_matrix_err[x, y] = err
         diff_matrix_valid[x, y] = valid_ratio
         
     return diff_matrix, diff_matrix_err, diff_matrix_valid
+
 
 
 def parse_matrix_results_fit(result, coords):
@@ -1011,14 +1046,12 @@ def matrix_reduce(diff_matrix, diff_matrix_err, diff_matrix_valid, path, plot=Tr
         V = np.asarray([*V])
         res = []
         size = diff_matrix.shape[0] 
-        # V = np.ones(size)
         for x in np.arange(size):
-            # for y in np.arange(x, size - 1):
             for y in np.arange(x, size):
                 if x != y:
-                    diff_matrix[x, y]
-                    V[x]
-                    V[y]
+                    # diff_matrix[x, y]
+                    # V[x]
+                    # V[y]
                     res.append(((diff_matrix[x, y] - (V[x] - V[y])) / diff_matrix_err[x, y])**2)
         chi2 = np.sum(res)
         return chi2
@@ -1081,7 +1114,7 @@ def matrix_reduce(diff_matrix, diff_matrix_err, diff_matrix_valid, path, plot=Tr
                     transform=ax2.transAxes)
 
     fig.tight_layout()
-    fig.savefig("rooo.png", dpi=300)
+    # fig.savefig("rooo.png", dpi=300)
     return m, final_shifts, final_shifts_err, days
 
 
@@ -1611,3 +1644,54 @@ def plot_match(match, ax=None):
     text = f"Δλ = {diff:.3f} Å \nΔA = {area_diff:.3f}"
     ax.text(0.02, -0.2, text, horizontalalignment='left', verticalalignment='center', transform=ax.transAxes)
     matplotlib.rcParams["text.usetex"] = True
+
+
+from scipy.special import erfc
+def chauvenet(array):
+    '''
+        Source: https://www.kaggle.com/nroman/detecting-outliers-with-chauvenet-s-criterion
+        return true/false array with false if data point should be discarded
+    '''
+    mean = np.mean(array)                   # Mean of incoming array
+    stdv = np.std(array)                    # Standard deviation
+    N = len(array)                          # Lenght of incoming array
+    criterion = 1.0/(2*N)                   # Chauvenet's criterion
+    d = np.abs(array-mean)/stdv             # Distance of a value to mean in stdv's
+    prob = np.array([erfc(x) for x in d])   # Area normal dist.    
+    return (prob > criterion)               # Use boolean array outside this function
+
+
+def run_chauvenet(array, errors, valid):
+    """ Computes and applies a chauvenet mask until the length of the array reaches a minimum """
+    size = len(array) + 1       # have to make it larger to make the loop start...
+    while len(array) < size:    # keep running as long the new size is still smaller
+        size = len(array)
+        chauvenet_mask = chauvenet(array)
+        array = array[chauvenet_mask]
+        errors = errors[chauvenet_mask]
+        valid = valid[chauvenet_mask]
+    return array, errors, valid
+
+
+def remove_outliers_from_result_with_chauvenet(res, log=False):
+    result_new = []
+    for r in res:
+        rvs = r[:, 0]
+        rvs_err = r[:, 1]
+        rvs_valid = r[:, 2]
+        new_rv, new_rv_err, new_rv_valid = run_chauvenet(rvs, rvs_err, rvs_valid)
+        result_new.append(np.column_stack([new_rv, new_rv_err, new_rv_valid]))
+        if log:
+            print(f"Removed {len(rvs) - len(new_rv)} from {len(rvs)} to give {len(new_rv)}")
+    return np.asarray(result_new)
+
+
+
+def remove_outliers_from_result_with_rv_cut(res):
+    result_new = []
+    for r in res:
+        df = pd.DataFrame(r)
+        df.columns = ["rv", "err", "valid"]
+        df = df[np.abs(df.rv) < 12.5]
+        result_new.append(np.asarray(df))
+    return np.asarray(result_new)

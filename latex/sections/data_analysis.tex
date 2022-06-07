@@ -91,28 +91,19 @@
 
     \subsubsection{Errors in the calibration data}
 
-    The LFC fits files come with an uncertainty on the spectrum-variable. It appears however that this uncertainty might be a bit underestimated. We can see this by plotting the $\chi^2$- and P-values for the LFC peak super-gauss fits, as done in figure \ref{fig:calib_errors}. The $\chi^2$ value should be roughly equal to the number of degrees of freedom in the fit (eq. \ref{eq:LFC_super_gauss}), which is: 
+    The LFC fits files come with an uncertainty on the intensity. It appears however that this uncertainty might be a bit underestimated. We can see this by plotting the $\chi^2$- and P-values for the LFC peak super-gauss fits, as done in figure \ref{fig:calib_errors}. The $\chi^2$ value should be roughly equal to the number of degrees of freedom in the fit (eq. \ref{eq:LFC_super_gauss}), which is: 
 
     \begin{equation}
         \label{eq:ndof}
-        N_\text{dof} = N_\text{data-points} - N_\text{fit-parameters} =  13 - 5 = 8.
+        N_\text{dof} = N_\text{data-points} - N_\text{fit-parameters} =  13 - 5 = 8,
     \end{equation}
 
-    I set the rounded average distance between peaks in a given order to be the number of data points per fit. Although the LFC should generate equadistant peaks, this does vary between 13 and 18 points as we go through orders, most fits having 13 data points (see figure \ref{fig:N_data_points} in appendix \ref{appendix:LFC_errors}). We should therefore see a spike in the $\chi^2$ distribution roughly around 8, falling of at a slower pace to the right side. Looking again at figure \ref{fig:calib_errors}. This is not the case for the errors as provided (scale-factor 1, red). The distribution is very flat but peaks somewhere around 25, which suggests that the errors are about a factor $\sqrt{3}$ too small (square-root because $\chi^2$ of course is squared and $25/3 \sim 8$). 
-    Another check to make is whether the p-value distribution is approximiately flat. For a 
-
-    
-    Also in figure \ref{fig:calib_errors} I've plotted the resulting $\chi^2$ distributions if we scale up the erorrs, here by $\sqrt{3}$ (green) or $\sqrt{10} (blue)$. Looking at several other factors in between (see figure \ref{fig:calib_errors_extensive}) I would argue that scaling the errors by $\sqrt{3}$ is appropriate as this gives a peak in the $\chi^2$ distribution at 7.5 and furthermore 
-    
-    
-    $\sqrt{10}$ is overdoing it, however. I looked at several other scaling factors between $\sqrt{3}$ and $\sqrt{10}$, see figure \ref{fig:calib_errors_extensive} in appendix \ref{appendix:LFC_errors} for details, and $\sqrt{3}$ comes closest to giving a peak at 8.
-    
-    Another check is that the probability distribution should be roughly flat. \todo{explain why, \href{https://stats.stackexchange.com/a/481843/353364}{help}}.
-    
+    as I use about 13 data points in each fit. This is however not the case for the original data (red). Looking at the bottom left plot (red) of the p-values, we can also see that the majority of the fits are very bad. The red chi2 values peak, although only slightly, at around 25, which suggests that the errors are about a factor $\sqrt{3}$ too small (square-root because $\chi^2$ of course is squared and $25/3 \sim 8$). Scaling the errors up by $\sqrt{3}$ yields a chi2 peak at 7.5 and a more flat p-value distribution (green). Scaling by $\sqrt{10}$ is too much (blue). More scale-factors are presented in figure \ref{fig:N_data_points} in appendix \ref{appendix:LFC_errors}. 
+                
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
             \includegraphics[width=\textwidth]{figures/calib_errors2.pdf}
-            \caption{Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors (1, $\sqrt{3}$ and $\sqrt{10}$). See text for more details.}
+            \caption{Chi2-values and p-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors (1, $\sqrt{3}$ and $\sqrt{10}$). See text for more details.}
         \label{fig:calib_errors}
         \end{wide}
     \end{SCfigure}
@@ -122,18 +113,17 @@
     \noindent \textbf{Effects on calibration:} \newline
     The errors used during the production of the calibration residuals shown in figure \ref{fig:calib_poly_vs_interp} I have already multiplied by $\sqrt{3}$. This gave a $\sigma = 0.934$, without this correction I got $\sigma = 2.34$. 
 
-    \todo{Computing the sigma for different error scaling factors gave very jumpy results.. why?} 
-
 \subsection{RV extraction}
 
-    In signal processing, cross-correlation is a measure of similarity of two series as a function 
-    of the displacement of one relative to the other.
+    % To extract radial velocity we need to measure the doppler shift between spectra from different days of observation. The most straight-forward way to do this is to compute the cross-correlation, since, in signal processing in general, the cross-correlation is exactly a measure of the similarity of two data series as a function of the displacement of one relative to the other.
 
-    To extract radial velocity we need to measure the doppler shift between spectra from different days of observation. The most straight-forward way to do this is to compute the cross-correlation, since, in signal processing in general, the cross-correlation is exactly a measure of the similarity of two data series as a function of the displacement of one relative to the other.
+    To extract radial velocities we need to measure the doppler shift between spectra from different days of observation. One way to do that is to compute the cross-correlation, which is a measure of the similarity of two data series as a function of the displacement of one relative to the other.
+    
+    We can do this either for individual absorption features, chunks of the spectrum a few angstroms wide or entire orders at a time. I've chosen primarily to work with the individual features.
 
     Due to a lack of access to data consisting of star spectra with associated LFC captures, I've worked on RV extractions using already calibrated data provided by Lily Zhao. This data has been calibrated using a technique called excalibur \cite{zhao2021excalibur}.
     
-    Top left of figure \ref{fig:rv_data_overview} shows an extract of wavelength vs. intensity data from an observation of HD 34411. The file also includes a model of the continuum function, with which we can normalize the spectrum through division, shown bottom left. On the right side is plotted all normalized data within the EXCALIBUR mask, i.e. data marked as having a proper calibration. 
+    The data is visualized in \ref{fig:rv_data_overview}, where the top left shows an extract of wavelength vs. intensity data from an observation of HD 34411. The file also includes a model of the continuum function, with which we can normalize the spectrum through division, shown in the bottom left. On the right side is plotted all continuum normalized data within the EXCALIBUR mask, i.e. data marked as having a proper calibration.
 
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
@@ -145,62 +135,63 @@
             
     \subsubsection{Finding and matching features across observations}
 
-    In order to measure how much individual peaks move in between observations the first challenge is to find the "same" peak in both observations. The following procedure is followed: 
+    In order to measure how much individual absorption features move in between observations the first challenge is to find the "same" features in both observations. What follows is a quick rundown of the procedure I've devised:
     
-    
-    First I invert the spectrum so absorption lines becomes peaks, and then I use scipy peak finder to find individual peak locations. 
-
     \begin{itemize}
-        \item Load intensity/spectrum from \verb|spectrum| and err from \verb|uncertainty| as well as excalibur calibrated barycentric-corrected wavelengths from \verb|bary_excalibur|, all masked by \verb|excalibur_mask|.
-        \item Normalize spectrum and error with continuum from \verb|continuum|.
-        \item Then invert spectrum to turn absorption lines into peak by $y = 1 - y$.
-        \item Locate peaks \verb|find_peaks| from scipy.signal
+        \item Load intensities from the data column \verb|"spectrum"| and errors from \verb|"uncertainty"| as well as excalibur calibrated barycentric-corrected wavelengths from \verb|"bary_excalibur"|, all masked by \verb|"excalibur_mask"|.
+        \item Normalize intensities and errors with the continuum function from \verb|"continuum"|.
+        \item Invert intensities to turn absorption features into positive peaks by $y = 1 - y$.
+        \item Locate peaks using \verb|find_peaks| from \verb|scipy.signal| with minimum peak distance of 5 pixels and a minimum peak prominence of 0.25 (unitless).
+        \item Finally slice data around each peak with a width of 30 data points. 
     \end{itemize}
 
-    And to match features/peaks between two observations:
+    And then to match features/peaks between two observations:
+
     \begin{itemize}
-        \item Iterate through the peaks of file1 and find the closest peak in file2. With excalibur calibrated data, peaks should not shift so much that they overlap. However we can add at least two filters to bypass bad matches:
-        \item Maximum peak distance: 0.5 Å is a very generous cut, equivalant to about 20-30 km/s depending on the wavelength. Since the peak location we are using here however is not the actual peak but the neartest data-point, setting the cut smaller, cuts away many good matches.
-        \item Maximum difference between the area under the graph of two peaks: i.e. the sum of the intensity values. Peaks with similar shapes will give a low difference. Some bad matches can be avoided with this filter, but it also excludes a lot of good matches.\footnote{To increase computaton run time, I'm not sad about cutting away some good matches though.}. Ideally I would keep the filter as strict as possible while maintaining a generous amount of matches. In figure \ref{fig:max_area_diff_vs_n_matches} is plotted the number of matches found between all files as a function of the maximum area difference. From that I conclude that 0.1 or 0.2 are good options, as the number of matches doesn't rise much with a looser restriction.
+        \item Iterate through the peaks of observations1 and find the closest peak in observation2. With excalibur calibrated data, peaks should not shift so much that they overlap. However the algorithm laid out so far does sometime match peaks that are far apart or do not resemble each other in shape at all. To bypass such matches we can add two filters:
+        \begin{itemize}
+            \item Maximum peak distance: We could filter out all matches where the distance between the peaks is equivalant to a radial velocity greater then 12.5 m/s (the RV Jupiter induces in the Sun). However, since we are dealing with discrete data, the difference sometimes comes out much larger than it actually is and a narrow cut of 12.5 m/s would remove many good matches. Instead setting a very generous cut of 0.5 Å, equivalant to about 20-30 km/s depending on the wavelength, filters out the few very bad matches, but leaves the rest.
+            
+            \item Maximum difference between the area under the graph of two peaks: i.e. the sum of the intensity values. Peaks with similar shapes will give a low difference. Some bad matches can be avoided with this filter, but it also excludes a lot of good matches. Ideally I would keep the filter as strict as possible while maintaining a generous amount of matches. In figure \ref{fig:max_area_diff_vs_n_matches} is plotted the number of matches found between all files as a function of the maximum area difference. From that I conclude that 0.2 is a good option, as the number of matches doesn't rise much with a looser restriction.
+        \end{itemize}
     \end{itemize}
 
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
             \includegraphics[width=\textwidth]{figures/max_peak_area_diff_vs_Nmatches.pdf}
-            \caption{Number of matches found as a function of max peak area difference for all features in all files for HD 34411.}
+            \caption{Average number of matches found as a function of max peak area difference for all features in observations for HD 34411.}
             \label{fig:max_area_diff_vs_n_matches}
         \end{wide}
     \end{SCfigure}
 
-    \todo{Add feature feature shift plot (median, mean??)}
-
-    \todo{Add examples of bad matches}
-
-
     \subsubsection{Cross correlation}
 
-    To perform a smooth minimization of a shift parameter, it is however necessary to have continuous data, so the first step is to perform a cubic interpolation of the spectra data. In practice I do this inside my chi2 minimization function. Taking the spectra data and wavelength solution from two different observations, but multiplying one of the wavelength with the doppler shift factor from eq \ref{eq:our_doppler} before performing the interpolation. The interpolation functions are then evaluated in the range of wavelength solutions common to both observations, using $N=1000$ steps.\footnote{1000 steps was chosen as the best balance between run time and resulting uncertainty. See figure \ref{fig:err_vs_run_time} in appendix \ref{appendix:RV_extraction}. \todo{Are errors correct?}} 
+    At this point, I have a list of matching features in different observations. The cross-correlations will be performed as a chi2 minimization fit to find the radial velocity that for each match correctly shifts one feature onto the other one.
     
+    Before moving on though, we have to cubic-spline interpolate the spectra data. I do this for two reasons: 1) the shifts we are looking for are much smaller than the individual pixels on the CCD, so we need to be able to shift by sub-pixel amounts, and 2) in order to compute the difference in intensity values between peaks, the intensity values must have the same wavelength solution, but, since EXPRES is calibrated independently for each observation, the wavelength solutions are different.
+    
+    So I cubic-spline interpolate the spectra data from the first observation in the match, but before interpolating the second observation, I shift the wavelength solution by multiplying the shift factor from equation \ref{eq:our_doppler}. Now I can evaluate the two interpolation functions on a common wavelength range, using $N=1000$ steps\footnote{1000 steps appeared as the best balance between run time and resulting uncertainty. See figure \ref{fig:err_vs_run_time} in appendix \ref{appendix:RV_extraction}}, and I am ready to compute the chi2:
+        
     \begin{equation}
         \label{eq:shift_fit_chi2}
-        \chi^{2}=\sum_{i=1}^{N}\left[\frac{y_{i}-f(x; A)}{\sigma_{i}}\right]^{2}
+        \chi^{2}=\sum_{i=1}^{N}\left[\frac{y_{i}-f(x; v)}{\sigma_{i}}\right]^{2}
     \end{equation}
     
-    where $y_i$ are the unshifted interpolated photon counts for one file and the function $f(x; A)$ is an cubic interpolation function given my the intensity values of the second observation with wavelength values shifted by equation \ref{eq:our_doppler}, then evaluated on the common wavelength range:
+    where $y_i$ are the unshifted interpolated intensity from the first observation, $\sigma_i$ are the errors on the intensity of the first observation also sampled through a cubic-spline interpolation, and the function $f(x; v)$ is the cubic-spline interpolation function given by interpolating the intensity values of the second observation with wavelength values shifted by equation \ref{eq:our_doppler}, evaluated on the wavelength range common to both features: 
     
     \begin{equation}
-        f(x; A) = \textbf{interp}[x \times ( 1 + A/c), y]\,(x_\text{common})
+        f(x; v) = \textbf{interp}[x \times ( 1 + v/c), y]\,(x_\text{common})
     \end{equation}
+    
+    I then compute the cross-correlation and obtain the radial velocity, $v$, as a minimization of eq (\ref{eq:shift_fit_chi2}) using iminuit.
+    
+    \todo{Talk about the mean/median etc}
 
-    The errors, $\sigma_i$, are also computed through interpolation.\footnote{The errors, $\sigma_i$, which of course also need to be continuous, are computed by: 1) computing another two cubic interpolations for the non-shifted observation, one with photon counts \emph{plus} photon count errors and another one with photon counts \emph{minus} photon count errors. Both interpolations are then evaluted on the same common wavelength range with $1000$ steps. The error for each data point is then computed as the mean difference between the measured value and the upper and lower error.}
+    \subsubsection{Extracting relative shifts from over an overconstrained system}
     
-    I then compute the cross-correlation and obtain the radial velocity, $A$, as a minimization of eq (\ref{eq:shift_fit_chi2}) using iminuit.
-
-    When it comes to selecting data I've tried three approaches: order by order, chunk by chunk (chunks of ~2Å, inspired by Lily Zhao's approach \cite{first_RV_from_EXPRES}) and feature by feature. So far, I've only managed to get good results fitting feature by feature, which I will go through in more detail below.
+    With the devised method we can now compute the relative readial velocity shift between two observations and get out one number with an uncertainty. The next most obvious step would be to compute the shift between observations 1 and 2, 2 and 3, etc. Doing this however leads to correlated results, as the difference between say observation 1 and 10 will depend on all the observations in bewteen, and if there is one bad one, this will affect all the rest. To circumvent this, we can compute the relative shift bewteen all observations. This will give us an \emph{overconstrained system}, in the sense that there is more information than necessary. All these differences can then be reduced down to a single array, where each shift is relative to all the rest, not only the neighbor. 
     
-    \subsubsection{Extracting relative shifts from over constrained system - matrix reduction:}
-    
-    The end desired end result is a plot of the relative radial velocities as a function of time or observation. If we were to simply compare each observation with the following one, our results would become correlated in the sense that the difference between day 1 and day 10, let's say, will depend on the quality of all observations in between. To circumvent this, we can compute the relative shift between all observations, yielding an $N\times N$ upper triangular matrix, where each cell is the shift between observations $i$ and $j$, and thus with a diagonal of 0. I will call this matrix $\Delta V_r^{ij}$, see figure \ref{fig:shift_matrix}, here non-barycentric-corrected data is used for the sake of illustration. 
+    Computing the shifts between all observations yields an $N\times N$ upper triangular matrix, where each cell is the shift between observations $i$ and $j$, and thus with a diagonal of zero. I will call this matrix $\Delta V_r^{ij}$, see figure \ref{fig:shift_matrix} for an example.
     
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
@@ -210,14 +201,14 @@
         \end{wide}
     \end{SCfigure}
             
-    The following chi2 minimization with the fit parameters $V_r^i$ (an array of length $N$) will then find a list of values that best describe the whole matrix. In other words, it finds the relative shift for each observation with all other observations. 
-
+    To reduce the matrix to one array, we can perform another chi2 minimization fit, defined bellow in equation \ref{eq:matrix_reduction_fit}, in which we fit an array of parameters we can call $V_r^i$ of length $N$ (the number of observations), simply initialized to zero. The chi2 will be at its minimum when it has found an array of velocities $V_r^i$ that best describe all the differences in the matrix $\Delta V_r^{ij}$ and each of the resulting velocities are thus relative not only to its neighbors but to all the other observations as well, thereby avoiding the correlation.
+    
     \begin{equation}
         \label{eq:matrix_reduction_fit}
         \chi^{2}=\sum_{i,j = 0}^{N}\left[\frac{ \Delta V_{r}^{ij} - (V_r^i - V_r^j) }{\sigma(\Delta V_{r}^{ij})}\right]^{2} \quad : \quad i < j.
     \end{equation}
-    
-    The resulting fit parameters are plotted in figure \ref{fig:RV_results_non_barycentric}, and we see a clear signal of the Earth movement around the barycenter of the solar system. Considering the resulting chi2- and p-value, it is possible that my errors are much too small. But I do get a wavelength/period close to that of one earth year.
+
+    For the sake of illustrating the method, I've analysed non-barycentric corrected data, in which we should be able to see the movement of the Earth around the center of mass of the solar system. That is the data plotted in the matrix in figure \ref{fig:shift_matrix} and the resulting extracted relative radial velocities (the fit parameters $V_r^i$) are plotted in figure \ref{fig:RV_results_non_barycentric} (black), where we see a clear signal of Earth's movement. I've fitted the data with a periodic function and found that the period is $(367.522 \pm 5\mathrm{e}{-5})$ days. Then there are three things to notice: 1) the error does not cover the discrepancy with the acrtual value of 365.24 days, 2) the very high chi2 value, and 3) the p-value of zero. These suggest very clearly that my errors are wrong. Nevertheless, the signal is clear, from which I confirm that my method in general is working. Comparing with the direct differences between observations plotted in blue in figure \ref{fig:RV_results_non_barycentric}, it is also clear that the last step of computing the relative shift between all observatons is vital. 
 
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
@@ -227,6 +218,9 @@
         \end{wide}
     \end{SCfigure}
 
+    \subsubsection{Computational run times}
+    \todo{add number of function calls for the fitting}
+    \todo{add number of peak analyzed and so on}
     \todo{add run times}
 
 
