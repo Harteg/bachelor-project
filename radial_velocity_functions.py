@@ -22,8 +22,10 @@ sys.path.append('/Users/jakobharteg/Github/MyAppStat/')
 from ExternalFunctions import nice_string_output, add_text_to_ax # useful functions to print fit results on figure
 
 
-my_colors_red = "#b43e3e"
-my_colors_blue = "#5168ce"
+# my_colors_red = "#b43e3e"
+# my_colors_blue = "#5168ce"
+my_colors_red = "C3"
+my_colors_blue = "C0"
 
 def make_nan_matrix(size):
     matrix = np.empty((size,size))
@@ -66,15 +68,19 @@ def load_spectra_fits(filename):
     hdul.close()
     return data
 
-def get_spec_wavel(data, order, continuum_normalized=False):
+def get_spec_wavel(data, order, continuum_normalized=False, bary_corrected=True):
     """ Returns intensity, intensity_err and wavelength for a given spectra data.
         Use in conjunction with load_spectra_fits """
 
     excalibur_mask  = data['EXCALIBUR_MASK'][order]    # filter by EXCALIBUR_MASK
     data_spec       = data['spectrum'][order][excalibur_mask]
     data_spec_err   = data['uncertainty'][order][excalibur_mask]
-    data_wavel      = data['BARY_EXCALIBUR'][order][excalibur_mask]
-
+    
+    if bary_corrected:
+        data_wavel = data['BARY_EXCALIBUR'][order][excalibur_mask]
+    else:
+        data_wavel = data['EXCALIBUR'][order][excalibur_mask]
+    
     if continuum_normalized:
         cont = data['continuum'][order][excalibur_mask]
         data_spec = data_spec / cont
@@ -82,6 +88,12 @@ def get_spec_wavel(data, order, continuum_normalized=False):
 
     return data_spec, data_spec_err, data_wavel
 
+
+def get_spectra_seconds_since_epoch(filename):
+    from datetime import datetime
+    dt = get_spektra_date_and_time(filename)
+    dt_obj = datetime.strptime(dt, '%Y-%m-%d %H:%M:%S')
+    return dt_obj.timestamp()
 
 def get_spektra_date_and_time(filename):
     """ Returns the date and time of observation for a given fits filename """
@@ -157,7 +169,7 @@ def plot_spectra_dates_from_path(path):
 
 
 
-def plot_matrix(diff_matrix, diff_matrix_err=None, diff_matrix_valid=None, plot_ratio=True, kms=False, colormap1="coolwarm", colormap2="Blues"):
+def plot_matrix(diff_matrix, diff_matrix_err=None, diff_matrix_valid=None, plot_ratio=True, kms=False, colormap1="coolwarm", colormap2="Blues", save_as=None):
     """ Plot shift matrices """
 
     if plot_ratio:
@@ -181,7 +193,7 @@ def plot_matrix(diff_matrix, diff_matrix_err=None, diff_matrix_valid=None, plot_
     if kms:
         cbar.set_label('km/s', rotation=270)
     fix_grid_lines(ax1, len(diff_matrix))
-    ax1.set_title("Relative RV shift")
+    ax1.set_title("$\Delta V_r^{ij}$ : Relative RV")
     ax1.set_xlabel("$i$")
     ax1.set_ylabel("$j$", rotation=0, labelpad=10)
 
@@ -193,7 +205,7 @@ def plot_matrix(diff_matrix, diff_matrix_err=None, diff_matrix_valid=None, plot_
         cbar = fig.colorbar(cs, ax=ax2, cax=cax)
         cbar.set_label('m/s', rotation=270, labelpad=15)
         fix_grid_lines(ax2, len(diff_matrix_err))
-        ax2.set_title("Error")
+        ax2.set_title("$\sigma (\Delta V_r^{ij})$ : RV errors")
         ax2.set_xlabel("$i$")
         ax2.set_ylabel("$j$", rotation=0, labelpad=10)
 
@@ -209,9 +221,17 @@ def plot_matrix(diff_matrix, diff_matrix_err=None, diff_matrix_valid=None, plot_
             fig.subplots_adjust(wspace=0.25)
 
 
-    # fig.subplots_adjust(wspace=0)
+    fig.subplots_adjust(wspace=0)
     fig.tight_layout()
-    # fig.savefig("shfits_matrix_bary.pdf", bbox_inches="tight", dpi=300)
+
+    if save_as is not None:
+        fig.savefig(save_as, bbox_inches="tight", dpi=300)
+
+def find_all_features(filenames, custom_error_scale, use_bary_correction):
+    features = []
+    for filename in tqdm(filenames):
+        features.append(find_features(filename, log=False, custom_error_scale=custom_error_scale, use_bary_correction=use_bary_correction))
+    return features
 
 
 def find_features(filename, 
@@ -251,13 +271,19 @@ def find_features(filename,
             continuum   = fits_data['continuum'][order][pixel_mask]
             x           = fits_data['bary_wavelength'][order][pixel_mask]
         elif not use_bary_correction:
-            pixel_mask  = fits_data['PIXEL_MASK'][order]    # filter by pixel_mask
-            y           = fits_data['spectrum'][order][pixel_mask]
-            og_y        = y # copy of original y data before filtering
-            y_err       = fits_data['uncertainty'][order][pixel_mask]
-            continuum   = fits_data['continuum'][order][pixel_mask]
+            # pixel_mask  = fits_data['PIXEL_MASK'][order]    # filter by pixel_mask
+            # y           = fits_data['spectrum'][order][pixel_mask]
+            # og_y        = y # copy of original y data before filtering
+            # y_err       = fits_data['uncertainty'][order][pixel_mask]
+            # continuum   = fits_data['continuum'][order][pixel_mask]
             # x           = fits_data['wavelength'][order][pixel_mask]
-            x           = fits_data['excalibur'][order][pixel_mask]
+
+            excalibur_mask  = fits_data['EXCALIBUR_MASK'][order]    # filter by EXCALIBUR_MASK
+            y           = fits_data['spectrum'][order][excalibur_mask]
+            og_y        = y # copy of original y data before filtering
+            y_err       = fits_data['uncertainty'][order][excalibur_mask]
+            continuum   = fits_data['continuum'][order][excalibur_mask]
+            x           = fits_data['excalibur'][order][excalibur_mask]
         else:
             excalibur_mask  = fits_data['EXCALIBUR_MASK'][order]    # filter by EXCALIBUR_MASK
             y           = fits_data['spectrum'][order][excalibur_mask]
@@ -424,8 +450,9 @@ def find_feature_matches2(features1, features2, log=True, filter=True, max_dist=
 
     # find matches
     matches = []
-    N_reject = 0
+    N_reject_dist = 0
     N_reject_area = 0
+    # TODO: repeat until all peaks are used
     for i in np.arange(len(peaks1)):
         peak1 = peaks1[i]
         min_index = nth_cloest_match(peak1, peaks2, 0)
@@ -439,7 +466,7 @@ def find_feature_matches2(features1, features2, log=True, filter=True, max_dist=
             # before we do the cross correlation)
             if max_dist != -1:
                 if np.abs(f1[3] - f2[3]) > max_dist:
-                    N_reject += 1
+                    N_reject_dist += 1
                     continue
 
             # Check if the integral/area under the graph of the peaks is about the same
@@ -460,9 +487,9 @@ def find_feature_matches2(features1, features2, log=True, filter=True, max_dist=
     matches = np.asarray(matches)
 
     if log:
-        print(f"{len(matches)} matches found")
-        print(f"Rejected {N_reject} proposed matches")
-        print(f"Rejected {N_reject_area} proposed matches based on area")
+        print(f"{len(matches)} matches found : dist rejected {N_reject_dist}, area rejected {N_reject_area}")
+        # print(f"Rejected {N_reject_dist} proposed matches")
+        # print(f"Rejected {N_reject_area} proposed matches based on area")
 
     return matches
 
@@ -578,17 +605,20 @@ def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=N
             })
     elif return_extra:
 
-        # Interpolate and return the peak wavelength (should be better than nearest pixel)
-        f1 = interp1d(x1, y1, kind='cubic', fill_value="extrapolate")
-        f2 = interp1d(x2, y2, kind='cubic', fill_value="extrapolate")
-        new_x1 = np.linspace(min(x1), max(x1), 1000)
-        new_x2 = np.linspace(min(x2), max(x2), 1000)
-        interp_y1 = f1(new_x1)
-        interp_y2 = f2(new_x2)
-        new_peak1_wavel = new_x1[np.argmax(interp_y1)]
-        new_peak2_wavel = new_x2[np.argmax(interp_y2)]
+        # Return peak locations of the two features : takes a lot of extra time
+        # # Interpolate and return the peak wavelength (should be better than nearest pixel)
+        # f1 = interp1d(x1, y1, kind='cubic', fill_value="extrapolate")
+        # f2 = interp1d(x2, y2, kind='cubic', fill_value="extrapolate")
+        # new_x1 = np.linspace(min(x1), max(x1), 1000)
+        # new_x2 = np.linspace(min(x2), max(x2), 1000)
+        # interp_y1 = f1(new_x1)
+        # interp_y2 = f2(new_x2)
+        # new_peak1_wavel = new_x1[np.argmax(interp_y1)]
+        # new_peak2_wavel = new_x2[np.argmax(interp_y2)]
 
-        return shift_min_final, shift_min_final_err, valid, minuit.fval, new_peak1_wavel, new_peak2_wavel
+        # return shift_min_final, shift_min_final_err, valid, minuit.fval, new_peak1_wavel, new_peak2_wavel
+        
+        return shift_min_final, shift_min_final_err, valid, minuit.fval
     else:
         return shift_min_final, shift_min_final_err, valid#, minuit
 
@@ -657,7 +687,7 @@ def analyse_and_plot_shifts(path, file_index1, file_index2, bary=True, match_fun
     return shifts
 
 
-def plot_features_shift(shifts, ax=None, labels=True, title=None, legend=True, side_info = True, draw_guides=True):
+def plot_features_shift(shifts, ax=None, labels=True, title=None, legend=True, side_info = True, draw_guides=True, guide_lw=0.5, side_text_y_loc=0.84, legend_x_loc=1.4):
 
     s, s_err, s_valid = shifts[:, 0], shifts[:, 1], shifts[:, 2]
 
@@ -668,22 +698,23 @@ def plot_features_shift(shifts, ax=None, labels=True, title=None, legend=True, s
     if ax == None:
         fig, ax = plt.subplots(figsize=(8, 12))
 
-    ax.errorbar(valid_shifts, valid_features, xerr=valid_shifts_err, fmt="none", linewidth=1, color = "C2", label=rf'{len(valid_shifts)} valid fits, with errors')
-    ax.errorbar(invalid_shifts, invalid_features, xerr=invalid_shifts_err, fmt="none", linewidth=1, color = "C3", label=rf'{len(invalid_shifts)} invalid fits, with errors')
+    ax.errorbar(valid_shifts, valid_features, xerr=valid_shifts_err, fmt=".", ms=1, linewidth=1, color=my_colors_blue, label=rf'{len(valid_shifts)} feature shifts with error')    
+    # ax.errorbar(invalid_shifts, invalid_features, xerr=invalid_shifts_err, fmt="none", linewidth=1, color = "C3", label=rf'{len(invalid_shifts)} invalid fits, with errors')
 
-    ax.scatter(valid_shifts, valid_features, s=1)
-    ax.scatter(invalid_shifts, invalid_features, s=1)
-
+    # ax.scatter(valid_shifts, valid_features, s=1, color=my_colors_blue)
+    # ax.scatter(invalid_shifts, invalid_features, s=1, color=my_colors_red)
 
     shift_mean, shift_mean_err = weighted_mean(valid_shifts, valid_shifts_err)
     shift_mean_np = np.mean(valid_shifts)
+    shift_mean_np_err = np.std(valid_shifts) / np.sqrt(len(valid_shifts))
     median = np.median(valid_shifts)
+    median_err = shift_mean_np_err * np.sqrt(np.pi/2)
 
     # # Plot mean and err
     if draw_guides:
-        ax.vlines(shift_mean, -20, len(s) + 20, linestyle="dashed", alpha=0.5, color="black", label="Weighted average")
-        ax.vlines(shift_mean_np, -20, len(s) + 20, linestyle="dashed", alpha=0.5, color="green", label="np.mean")
-        ax.vlines(median, -20, len(s) + 20, linestyle="dashed", alpha=0.5, color="red", label="np.median")
+        ax.vlines(shift_mean, -20, len(s) + 20, linestyle="-", alpha=1.0, color="orange", label="Weighted average", lw=guide_lw, zorder=100)
+        ax.vlines(shift_mean_np, -20, len(s) + 20, linestyle="-", alpha=1.0, color="black", label="Mean", lw=guide_lw, zorder=100)
+        ax.vlines(median, -20, len(s) + 20, linestyle="-", alpha=1.0, color=my_colors_red, label="Median", lw=guide_lw, zorder=100)
     # ax.axvspan(shift_mean-shift_mean_err, shift_mean+shift_mean_err, alpha=0.2) # too small to see anyway
 
     # invert axis so feature 0 starts at the top
@@ -691,19 +722,20 @@ def plot_features_shift(shifts, ax=None, labels=True, title=None, legend=True, s
 
     if labels:
             if legend:
-                ax.legend(bbox_to_anchor=(1.4, 0.99))
+                ax.legend(bbox_to_anchor=(legend_x_loc, 0.99))
 
-            ax.set_xlabel("Velocity Shift [m/s]")
+            ax.set_xlabel("Velocity shift [m/s]")
             ax.set_ylabel("Feature")
             
             if side_info:
                 std_err = np.std(valid_shifts)/np.sqrt(len(valid_shifts))
-                text = f'''Weighted average RV = ({shift_mean:.3} ± {shift_mean_err:.1}) m/s 
-                        \n np.median = {median:.1f} m/s
-                        \n np.mean = {shift_mean_np:.1f} m/s
-                        \n np.std = {np.std(valid_shifts):.3} m/s
-                        \n np.std/sqrt(N) = {std_err:.3} m/s '''
-                ax.text(1.08, 0.84, text,
+                text = f'''Weighted average = ({shift_mean:.2f} ± {shift_mean_err:.1}) m/s 
+                        \n Mean = ({shift_mean_np:.2f} ± {shift_mean_np_err:.1f} ) m/s
+                        \n Median = ({median:.2f} ± {median_err:.1f}) m/s'''
+                        # \n std = {np.std(valid_shifts):.1f} m/s
+                        # \n std/sqrt(N) = {std_err:.1f} m/s
+                        
+                ax.text(1.08, side_text_y_loc, text,
                         horizontalalignment='left',
                         verticalalignment='top',
                         transform=ax.transAxes)
@@ -765,58 +797,12 @@ def plot_features_shift_matrix(result, coords, save_to_filename=None, do_not_sho
         plt.close(fig) # don't show figure
 
 
-
-def compute_matrix_multi_core(N_files = -1):
-    """ doesn't work when put into function, idk why """
-    import multiprocess
-
-    N_processes = 6
-    # N_features = 1000
-
-    # Get list of files and find all features
-    filenames = get_spectra_filenames_without_duplicate_dates()
-    if N_files != -1:
-        assert N_files > 0, "N_files is negative or zero"
-        assert N_files <= len(filenames), "N_files is longer than number of data files"
-        filenames = filenames[:N_files]
-
-    features = []
-    print("Finding features for all files...")
-    for filename in tqdm(filenames):
-        features.append(find_features(filename, log=False))
-
-    # Setup coords
-    size = len(filenames)
-    # diff_matrix, diff_matrix_err, diff_matrix_valid = make_nan_matrix(size), make_nan_matrix(size), make_nan_matrix(size)
-
-    # Compute one list of coords
-    coords = []
-    for x in np.arange(size):
-        for y in np.arange(x, size):
-            if x != y:
-                coords.append((x, y)) 
-            
-            
-    # Define function for each process
-    def compute_shift_for_coords_chunk(coords):
-        x = coords[0]
-        y = coords[1]
-        matches = find_feature_matches(features[x], features[y], log=False)
-        shifts = compute_all_feature_shifts(matches, log=False) # TESTING: ONLY RUNNING SOME FEATURES
-        return shifts
-
-
-    if __name__ == '__main__':
-        pool = multiprocess.Pool(processes = N_processes)
-        # result = pool.map(compute_shift_for_coords_chunk, coords) # without tqdm
-        
-        # With progress bar
-        result = []
-        print("Computeing shifts for all files combinations...")
-        for r in tqdm(pool.imap_unordered(compute_shift_for_coords_chunk, coords), total=len(coords)):
-            result.append(r)
-
-        return result, coords
+def unpack_columns_to_arrays(ndarray):
+    Ncols = len(ndarray[0])
+    cols = []
+    for n in np.arange(Ncols):
+        cols.append(np.asarray(ndarray[:, n]))
+    return cols
 
 
 def parse_matrix_results(result, coords, median_err=False, use_median=True):
@@ -826,15 +812,14 @@ def parse_matrix_results(result, coords, median_err=False, use_median=True):
 
     for coord, shifts in zip(coords, result):
 
-        # Compute valid ratio, number of succesfull fits / total number of fits
-        valids = shifts[:, 2]
-        valid_ratio = len(valids[valids == 1])/len(valids)
-
         # Split 
-        shifts_list, shifts_err_list, shifts_valid_list = shifts[:, 0], shifts[:, 1], shifts[:, 2]
+        rv, err, valid = shifts[:, 0], shifts[:, 1], shifts[:, 2]
 
-        rv_valid = shifts_list[shifts_valid_list == 1]
-        rv_valid_err = shifts_err_list[shifts_valid_list == 1]
+        # Compute valid ratio, number of succesfull fits / total number of fits
+        valid_ratio = len(valid[valid == 1])/len(valid)
+
+        rv_valid = rv[valid == 1]
+        rv_valid_err = err[valid == 1]
         
         # Compute weighted average
         rv, err = weighted_mean(rv_valid, rv_valid_err)
@@ -1049,16 +1034,12 @@ def matrix_reduce(diff_matrix, diff_matrix_err, diff_matrix_valid, path, plot=Tr
         for x in np.arange(size):
             for y in np.arange(x, size):
                 if x != y:
-                    # diff_matrix[x, y]
-                    # V[x]
-                    # V[y]
                     res.append(((diff_matrix[x, y] - (V[x] - V[y])) / diff_matrix_err[x, y])**2)
         chi2 = np.sum(res)
         return chi2
     model_chi2.errordef = 1
 
-    # Use the above diagonal as init values
-    # init_values = get_above_diagonal(diff_matrix)
+    # Use zeros as init values
     init_values = np.zeros(diff_matrix.shape[0])
 
     minuit = Minuit(model_chi2, *init_values)
@@ -1095,6 +1076,7 @@ def matrix_reduce(diff_matrix, diff_matrix_err, diff_matrix_valid, path, plot=Tr
     ax1.set_title("Above diagonal")
     # Plot above-diagonal (days - 1 lenght because above diagonal is one shorter)
     ax1.errorbar(days[:-1], velocity_shifts, yerr=velocity_shifts_err, fmt=".", color="k", ms=1, elinewidth=0.5)
+    ax1.set_ylim(min(velocity_shifts)*1.1, max(velocity_shifts) * 1.35)
     text = f"mean error = {np.mean(velocity_shifts_err):.3} m/s, rms = {(compute_rms(velocity_shifts)):.3} m/s"
     ax1.text(0.05, 0.95, text,
                     size = 8,
@@ -1106,6 +1088,7 @@ def matrix_reduce(diff_matrix, diff_matrix_err, diff_matrix_valid, path, plot=Tr
     ax2.set_xlabel("Time [days]")
     ax2.set_title("Matrix chi2 reduction")
     ax2.errorbar(days, final_shifts, yerr=final_shifts_err, fmt=".", color="k", ms=1, elinewidth=0.5)
+    ax2.set_ylim(min(final_shifts)*1.1, max(final_shifts) * 1.35)
     text = f"mean error = {np.mean(final_shifts_err):.3} m/s, rms = {(compute_rms(final_shifts)):.3} m/s"
     ax2.text(0.05, 0.95, text,
                     size = 8,
@@ -1249,23 +1232,38 @@ def matrix_reduce_results_rms(diff_matrix, plot=True):
 #     return m, final_shifts, final_shifts_err
 
 
-def fit_final_shifts(final_shifts, final_shifts_err):
+def fit_final_shifts(rv, rv_err, diff_matrix, diff_matrix_err, with_date_duplicates=True, save_as=None):
 
-    dates = get_spectra_dates(get_spectra_filenames_without_duplicate_dates())
-    # intervals = get_time_interval_between_observations(dates)
-    # x = intervals[:, 0]
-    x = convert_dates_to_relative_days(dates)
-    y = final_shifts[:]
-    y_err = final_shifts_err[:]
+    # Get times
+    if with_date_duplicates:
+        filenames = get_all_spectra_filenames()
+    else:
+        filenames = get_spectra_filenames_without_duplicate_dates()
 
-    fig, ax = plt.subplots(figsize=(16,8))
-    ax.errorbar(x, y, yerr=y_err, fmt=".", color="k")
+    seconds = [get_spectra_seconds_since_epoch(file) for file in filenames]
+    seconds = np.asarray(seconds)
+    days = seconds / (60*60*24)
+    days = days - min(days)
+    fig, (ax1) = plt.subplots(ncols=1, figsize=(8, 4))
 
+    # Get direct comparisons (above diagonal) for comparison
+    velocity_shifts = get_above_diagonal(diff_matrix) * 1/1000 # km/s
+    velocity_shifts_err = get_above_diagonal(diff_matrix_err) * 1/1000 # km/s
+
+    # Plot above diagonal
+    ax1.set_xlabel("Time [days]")
+    ax1.set_ylabel("Relative RV [km/s]")
+    ax1.errorbar(days[:-1], velocity_shifts, yerr=velocity_shifts_err, fmt=".", color="C0", label="Above diagonal")
+
+    # Fit
+    x = days
+    y = np.asarray(rv[:]) * 1/1000 # km/s
+    y_err = np.asarray(rv_err[:]) * 1/1000 # km/s
+    ax1.errorbar(x, y, yerr=y_err, fmt=".", color="k", label="Matrix reduction")
 
     # Fitting functions:
     def func(x, a, b, c, d) :
         return a * np.cos(x * b + c) + d
-
 
     # ChiSquare fit model:
     def model_chi(a, b, c, d) :
@@ -1274,14 +1272,12 @@ def fit_final_shifts(final_shifts, final_shifts_err):
         return chi2
     model_chi.errordef = 1
 
-    minuit = Minuit(model_chi, a=2.5, b=1/50, c=1, d=1)
+    minuit = Minuit(model_chi, a=30000, b=0.01, c=3.5, d=1040)
     m = minuit.migrad()        
                         
     # Plot result
     xPeak = np.linspace(x[0], x[len(x)-1], 100)
-    ax.plot(xPeak, func(xPeak, *minuit.values[:]), '-r')
-    ax.set_xlabel("Time [days]")
-    ax.set_ylabel("Velocity shift [m/s]")
+    ax1.plot(xPeak, func(xPeak, *minuit.values[:]), '-r')
 
     Npoints = len(x)
     Nvar = 4                                        # Number of variables
@@ -1289,28 +1285,33 @@ def fit_final_shifts(final_shifts, final_shifts_err):
     Chi2_fit = minuit.fval                          # The chi2 value
     Prob_fit = stats.chi2.sf(Chi2_fit, Ndof_fit)    # The chi2 probability given N degrees of freedom
 
-    a, a_err = minuit.values['a'], minuit.errors['a']
+    a, a_err = -minuit.values['a'], minuit.errors['a']
+            #  ^ A comes out negative for some reason, fix... 
     b, b_err = minuit.values['b'], minuit.errors['b']
     c, c_err = minuit.values['c'], minuit.errors['c']
     d, d_err = minuit.values['d'], minuit.errors['d']
     wavel, wavel_err = (2 * np.pi)/b, np.sqrt((2 * np.pi)**2*b_err**2/b**4)
 
-    d = {'A':   [a, a_err],
-        'b':    [b, b_err],
-        'c':    [c, c_err],
-        'd':    [d, d_err],
-        'λ':    [wavel, wavel_err],
-        'Chi2':     Chi2_fit,
-        'ndf':      Ndof_fit,
-        'Prob':     Prob_fit,
-        'f(x)=':     "A cos(bx + c) + d"
+    d = {'A = ':   [a, f"{a_err:.1}"],
+        'b = ':    [b, f"{b_err:.1}"],
+        'c = ':    [c, f"{c_err:.1}"],
+        'd = ':    [d, f"{d_err:.1}"],
+        'λ = ':    [wavel, f"{wavel_err:.1}"],
+        'χ2 = ':     f"{Chi2_fit:.3}",
+        'ndf = ':      Ndof_fit,
+        'Prob = ':     Prob_fit,
+        'f(x) = ':     "A cos(bx + c) + d"
     }
 
-    text = nice_string_output(d, extra_spacing=2, decimals=5)
-    add_text_to_ax(0.62, 0.95, text, ax, fontsize=14, color='r')
+    matplotlib.rcParams["text.usetex"] = False
+    text = nice_string_output(d, extra_spacing=2, decimals=3)
+    add_text_to_ax(0.66, 0.95, text, ax1, fontsize=9, color='black')
+    matplotlib.rcParams["text.usetex"] = True
+    ax1.legend(loc = "upper left")
 
-    return a, b, c, d, a_err, b_err, c_err, d_err
-
+    if save_as is not None:
+        fig.savefig(save_as, bbox_inches="tight", dpi=300)
+        
 
 # ================================================================================================
 # 
@@ -1654,6 +1655,11 @@ def chauvenet(array):
     '''
     mean = np.mean(array)                   # Mean of incoming array
     stdv = np.std(array)                    # Standard deviation
+    
+    if stdv == 0:
+        # if std is zero, say that it's bad..
+        return False
+
     N = len(array)                          # Lenght of incoming array
     criterion = 1.0/(2*N)                   # Chauvenet's criterion
     d = np.abs(array-mean)/stdv             # Distance of a value to mean in stdv's
@@ -1664,7 +1670,7 @@ def chauvenet(array):
 def run_chauvenet(array, errors, valid):
     """ Computes and applies a chauvenet mask until the length of the array reaches a minimum """
     size = len(array) + 1       # have to make it larger to make the loop start...
-    while len(array) < size:    # keep running as long the new size is still smaller
+    while len(array) < size and len(array) > 10:    # keep running as long the new size is still smaller and it's not empty (i.e. less than 10...)
         size = len(array)
         chauvenet_mask = chauvenet(array)
         array = array[chauvenet_mask]
@@ -1675,7 +1681,7 @@ def run_chauvenet(array, errors, valid):
 
 def remove_outliers_from_result_with_chauvenet(res, log=False):
     result_new = []
-    for r in res:
+    for r, i in zip(res, np.arange(len(res))):
         rvs = r[:, 0]
         rvs_err = r[:, 1]
         rvs_valid = r[:, 2]
