@@ -1,4 +1,3 @@
-% \documentclass[twocolumn]{article}
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage[a4paper, lmargin = 1 cm , rmargin = 6 cm , tmargin = 2 cm, bmargin = 2 cm]{geometry}
@@ -15,6 +14,12 @@
 \setlength{\marginparwidth}{5cm}
 \setlength{\marginparsep}{0cm}
 \usepackage[font=small,labelfont=bf]{caption}
+
+% Write "Appendix" on the appendix chapter titles.
+\usepackage[titletoc, title]{appendix}
+
+% Black hyperlinks (ref, citations, table of contents)
+\hypersetup{linkcolor=black}
 
 % MatPlotLib Plot sizes: 
 % dpi=300
@@ -49,37 +54,45 @@
 \author{Jakob Harteg, wmc573}
 \date{June 2022, University of Copenhagen}
 
-
 \begin{document}
+
+% Cover page
 \maketitle
 
-% TODOs 
+
 \todo{Make cover page}
 
 \todo{Add abstract}
 
 
-
+% Table of contents
 \newpage
+\tableofcontents
 
-% SECTIONS ==========================================
+\vspace{\fill}
 
 \section*{Note about the project}
 In the beginning of February 2022, Troels Petersen (KU) and Lars Buchhave (DTU) started working 
 together to improve computational LFC calibration methods, and Troels invited me and a few other students to come along for the ride. During the project I've been exploring real data and developing a crude method for performing LFC calibrations and subsequent radial velocity extractions. With this project report it is my intent to share and explain the process of performing such analyses, thinking of the reader as a fellow physics student perhaps interested in picking up where I left off. 
 
+% SECTIONS ==========================================
+\newpage
 \section{Introduction}
 \input{sections/introduction} 
 
+\newpage
 \section{Theory}
 \input{sections/theory} 
 
+\newpage
 \section{Data Analysis}
 \input{sections/data_analysis} 
 
+\newpage
 \section{Results}
 \input{sections/results} 
 
+\newpage
 \section{Discussion}
 \input{sections/discussion} 
 
@@ -96,7 +109,10 @@ together to improve computational LFC calibration methods, and Troels invited me
 
 % Appendix
 \newpage
-\appendix
-\input{sections/appendix} 
+% \appendix
+\begin{appendices}
+\renewcommand{\thesection}{\Alph{section}:} % adds : (colon) after Appendix A 
+        \input{sections/appendix} 
+\end{appendices}
 
 \end{document}

@@ -1,24 +1,11 @@
 
-I would have liked to have performed RV extractions on spectra data that I had calibrated myself. But, it was not possible for me get access to spectra data with associated LFC spectra. So the two parts of the project, calibration and rv extractions, have been somewhat seperated. 
+For the calibration my best solution was the cubic-spline interpolation, with which I got a per-line rms of 10.0 m/s. This is not to much help in the pursuit of rv precision to centimetres per second and nowhere near that of excalibur, which, obvisouly using more advanced techniques, achieve an rms of 3.3 cm/s \cite{zhao2021excalibur}. \todo{Try calib with 90\% random selection}
 
+The results from analyzing the non-barycentric-corrected data were not on point. I measured one earth-year to be $\sim$366.5 days with a very small uncertainty. One day off. And the orbit speed was also off by more than 1 km/s. If EXPRES should be capable of measuring stellar RV to a precision of a dozen centimetres per second, I think I should be able to get these values right. However, considering the crudeness of my method and especially the resulting very large spread of the RV computed for individual features (as seen in figure \ref{fig:median-mean-weighted-average}), it is perhaps not surprising, but rather justifies the decade long development of much more advanced RV extraction methods.
 
-I should have liked to compare my 
+Nevertheless, the signal is definitely there. And, comparing my results for the barycentric-corrected data to that of Lily Zhao et al is also quite positive. RVs on the same order and many patterns in her results coincide with mine. The residuals from subtracting her results from mine are however quite large. For all four stars analysed my rms also comes out smaller than hers. This might be due to my match filtering, which is biased toward selecting features that are closer together if those features do not differ too much in shape.
 
-Although the LFC calibration initially was the main aspect of the project, I ended up spending much more time on the RV extractions. 
+My final RV errors are wrong. It is the pursuit of many scientists to reach centimetre per second precision. I obvisouly did not just achieve a precision of 8 millimetres per second. But I also suspect I know where the breaking point is.
+As shown in figure \ref{fig:err_vs_run_time} in appendix \ref{appendix:RV_extraction}, the error that iminuit gives on the radial velocity when computing the cross-correlation for a given feature gets smaller the more data points I sample from the calibration function. This is a pretty clear sign that I am doing something wrong. Perhaps a solution could be to only interpolate one of the peaks at a time. The chi2 would then be a sum, not of 1000 sampled points, but of the number of actual data points, so around 13. As there might be some bias from interpoloating only one of the peaks, one could then flip it around and interpolate the other instead, finally taking the mean of the two results. This would however lead to twice as many computations, but also with a lot fewer parameters. Depending on the overhead of iminuit I imagine it could even out. At a first attempt however, I often got statistically incompatible results when flipping whose turn it was to be interpolated. I would deem it worthwhile to pursue this, as it could be a breaking point for the errors. 
 
-
-\textbf{Future ideas:}
-\begin{itemize}
-    \item Errors
-    \item Errors from the interpolation, the more points we sample the smaller the error?
-    \item Filters: chauvenet's, rv cut, z-score cut, always having the barycentric data to confirm if it works is good. Weighting of lines/features based on the stability. Just like Lily et al do in the chunk-by-chunk method \href{https://backend.orbit.dtu.dk/ws/portalfiles/portal/273001166/Zhao_2022_AJ_163_171.pdf}{paper.}.
-
-\end{itemize}
-
-
-\textbf{Future ideas:}
-\begin{itemize}
-    \item Auto encoder
-    \item Lunch LFC into orbit around earth to have a base truth
-    \item Better understand the stellar activities
-\end{itemize}
+Having spent much more time during this project on exploring the data and devising solutions with my supervisor than reading papers, there is obvisouly much inspiration to gather from digging down more carefully in the literature. Feature lines could for instance be be weighted according to their stability over time. It is also conceivable that through the application of knowledge of stellar activity along with machine learning and a lot of data, features could be grouped and categorized according to the cause of their shift, which would be another way to sort out features are unstable over time. 

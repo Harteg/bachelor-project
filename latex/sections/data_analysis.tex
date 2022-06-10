@@ -1,31 +1,39 @@
-\todoNow{Write this:} the data analysis of this project is to calibrate and to extract rv.
+In this section I will explain crude methods for performing LFC calibrations and radial velocity extractions. Although planned, I did not end up having access to star spectra with associated LFC exposures, such that I could calibrate the star spectra myself before computing the radial velocities. As a result, part one of the data analysis does not directly carry into the second, although, with the right data, it could.
 
 \subsection{Calibration} 
 
-    The calibration is needed to map each pixel on the CCD to a specific wavelength. Such a map is referred to as a wavelength solution. To do this, we need a light source with known frequencies, preferably many discrete peaks. EXPRES uses a Thorium Argon lamp for an initial trial wavelength solution and then a laser frequency comb (LFC) for an more precise solution.
+    The calibration is needed to map each pixel on the CCD to a specific wavelength. Such a map is referred to as a wavelength solution. To do this, we first shine a light source with known frequencies, preferably many discrete lines, onto the CCD. The exact location on the CCD where each line appeared can then be mapped to the known wavelength of the given line. EXPRES uses a Thorium Argon (ThAr) lamp for an initial rough wavelength solution, which has 4,000 lines across 82 orders. These values have been linearly interpolated to provide a solution for all pixels across the CCD and were included in the data file that I was provided with for this project.
     
-    The Thorium Argon lamp produces 4,000 lines across 82 orders, which can be identified and mapped to a wavelength through a \emph{line atlas}. An intial wavelength solution for all pixels is then produced by linear interpolation. (In this project I have not done this calibration).
+    For a better wavelength solution EXPRES uses a laser frequency comb (LFC), which generates about 20,000 lines across 50 orders, with frequencies given by the relation
 
-    The LFC generates a series of evenly spaced spectral lines, typically 20,000 lines across 50 orders. The range of the LFC is thus shorter, and for this reason the ThAr exposures can also be used for a rough calibration outside the LFC range. The frequencies of the LFC lines are given by the relation
-    
     \begin{equation}
         \label{eq:LFC_freq_eq}
         v_{n}=v_{\text{rep}} \times n+v_{\text{offset}}
     \end{equation}
 
-    for integers $n$. The repetition rate $v_{\text {rep }}$ and offset frequency $v_{\text {offset }}$ are referenced against a GPS-disciplined quartz oscillator, providing calibration stability corresponding to a fractional uncertainty of less than $8 \times 10^{-12}$ for integration times greater than 1s. (p. 8, \cite{first_RV_from_EXPRES}). The values I have used in the calibration, $v_{\text{rep}} = 14e9$ and $v_{\text{offset}} = 6.19e9$, were provided by Lars Buchhave. See figure \ref{fig:LFC_CCD} right side for a plot of the intensities measured across the CCD.
+    for integers $n$. The repetition rate $v_{\text {rep}}$ and offset frequency $v_{\text {offset }}$ are referenced against a GPS-disciplined quartz oscillator, providing calibration stability corresponding to a fractional uncertainty of less than $8 \times 10^{-12}$ for integration times greater than 1s. \cite{first_RV_from_EXPRES}. The values I have used, $v_{\text{rep}} = 14e9$ and $v_{\text{offset}} = 6.19e9$, were provided by Lars A. Buchhave.
+    
+    The following steps are followed to perform the LFC calibration: 1) determine the CCD pixel position of each LFC line, 2) using ThAr wavelength solution find the corresponding mode $n$ in equation \ref{eq:LFC_freq_eq} to know the true wavelength of the line, and finally 3) find way to estimate a wavelength solution in between LFC lines. 
+
+    Figure \ref{fig:calib_illustration} is an illustration (not real data) of this process. The left panel shows LFC lines appearing in different locations on the CCD (with exaggerated variations and errors for clarity) and the corresponding wavelength solution given by equation \ref{eq:LFC_freq_eq}. The middle and right panel illustrate two ways of modelling a wavelength solution in between LFC lines, polynomial fitting and cubic-spline interpolation respectively. With such a wavelength solution, you have a direct map between any location on the CCD (x-axis) and a wavelength solution (y-axis). This is to be performed in every order of the CCD.
 
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
-            \includegraphics[width=\textwidth]{figures/LFC_peak_fitting_overview.pdf}
-            \caption{Right: Measured intensities for the LFC across the CCD (unitless). Upper left: illustration of a few LFC lines in order 65. Peaks are identified with scipy peak finder. Lower left: each peak is fitted with a super gauss to find the exact top of the peak with uncertainties.}
-            \label{fig:LFC_CCD}
+            \includegraphics[width=\textwidth]{figures/calib/calib_illustration.pdf}
+            \caption{Illustration of the LFC calibration process (not real data). See text for explanation.}
+            \label{fig:calib_illustration}
         \end{wide}
     \end{SCfigure}
 
-    The following procedure is followed to determine the location of the LFC lines on the CCD: 1) Find peaks using scipy peak finder, 2) make data slices around each peak with the size of the average distance between peaks, 3) using iminuit do a chi2 minimisation fit to each peak with a super-gauss plus a linear background. See figure \ref{fig:LFC_CCD} left side.
+    \subsubsection{Determining LFC line locations}
 
-    A super-gauss, defined in equation \ref{eq:LFC_super_gauss}, is a regular gaussian but with an extra parameter, here denoted $P$, that allows the top of the gaussian to be flattened. The last two terms here add a linear background and an offset. 
+    See figure \ref{fig:LFC_CCD} right side for a plot of the intensities measured across the CCD.
+
+    The right side of figure \ref{fig:LFC_CCD} shows an LFC exposure plotted in its entirety. It's clear that the LFC does not cover all orders of the CCD, but starts shortly before order 40 and stops around 76.
+    
+    To determine the location of the LFC lines I follow this procedure: 1) Find peaks using scipy peak finder, 2) make data slices around each peak with the size of the average distance between peaks, 3) using iminuit do a chi2 minimisation fit to each peak with a super-gauss plus a linear background. See figure \ref{fig:LFC_CCD} left side.
+
+    A super-gauss, defined in equation \ref{eq:LFC_super_gauss}, is a regular gaussian but with an extra parameter, here denoted $P$, that allows the top of the gaussian to be flattened. The last two terms here add a linear background and an offset.  
     
     \begin{equation}
         \label{eq:LFC_super_gauss}
@@ -41,11 +49,19 @@
 
     Where $N$ is the number of data points, $x$ is pixel-space, $y_i$ and $\sigma_i$ is the measured intensity and uncertainty respectively. The fit returns the values and uncertainties for the parameters $A, B, C, P, \mu, \sigma$ when the chi2 is minimized.
     
-    We are most interested in $\mu$, which gives the position of the LFC peak on the CCD (in pixel-space). With the intial rough wavelength solution derived from the ThAr lamp (precalculated in the data set that I've used) I can determine what the approximate wavelength of the LFC peak should be. To find the better wavelength solution I then go look up the closest frequency given by eq. \ref{eq:LFC_freq_eq}. And we now have a map of ~20,000 points on the CCD with a good wavelength solution. We would however like to have a wavelength solution for all pixels on the CCD, so we need to find a way to estimate the wavelength solution in between LFC lines. To do that I have explored two approaches: polynomial fitting and cubic-spline interpolation. Before moving on though, it is worthwhile to study the chi2 values from the many fits we just performed, as they can help up evaluate whether the errors of the original data are correct.
+    We are mainly interested in $\mu$, which gives the position of the LFC peak on the CCD (in pixel-space). With the intial rough wavelength solution derived from the ThAr lamp I can determine what the approximate wavelength of the LFC peak should be. To find the better wavelength solution I then go look up the closest frequency given by eq. \ref{eq:LFC_freq_eq}. And we now have a map of ~20,000 points on the CCD with a good wavelength solution. We would however like to have a wavelength solution for all pixels on the CCD, so we need to find a way to estimate the wavelength solution in between LFC lines. To do that I have explored two approaches: polynomial fitting and cubic-spline interpolation. Before moving on though, it is worthwhile to study the chi2 values from the many fits we just performed, as they can help up evaluate whether the errors of the original data are correct.
     
+    \begin{SCfigure}[1][!ht]%
+        \begin{wide}  
+            \includegraphics[width=\textwidth]{figures/LFC_peak_fitting_overview.pdf}
+            \caption{Right: Measured intensities for the LFC across the CCD (unitless). Upper left: illustration of a few LFC lines in order 65. Peaks are identified with scipy peak finder. Lower left: each peak is fitted with a super gauss to find the exact top of the peak with uncertainties.}
+            \label{fig:LFC_CCD}
+        \end{wide}
+    \end{SCfigure}
+
     \subsubsection{Errors in the calibration data}
 
-    According to Lily Zhao et al, the line spread function of EXPRES can best be represented by a super-gaussian \cite{yale_data}, and so as we fit a super-gaussian to the peaks, the chi2 will grow if the measured values do not agree with the predicted values within the uncertainties. For a given data point, if the measured value differs by exactly the uncertainty, that data point would contribute 1 to the sum. However, fitting with the super-gaussian (including a linear background) we also have 6 fitting parameters that allow some wiggle room for the model to fit the data, which we must compensate for. For a given data series, such as an LFC peak, we can expect the chi2 roughly equal the number of data points in the sum \emph{minus} the number of parameters in the fit, i.e. the number of the degrees of freedom:
+    According to Lily Zhao et al, the line-spread-function of EXPRES can best be represented by a super-gaussian \cite{yale_data}, and so as we fit a super-gaussian to the peaks, the chi2 will grow if the measured values do not agree with the predicted values within the uncertainties. For a given data point, if the measured value differs by exactly the uncertainty, that data point would contribute 1 to the sum. However, fitting with the super-gaussian (including a linear background) we also have 6 fitting parameters that allow some wiggle room for the model to fit the data, which we must compensate for. For a given data series, such as an LFC peak, we can expect the chi2 roughly equal the number of data points in the sum \emph{minus} the number of parameters in the fit, i.e. the number of the degrees of freedom:
     
     % The LFC fits files come with an uncertainty on the intensity. It appears however that this uncertainty might be a bit underestimated. We can see this by plotting the $\chi^2$- and P-values for the LFC peak super-gauss fits, as done in figure \ref{fig:calib_errors}. The $\chi^2$ value should be roughly equal to the number of degrees of freedom in the fit (eq. \ref{eq:LFC_super_gauss}), which is: 
 
@@ -68,31 +84,25 @@
     \end{SCfigure}
 
     \subsubsection{Poly-fit calibration}
-    Since the LFC peak positions, as seen in the right plot in figure \ref{fig:LFC_CCD}, appear to exhibit a certain periodic behavour, my initial approach to compute a wavelength solution across the whole CCD was to fit the LFC peak positions with a polynomial. Looking at the residuals of fitting the LFC line positions with polynomials of increasing degree revealed smaller and smaller periodic variations, until reaching 5th degree, see figure \ref{fig:LFC_calib_poly_degrees}. The p-value drops to 0 for 6th degree, and the per line rms (\todoNow{1}) explodes. Only LFC lines with a chi2 smaller than 100 was used for the analysis and errors were scaled by $\sqrt{3}$ locating LFC lines.
+    Since the LFC peak positions, as seen in the right plot in figure \ref{fig:LFC_CCD}, appear to exhibit a certain periodic behavour, my initial approach to compute a wavelength solution across the whole CCD was to fit the LFC peak positions with a polynomial. Looking at the residuals of fitting the LFC line positions with polynomials of increasing degree revealed smaller and smaller periodic variations, until reaching 5th degree, see figure \ref{fig:LFC_calib_poly_degrees}. The p-value drops to 0 for 6th degree, and the per line rms (given by eqation \ref{eq:line_rms}) explodes. Only LFC lines with a chi2 (from the super-gauss fit) smaller than 100 was used for the analysis and errors were scaled by $\sqrt{3}$.
 
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
             \includegraphics[width=\textwidth]{figures/calib/calib_poly_fit_degrees_order44_residuals_ang.pdf}
-            \caption{Residuals from fitting LFC peak positions with polynomials of increasing degree, in order 44. Pixels on the x-axis and residuals in m/s on the y-axis. Errors used for determining peak locations have been scaled by $\sqrt{3}$.}
+            \caption{Example of residuals from fitting LFC line locations with polynomials of increasing degree in one order (44). The x-axis shows pixels and the y-axis residuals in m/s in all plots. Errors used for determining line locations have been scaled by $\sqrt{3}$. The noted rms in each plot is the per-line rms as defined in eqation \ref{eq:line_rms}.}
             \label{fig:LFC_calib_poly_degrees}
         \end{wide}
     \end{SCfigure}
 
-    The residuals plotted show the difference between the theoretical line position given by equation \ref{eq:LFC_freq_eq} and the wavelength solution evaluated at the line position of 
-
-    TODO:
-    - JAKOB JAKOB JAKOB JAKOB JAKOB JAKOB GET THIS STRAGIHT 
-    - and add this: 
-
-    $$
-        \text{RMS/line} \left[\mathrm{m} \mathrm{s}^{-1}\right]=\sqrt{\sum_{n=1}^{N} \sum_{p=1}^{P} \frac{\left[\frac{\left(\lambda_{n, p, \text { pred. }}-\lambda_{p, \text { theory }}\right)}{\lambda_{p, \text { theory }}} \times c\right]^{2}}{N \times P}}
-    $$
-
-    - and refer to it from todo 1, and in the caption
+    The residuals plotted show the difference between the theoretical wavelength for each LFC line (equation \ref{eq:LFC_freq_eq}) and the wavelength that the calibration predicts for that location. You can get a feel for the quality of the calibration by looking at the residuals, but a more formal quantification is to compute the per-line rms for a given LFC exposure as: 
     
-    
-    The residuals of a wavelength solution represent the difference between the wavelength solution evaluated at the line position of a calibration line and the assigned theoretical wavelength (i.e., that from Equation (4) for the LFC lines) on a line-by-line basis in every exposure. The reported rms of a wavelength solution is therefore the per-line rms, i.e.,
+    \begin{equation}        
+        \text{RMS/line } [\text{ms}^{-1}] = \sqrt{\sum_{n=1}^{N} \frac{\left[\frac{\left(\lambda_{n, \text {pred.}}-\lambda_{n, \text {theory}}\right)}{\lambda_{n,\text{theory}}} \times c\right]^{2}}{N}}
+        \label{eq:line_rms}
+    \end{equation}
 
+    for $N$ lines, where $c$ is the speed of light in meters. 
+    
     % \begin{SCfigure}[1][!ht]%
     %     \begin{wide}  
     %         \includegraphics[width=\textwidth]{figures/calib/calib_poly_5th_res.pdf}
@@ -104,15 +114,13 @@
 
     \subsubsection{Interpolation calibration}
     A cubic-spline interpolation would force all the residuals to be zero, so in order to evaluate the quality of the method, we can omit for instance every second peak from the interpolation and then compute the residual between the omitted peaks and the resulting interpolation function. Then we can flip it around and interpolate the peaks we left out before and compute the remaining residuals. 
-    
-    thus ending up with an array of residuals equal to the length of the results from the poly-fit method, allowing us to compare the two, as is done in figure \ref{fig:calib_poly_vs_interp}.
 
-    The RMS of the residuals from the interpolation come out much smaller than that of the polyfit (values specified in figure \ref{fig:calib_poly_vs_interp}), in this example, suggesting that the interpolation method is superior. It is also worth noting that because the interpolation was done on only half the data points at a time, it will be even better when performed on all data points, as it would be, when used for calibrating data before an RV analysis.
+    Figure \ref{fig:calib_poly_vs_interp} shows a comparison of the residuals from a 5th degree poly-fit and the cubic-spline. For the cubic-spline I get a per-line rms of 10.0 m/s, while the poly-fit gives $5.73 \times 10^8$ m/s, which suggest that the cubic-spline appraoch is the better one. It is also worth noting that because the interpolation was done on only half the data points at a time, it will be even better when performed on all data points, as it would be, when used for calibrating data before an RV analysis.
 
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
             \includegraphics[width=\textwidth]{figures/calib/hist_peak_residuals_poly_and_interp.pdf}
-            \caption{Residuals from calibrations performed through a 5th degree poly-fit and a cubic-spline interpolation. The per-line rms as defined in Equation (5) is given in the top-right corner in the color of the corresponding method.}
+            \caption{Residuals from calibrations performed through a 5th degree poly-fit and a cubic-spline interpolation. The per-line rms as defined in eqation \ref{eq:line_rms} is given in the top-right corner in the color of the corresponding method.}
             \label{fig:calib_poly_vs_interp}
         \end{wide}
     \end{SCfigure}
@@ -201,11 +209,9 @@
     
     \subsubsection{Computing velocity shifts for all features}
 
-    We can now find and compute the cross-correlation for all feature matches between two observations. In general I find between 500-1000 matches between two observations, which results in a fair amount of statistics. The computed radial velocities do build up a normal distribution around a central value, but there are many outliers. This is due to primarily two things: 1) Bad matches making it through the selection filters, and 2) stellar activity, which are various processes on the star that cause absorption features to shift independently.
+    We can now find and compute the cross-correlation for all feature matches between two observations. In general I find between 500-1000 matches between two observations, which results in a fair amount of statistics. The computed radial velocities do build up a normal distribution around a central value, but there are many outliers. This is due to primarily two things: 1) Bad matches making it through the selection filters, and 2) stellar activity; processes on the star's surface that cause absorption features to shift independently of the velocity of the star. 
     
-    This is one place where there is definite room for improvement. A better matching algorithm could supposedly be developed, but when it comes to sorting through lines affected by stellar activities, one could imagine that machine learning might be applicable. More on this in the discussion.
-
-    For now, I've experienced with settings different cuts both in radial velocity and chi2 to weed out the bad ones, but what I've found to work the best, is simply taking the median instead of the weighted average or the mean, as the median is much less affected by outliers than both. And as there is no reason to believe that stellar activity would cause more RV outliers in one particular direction, the spread can be assumed to be symmetric and thus the median is a good approximation. In figure \ref{fig:median-mean-weighted-average} is plottet an example, which also contains at least one bad match on the far left and a constellation of features likely to be affected by stellar activity on the far right.
+    A better matching algorithm could supposedly be developed, but for now, I've just experimented with setting different cuts both in radial velocity and chi2 to weed out the bad ones. What I've found to work the best however is simply taking the median instead of the weighted average or the mean, as the median is much less affected by outliers. And as there is no reason to believe that stellar activity would cause more RV outliers in one particular direction, the spread can be assumed to be symmetric and thus the median is a good approximation. In figure \ref{fig:median-mean-weighted-average} is plottet an example, which also contains at least one bad match on the far left and a constellation of features likely to be affected by stellar activity on the far right.
 
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
@@ -254,6 +260,6 @@
         \end{wide}
     \end{SCfigure}
 
-    Although the amount of computations necessary for the described analysis is high, it is possible to execute for 188 observations on a personal computer in about 2 hours. More details are listed in appendix \ref{appendix:run_times}.
+    Although the amount of computations necessary for the described analysis is high, it is possible to execute for 188 observations on a personal computer in about 2 hours. More details are listed in appendix \ref{appendix:RV_extraction}.
     
 

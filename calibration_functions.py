@@ -6,6 +6,7 @@ import sys
 from pylab import *
 from scipy.interpolate import interp1d
 from sympy import degree
+from os import walk
 
 sys.path.append('/Users/jakobharteg/Github/MyAppStat/')
 from ExternalFunctions import Chi2Regression
@@ -189,21 +190,6 @@ def get_true_wavel(data_wavel_given, peak_locs):
     return np.asarray(wavel_true_match)
 
 
-# TODO :: rename this 
-# def peak_position_fit_func(x, c0, c1, c2, c3, c4, c5, c6):
-def peak_position_fit_func(x, c0, c1, c2, c3, c4, c5):
-# def peak_position_fit_func(x, c0, c1, c2, c3, c4):
-# def peak_position_fit_func(x, c0, c1, c2, c3):
-# def peak_position_fit_func(x, c0, c1, c2):
-# def peak_position_fit_func(x, c0, c1):
-    # return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4 + c5*x**5 + c6*x**6
-    return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4 + c5*x**5
-    return c0 + c1*x + c2*x**2 + c3*x**3 + c4*x**4
-    return c0 + c1*x + c2*x**2 + c3*x**3
-    return c0 + c1*x + c2*x**2
-    return c0 + c1*x
-
-
 def get_calib_poly_func(degree):
     assert (degree == np.arange(1, 10)).any(), "Not within 1-9 degrees"
     exec(f"function = calib_poly_func_{degree}", globals())
@@ -241,6 +227,11 @@ def fit_peak_positions(wavel_true_match, peak_fits, poly_degree):
     x = peak_fits[:,2]
     y = wavel_true_match
     ey = peak_fits[:, 4]    # sigma (width of the peak)
+    return fit_peak_positions_base(x, y, ey, poly_degree)
+
+
+def fit_peak_positions_base(x, y, y_err, poly_degree):
+    
 
     fit_func = get_calib_poly_func(poly_degree)
     init_values = np.ones(poly_degree + 1)
@@ -252,7 +243,7 @@ def fit_peak_positions(wavel_true_match, peak_fits, poly_degree):
     # axPeak.plot(x, y, ".", label="Data")
 
     # Quad fit
-    model_chi2 = Chi2Regression(fit_func, x, y, ey)
+    model_chi2 = Chi2Regression(fit_func, x, y, y_err)
     model_chi2.errordef = 1
 
     # Fit peak with a Gaussian:
@@ -335,3 +326,17 @@ def make_nan_matrix(size):
     matrix = np.empty((size,size))
     matrix[:] = np.nan
     return matrix
+
+
+LFC_PATH = "/Users/jakobharteg/GitHub/bachelor-project/expres_tp/"    
+def get_files_in_dir(dir, must_contain=None):
+    """ Returns all filenames in a dir"""
+    filenames = next(walk(dir), (None, None, []))[2]  # [] if no file
+
+    if must_contain:
+        filenames = [x for x in filenames if "LFC" in x]
+
+    filenames = sorted(filenames)
+    filenames = [dir + x for x in filenames] # add path to the filename
+    return filenames
+
