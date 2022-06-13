@@ -1,5 +1,5 @@
 
-For the calibration, my best solution was the cubic-spline interpolation, with which I got a per-line rms of 10.0 m/s. This is not of much help in the pursuit of rv precision to centimeters per second and nowhere near that of Excalibur, which, obviously using more advanced techniques, achieves an rms of 3.3 cm/s \cite{zhao2021excalibur}. \todo{Try calib with 90\% random selection}
+For the calibration, my best solution was the cubic-spline interpolation, with which I got a per-line rms of 10.0 m/s. This is not of much help in the pursuit of rv precision to centimeters per second and nowhere near that of Excalibur, which, obviously using more advanced techniques, achieves an rms of 3.3 cm/s \cite{zhao2021excalibur}.
 
 The results from analyzing the non-barycentric-corrected data were not on point. I measured one Earth-year to be $\sim$366.5 days with a very small uncertainty. One day off. If EXPRES should be capable of measuring stellar RV to a precision of a dozen centimeters per second, I think I should be able to get this value right. However, considering the crudeness of my method and especially the resulting very large spread of the RVs computed for individual features (as seen in figure \ref{fig:median-mean-weighted-average}), it is perhaps not surprising, but rather justifies the decade-long development of much more advanced RV extraction methods.
 

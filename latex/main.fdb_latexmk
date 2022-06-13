@@ -1,13 +1,13 @@
 # Fdb version 3
-["bibtex main"] 1655133070 "main.aux" "main.bbl" "main" 1655133169
+["bibtex main"] 1655135245 "main.aux" "main.bbl" "main" 1655135268
   "/usr/local/texlive/2021/texmf-dist/bibtex/bst/base/plain.bst" 1292289607 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "main.aux" 1655133169 28137 9531a46297f013ea40c0e3c720360363 "pdflatex"
+  "main.aux" 1655135267 28134 67adf2b885c0671e9b4cba8f339a5962 "pdflatex"
   "references.bib" 1655122955 3610 8c67bdad072b2a8588d3922273a9cbfa ""
   (generated)
   "main.bbl"
   "main.blg"
-["pdflatex"] 1655133167 "/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex" "main.pdf" "main" 1655133169
-  "/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex" 1655121190 4328 a2e50670fb8f0e486134f709da42e8a3 ""
+["pdflatex"] 1655135266 "/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex" "main.pdf" "main" 1655135268
+  "/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex" 1655135266 4298 0fd46d4233290e857ca92884de037310 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/libertine/lbtn_y6cxei.enc" 1490131464 3032 9da6f34bab0bf033a80f47010fc36bbe ""
   "/usr/local/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -43,7 +43,6 @@
   "/usr/local/texlive/2021/texmf-dist/fonts/tfm/public/libertine/LinLibertineTZ-osf-t1.tfm" 1490131464 24176 e47832f9984bc491a20994a99ab0dce4 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb" 1248133631 34811 78b52f49e893bcba91bd7581cdc144c0 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb" 1248133631 32080 340ef9bf63678554ee606688e7b5339d ""
-  "/usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb" 1248133631 32166 b0c356b15f19587482a9217ce1d8fa67 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb" 1248133631 32298 c6d25bb16d1eac01ebdc6d7084126a1e ""
   "/usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb" 1248133631 30251 6afa5cb1d0204815a708a080681d4674 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb" 1248133631 36299 5f9df58c2139e7edcf37c8fca4bd384d ""
@@ -257,17 +256,17 @@
   "ku-frontpage.sty" 1655053272 13054 3beb5bcbfff9a24172d5839063625475 ""
   "logos/ku-logo.pdf" 1636024725 93879 31d1db24936015ee9fe960c856f01525 ""
   "logos/science-english.pdf" 1636024725 71141 827ec2c5d6f797163b848e34358df682 ""
-  "main.aux" 1655133169 28137 9531a46297f013ea40c0e3c720360363 "pdflatex"
-  "main.bbl" 1655133071 2572 ca636e7ea5083fac42ab66cb20d818bf "bibtex main"
-  "main.tex" 1655121190 4328 a2e50670fb8f0e486134f709da42e8a3 ""
-  "main.toc" 1655133169 2235 029b1e3c37c54ec4ab215d58f7fd1d4a "pdflatex"
+  "main.aux" 1655135267 28134 67adf2b885c0671e9b4cba8f339a5962 "pdflatex"
+  "main.bbl" 1655135245 2572 ca636e7ea5083fac42ab66cb20d818bf "bibtex main"
+  "main.tex" 1655135266 4298 0fd46d4233290e857ca92884de037310 ""
+  "main.toc" 1655135267 2235 0369832e71ceaf7292691f3295477f69 "pdflatex"
   "sections/acknowledgements.tex" 1655110025 787 5dfc089a01d4fd437f25796a7982aab3 ""
-  "sections/appendix.tex" 1655133167 3999 29e44a0e337a50b7b2fa05cb2827f2cd ""
-  "sections/data_analysis.tex" 1655133039 28544 48199c771b013af4195187259ca378f3 ""
-  "sections/discussion.tex" 1655132415 4132 e279a471cc46ab74d3f3593bb68e4ffd ""
+  "sections/appendix.tex" 1655133406 3999 29e44a0e337a50b7b2fa05cb2827f2cd ""
+  "sections/data_analysis.tex" 1655135217 28437 8464edd4a155cb2a4ec8dbb8478c40c4 ""
+  "sections/discussion.tex" 1655134432 4088 ada25af35eea388e9d216ec216d7597c ""
   "sections/introduction.tex" 1655121367 1720 9ed9ae5a65f33c94a999963201dae6d3 ""
-  "sections/results.tex" 1655132118 4015 95693c5f98e952ebe1955c18ce45dec0 ""
-  "sections/theory.tex" 1655125639 11963 0b5cc8be43af7e515a67b463a0c20a63 ""
+  "sections/results.tex" 1655134402 3349 ceb3b5357ddecd7a9ad963dc6d628844 ""
+  "sections/theory.tex" 1655134210 11917 735e9659f8504675bd5434eda78d1984 ""
   (generated)
   "main.aux"
   "main.log"

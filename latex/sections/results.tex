@@ -1,13 +1,3 @@
-% In figure \ref{fig:HD34411_bary_matrix} is plotted the $\Delta V_r^{ij}$ matrix for barycentric-corrected excalibur calibrated data for HD 34411. We are now on the order of m/s instead of km/s.
-
-% \begin{SCfigure}[1][!ht]%
-%     \begin{wide}  
-%         \includegraphics[width=\textwidth]{figures/HD34411_bary_matrix.pdf}
-%         \caption{RV shifts matrix computed for HD34411 using excalibur calibrated, barycentric-corrected data (column \texttt{bary\char`_excalibur}). Each cell shows the median relative radial velocity across all features found between observations $i$ and $j$.}
-%         \label{fig:HD34411_bary_matrix}
-%     \end{wide}
-% \end{SCfigure}
-
 Figure \ref{fig:HD34411_rvs} shows my extracted relative radial velocity results for HD 34411 compared to those of Lily Zhao et al. (also available upon request \cite{yale_data}). As the Earth's movement has been removed, we are now on the scale of m/s instead of km/s. The method used by Lily Zhao et al. is a "chunk-by-chunk" method, where each spectrum is split into $\sim$2Å chunks for each of which an RV is found by shifting a template spectrum to match the observed spectrum. That is to say, a different method from mine. Our results however coincide within the same order of magnitude and with a similar rms of 1.67 m/s and 1.78 m/s, mine and theirs respectively. The residuals however do jump around quite a bit, and, of course, my mean error of 0.8 cm/s is not correct. 
 
 \begin{SCfigure}[1][!ht]%

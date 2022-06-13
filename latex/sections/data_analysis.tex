@@ -28,6 +28,14 @@ In this section, I will describe and explain methods for performing LFC calibrat
     \subsubsection{Determining LFC line locations}
     The right side of figure \ref{fig:LFC_CCD} shows an LFC exposure plotted in its entirety. It is clear that the LFC does not cover all orders of the CCD, but starts shortly before order 40 and stops around 76. To determine the location of the LFC lines I follow this procedure: 1) Find peaks using scipy peak finder, 2) make data slices around each peak with the size of the average distance between peaks, 3) using iminuit do a chi2 minimization fit to each peak with a super-Gaussian plus a linear background. See figure \ref{fig:LFC_CCD} left side.
 
+    \begin{SCfigure}[1][!ht]%
+        \begin{wide}  
+            \includegraphics[width=\textwidth]{figures/LFC_peak_fitting_overview.pdf}
+            \caption{Upper left: illustration of a few LFC lines in order 65. Peaks are identified with scipy peak finder. Lower left: each peak is fitted with a super gauss to find the exact top of the peak with uncertainties. Right: Measured intensities for the LFC across the CCD (unitless). }
+            \label{fig:LFC_CCD}
+        \end{wide}
+    \end{SCfigure}
+
     A super-Gaussian, defined in Eq. (\ref{eq:LFC_super_gauss}), is a regular Gaussian but with an extra parameter, here denoted $P$, that allows the top of the Gaussian to be flattened. The last two terms here add a linear background and an offset.  
     
     \begin{equation}
@@ -47,14 +55,6 @@ In this section, I will describe and explain methods for performing LFC calibrat
     We are mainly interested in $\mu$, which gives the location of the LFC peak on the CCD (in pixel-space). With the initial rough wavelength solution derived from the ThAr lamp, I can determine what the approximate wavelength of the LFC peak should be. To find the better wavelength solution I then go look up the closest frequency given by Eq. (\ref{eq:LFC_freq_eq}), and we now have a map of ~20,000 points on the CCD with a good wavelength solution. 
     
     For a complete solution, we also need to estimate the wavelength solution between the LFC lines and to do that, I have explored two approaches: polynomial fitting and cubic-spline interpolation. Before moving on though, it is worthwhile to study the chi2 values from the many fits we just performed, as they can help us evaluate whether the errors of the original data are correct.
-    
-    \begin{SCfigure}[1][!ht]%
-        \begin{wide}  
-            \includegraphics[width=\textwidth]{figures/LFC_peak_fitting_overview.pdf}
-            \caption{Upper left: illustration of a few LFC lines in order 65. Peaks are identified with scipy peak finder. Lower left: each peak is fitted with a super gauss to find the exact top of the peak with uncertainties. Right: Measured intensities for the LFC across the CCD (unitless). }
-            \label{fig:LFC_CCD}
-        \end{wide}
-    \end{SCfigure}
 
     \subsubsection{Errors in the calibration data}
 
@@ -68,8 +68,6 @@ In this section, I will describe and explain methods for performing LFC calibrat
     as I use roughly 13 data points in each fit (the LFC line spacing does vary a bit across the CCD). 
 
     So if we plot all chi2 values we get from fitting the LFC lines, as I have done in figure \ref{fig:calib_errors}, we should see a typical chi2 distribution with a peak around 7. Using the uncertainties as provided in the data file, the chi2 distribution is however very flat (blue curve). It peaks somewhere around 25, which suggests that the uncertainties are about a factor $\sqrt{3}$ too small (square-root because the chi2 of course is squared and $25/3 \sim 8$). Multiplying the uncertainties by $\sqrt{3}$ and fitting the peaks again gives a chi2-distribution with a peak roughly around 7-8 (green curve).
-
-    Additionally, we can also look at the distribution of the p-values. With proper uncertainties, we should expect neither too many awful fits (p=0) nor too many perfect fits (p=1), but rather a roughly flat distribution. Although the chi2-distribution check is more clear-cut, the p-value distribution for uncertainties scaled by $\sqrt{3}$ (green) is better. Scaling by $\sqrt{6}$ is too much: the chi2 peaks around 4 and the p-distribution shows many more perfect fits.
                 
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
@@ -79,9 +77,24 @@ In this section, I will describe and explain methods for performing LFC calibrat
         \end{wide}
     \end{SCfigure}
 
+    Additionally, we can also look at the distribution of the p-values. With proper uncertainties, we should expect neither too many awful fits (p=0) nor too many perfect fits (p=1), but rather a roughly flat distribution. Although the chi2-distribution check is more clear-cut, the p-value distribution for uncertainties scaled by $\sqrt{3}$ (green) is better. Scaling by $\sqrt{6}$ is too much: the chi2 peaks around 4 and the p-distribution shows many more perfect fits.
+
     \subsubsection{Poly-fit calibration}
     Since the LFC peak locations, as seen in the right plot in figure \ref{fig:LFC_CCD}, appear to exhibit a certain periodic behavior, my initial approach to compute a wavelength solution between LFC lines was to fit the LFC peak locations with a polynomial. Looking at the residuals of fitting the LFC line locations with polynomials of increasing degree revealed smaller and smaller periodic variations, until reaching 5th degree, see figure \ref{fig:LFC_calib_poly_degrees}. The p-value drops to 0 for 6th degree, and the per-line rms (given by Eq. (\ref{eq:line_rms})) explodes. Only LFC lines with a chi2 (from the super-Gaussian fit) smaller than 100 were used for the analysis and errors were scaled by $\sqrt{3}$.
 
+    The residuals plotted in figure \ref{fig:LFC_calib_poly_degrees} show the difference between the theoretical wavelength for each LFC line (Eq. (\ref{eq:LFC_freq_eq})) and the wavelength that the calibration predicts for that location. You can get a feel for the quality of the calibration by looking at the residuals, but a more formal quantification is to compute the per-line rms for a given LFC exposure as: 
+    
+    \vspace{0.15cm}
+
+    \begin{equation}        
+        \text{RMS/line } [\text{ms}^{-1}] = \sqrt{\sum_{n=1}^{N} \frac{\left[\frac{\left(\lambda_{n, \text {pred.}}-\lambda_{n, \text {theory}}\right)}{\lambda_{n,\text{theory}}} \times c\right]^{2}}{N}}
+        \label{eq:line_rms}
+    \end{equation}
+    
+    \vspace{0.25cm}
+
+    for $N$ lines, where $c$ is the speed of light in m/s.
+    
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
             \includegraphics[width=\textwidth]{figures/calib/calib_poly_fit_degrees_order44_residuals_ang.pdf}
@@ -90,15 +103,6 @@ In this section, I will describe and explain methods for performing LFC calibrat
         \end{wide}
     \end{SCfigure}
 
-    The residuals plotted in figure \ref{fig:LFC_calib_poly_degrees} show the difference between the theoretical wavelength for each LFC line (Eq. (\ref{eq:LFC_freq_eq})) and the wavelength that the calibration predicts for that location. You can get a feel for the quality of the calibration by looking at the residuals, but a more formal quantification is to compute the per-line rms for a given LFC exposure as: 
-    
-    \begin{equation}        
-        \text{RMS/line } [\text{ms}^{-1}] = \sqrt{\sum_{n=1}^{N} \frac{\left[\frac{\left(\lambda_{n, \text {pred.}}-\lambda_{n, \text {theory}}\right)}{\lambda_{n,\text{theory}}} \times c\right]^{2}}{N}}
-        \label{eq:line_rms}
-    \end{equation}
-
-    for $N$ lines, where $c$ is the speed of light in m/s.
-    
     \subsubsection{Interpolation calibration}
     Although there are large periodic trends in the residuals in figure \ref{fig:LFC_calib_poly_degrees}, on the very small scale, the changes seem rather random. A better approach might therefore be to use interpolation, as this is more flexible and copes better with very complicated and non-repetitive behavior.
     
@@ -113,9 +117,6 @@ In this section, I will describe and explain methods for performing LFC calibrat
             \label{fig:calib_poly_vs_interp}
         \end{wide}
     \end{SCfigure}
-
-    \todoNow{Compare to Excalibur}
-
 
 \subsection{Radial velocity extraction}
 
@@ -156,7 +157,7 @@ In this section, I will describe and explain methods for performing LFC calibrat
             
             \item Maximum difference between the areas under the graph of two features (the sum of the intensity values in the feature): Peaks with similar shapes will give a low difference. This filter is most useful when analyzing non-barycentric-corrected, where features often move so much that they overlap. Figure \ref{fig:good_match_bad_match} shows an example of a bad and a good match, where the bad match can be avoided by setting the max area difference down to 0.1 (unitless). 
         \end{itemize}
-        \item I have not yet found any formal way to determine the best choice of values for these filters.
+        \item A way to formally select the best values for these filters is yet to be worked out.
     \end{itemize}
 
     % \begin{SCfigure}[1][!ht]%
@@ -212,13 +213,13 @@ In this section, I will describe and explain methods for performing LFC calibrat
         \end{wide}
     \end{SCfigure}
 
-    Also plotted in figure \ref{fig:median-mean-weighted-average} are the respective errors on the weighted average, the mean, and the median. As it is the median that I have decided to work with, it would make sense to use the median error 
+    Also plotted in figure \ref{fig:median-mean-weighted-average} are the respective errors on the weighted average, the mean, and the median. As it is the median that I have decided to work with, it would make sense to use the median error, 
     
     $$
-        \sigma_{\text{median}} = \frac{\sigma}{\sqrt{N-1}} \times \sqrt{\pi/2}
+        \sigma_{\text{median}} = \frac{\sigma}{\sqrt{N-1}} \times \sqrt{\pi/2},
     $$
     
-    for large $N$ where $\sigma$ is the standard deviation, however, it not only comes out very large but also breaks the propagation of the original errors from the spectrograph. The weighted error carries on the information of the original errors, but it comes out very small. For the sake of continuing with the analysis, I will go on with the weighted error however.
+    for large $N$, where $\sigma$ is the standard deviation, however, it not only comes out very large but also breaks the propagation of the original errors from the spectrograph. The weighted error carries on the information of the original errors, but it comes out very small. For the sake of continuing with the analysis, I will go on with the weighted error however.
     
     \subsubsection{Extracting relative shifts from an overconstrained system}
     
@@ -233,6 +234,8 @@ In this section, I will describe and explain methods for performing LFC calibrat
         \label{fig:shift_matrix}
         \end{wide}
     \end{SCfigure}
+
+    \vspace*{-0.5cm}
             
     To reduce the matrix to one array, we can perform another chi2 minimization fit, defined bellow in Eq. (\ref{eq:matrix_reduction_fit}), in which we fit an array of parameters we can call $V_r^i$ of length $N$ (the number of observations), initialized to zero. The chi2 will be at its minimum when it has found an array of velocities $V_r^i$ that best describe all the differences in the matrix $\Delta V_r^{ij}$ and each of the resulting velocities are thus relative not only to its neighbors but to all the other observations as well, thereby avoiding the correlation.
     
@@ -241,7 +244,7 @@ In this section, I will describe and explain methods for performing LFC calibrat
         \chi^{2}=\sum_{i,j = 0}^{N}\left[\frac{ \Delta V_{r}^{ij} - (V_r^i - V_r^j) }{\sigma(\Delta V_{r}^{ij})}\right]^{2} \quad : \quad i < j.
     \end{equation}
 
-    To test the method, I have analyzed non-barycentric-corrected data, that is to say, data in which we should be able to see the movement of the Earth around the center-of-mass of the solar system. The resulting $\Delta V_r^{ij}$ matrix is the one plotted in figure \ref{fig:shift_matrix} while the extracted relative radial velocities (the fit parameters $V_r^i$) are plotted in figure \ref{fig:RV_results_non_barycentric} (black), where we see a clear signal of Earth's movement. I have fitted the data with a periodic function and found a  period of $(366.482 \pm 3\mathrm{e}{-6})$ days and an amplitude of $(28.132 \pm 9\mathrm{e}{-7})$ km/s. This is very close to the actual orbital speed of the Earth, although we should not expect that, as the star is unlikely to lie in the plane of the Earth's orbit. There are however three other things to notice: 1) the error of the period does not cover the discrepancy with the actual value of 365.24 days, 2) the very high chi2 value, and 3) the p-value of zero. These suggest very clearly that my errors are wrong. Nevertheless, the signal is clear and the period found is definitely on the right order of magnitude, from which I confirm that my method, in general, is working. The direct velocity shifts between observations 1 and 2, 2 and 3, etc.,  are plotted in blue in figure \ref{fig:RV_results_non_barycentric}, and it is clear that the last step of computing the relative shift between all observations is vital.
+    To test the method, I have analyzed non-barycentric-corrected data. The resulting $\Delta V_r^{ij}$ matrix is the one plotted in figure \ref{fig:shift_matrix} while the extracted relative radial velocities (the fit parameters $V_r^i$) are plotted in figure \ref{fig:RV_results_non_barycentric} (black), where we see a clear signal of Earth's movement. I have fitted the data with a periodic function and found a  period of $(366.482 \pm 3\mathrm{e}{-6})$ days and an amplitude of $(28.132 \pm 9\mathrm{e}{-7})$ km/s. This is very close to the actual orbital speed of the Earth, although we should not expect that, as the star is unlikely to lie in the plane of the Earth's orbit. There are however three other things to notice: 1) the error of the period does not cover the discrepancy with the actual value of 365.24 days, 2) the very high chi2 value, and 3) the p-value of zero. These suggest very clearly that my errors are wrong. Nevertheless, the signal is clear and the period found is definitely on the right order of magnitude, from which I confirm that my method, in general, is working. The direct velocity shifts between observations 1 and 2, 2 and 3, etc.,  are plotted in blue in figure \ref{fig:RV_results_non_barycentric}, and it is clear that the last step of computing the relative shift between all observations is vital.
 
     \begin{SCfigure}[1][!ht]%
         \begin{wide}  
@@ -250,6 +253,7 @@ In this section, I will describe and explain methods for performing LFC calibrat
             \label{fig:RV_results_non_barycentric}
         \end{wide}
     \end{SCfigure}
+
 
     Although the number of computations necessary for the described analysis is high, it is possible to run it for 188 observations on a powerful laptop in about 2 hours. More run-times are listed in appendix \ref{appendix:RV_extraction}.
     
