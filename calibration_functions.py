@@ -271,7 +271,8 @@ def fit_all_peaks_in_all_orders(filename = r"expres_tp/LFC_200907.1063.fits", co
     data = hdu1[1].data.copy()
 
     results = []
-    for order in range(0, len(data)):
+    # for order in range(0, len(data)):
+    for order in range(40, 76):
         data_spec       = data['spectrum'][order]
         data_spec_err   = data['uncertainty'][order]
         data_wavel      = data['wavelength'][order]

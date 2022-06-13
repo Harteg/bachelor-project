@@ -1232,19 +1232,19 @@ def matrix_reduce_results_rms(diff_matrix, plot=True):
 #     return m, final_shifts, final_shifts_err
 
 
-def fit_final_shifts(rv, rv_err, diff_matrix, diff_matrix_err, with_date_duplicates=True, save_as=None):
+def fit_final_shifts(rv, rv_err, diff_matrix, diff_matrix_err, with_date_duplicates=True, save_as=None, path=SPECTRA_PATH_34411):
 
     # Get times
     if with_date_duplicates:
-        filenames = get_all_spectra_filenames()
+        filenames = get_all_spectra_filenames(path)
     else:
-        filenames = get_spectra_filenames_without_duplicate_dates()
+        filenames = get_spectra_filenames_without_duplicate_dates(path)
 
     seconds = [get_spectra_seconds_since_epoch(file) for file in filenames]
     seconds = np.asarray(seconds)
     days = seconds / (60*60*24)
     days = days - min(days)
-    fig, (ax1) = plt.subplots(ncols=1, figsize=(8, 4))
+    fig, (ax1) = plt.subplots(ncols=1, figsize=(8, 3.5))
 
     # Get direct comparisons (above diagonal) for comparison
     velocity_shifts = get_above_diagonal(diff_matrix) * 1/1000 # km/s
@@ -1701,3 +1701,98 @@ def remove_outliers_from_result_with_rv_cut(res):
         df = df[np.abs(df.rv) < 12.5]
         result_new.append(np.asarray(df))
     return np.asarray(result_new)
+
+
+def plot_compare_lily(my_rv, my_err, days, save_as = None, star_name=None, 
+            plot_residuals=False, lily_data_file=None, padding_top=4, padding_bottom=1, ticks=None, small_height=False):
+
+    height = 4 if small_height else 5
+    info_text_y_loc = 0.93 if small_height else 0.95
+
+    fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, figsize=(8, height), sharex=True, gridspec_kw={'height_ratios': [3, 3, 1.5]})
+
+    # Load Lily data:
+    df = pd.read_csv("lily_stellar_activity_data/" + lily_data_file)
+    rv = df["CBC RV [m/s]"]
+    rv_err = df["CBC RV Err. [m/s]"]
+
+    # Find range
+    ymin = floor(min([min(rv), min(my_rv)])) - padding_bottom
+    ymax = ceil(max([max(rv), max(my_rv)])) + padding_top
+    print(ymin, ymax)
+
+    if ticks:
+        ax1.yaxis.set_ticks(ticks)
+        ax2.yaxis.set_ticks(ticks)
+
+    ax1.set_ylabel("RV shift [m/s]")
+    ax1.errorbar(days, my_rv, yerr=my_err, fmt=".", color="k", ms=1, elinewidth=0.5, label="My method")
+    ax1.set_ylim(ymin, ymax)
+    ax1.set_xlim(-20, max(days) + 20)
+    ax1.hlines(y=0, xmin=-20, xmax=max(days) + 20, color="black", alpha=0.25, lw=0.1)
+    ax1.legend(loc="upper left", prop={'size': 8})
+    text = f"rms = {(compute_rms(my_rv)):.3} m/s, mean error = {np.mean(my_err):.2} m/s"
+    ax1.text(0.19, info_text_y_loc, text,
+                        size = 8,
+                        horizontalalignment='left',
+                        verticalalignment='top',
+                        transform=ax1.transAxes)
+
+    if star_name:
+        ax1.text(0.99, info_text_y_loc, star_name,
+                        size = 8,
+                        horizontalalignment='right',
+                        verticalalignment='top',
+                        transform=ax1.transAxes)
+
+
+    
+    t = df["Time [MJD]"]
+    t = t - min(t)
+    rms2 = compute_rms(rv)
+
+    ax2.errorbar(t, rv, yerr=rv_err, fmt=".", ms=1, color="k", elinewidth=0.5, label="Lily Zhao et al's method")
+    ax2.set_ylabel("RV shift [m/s]")
+    ax2.set_ylim(ymin, ymax)
+    ax2.set_xlim(-20, max(t) + 20)
+    ax2.hlines(y=0, xmin=-20, xmax=max(t) + 20, color="black", alpha=0.25, lw=0.1)
+    ax2.legend(loc="upper left", prop={'size': 8})
+
+    text = f"rms = {(rms2):.3} m/s, mean error = {np.mean(rv_err):.2f} m/s"
+    ax2.text(0.30, info_text_y_loc, text,
+                        size = 8,
+                        horizontalalignment='left',
+                        verticalalignment='top',
+                        transform=ax2.transAxes)
+
+    # ax1.get_shared_x_axes().join(ax1, ax2)
+
+    # ax1.sharex(ax3)
+    # ax2.sharex(ax3)
+    fig.subplots_adjust(wspace=0, hspace=0)
+    # fig.tight_layout()
+
+    # plot residuals
+    residuals = my_rv - rv
+    ax3.scatter(t, residuals, s=0.5, color="k")
+    ax3.set_xlabel("Time [days]")
+    ax3.set_ylabel("Residuals")
+    ax3.yaxis.set_ticks([-2, 0, 2])
+    ax3.hist(residuals, orientation='horizontal', range=(-2.5, 2.5), bins=int(np.sqrt(len(residuals))), alpha=0.1, color="k", bottom=-20)
+
+
+    if save_as is not None:
+        fig.savefig(save_as, bbox_inches="tight", dpi=300)
+
+    # Histogram of residuals if same length
+    if plot_residuals:
+        if len(rv) == len(my_rv):
+
+            fig, ax = plt.subplots(figsize=(6,0.5))
+            ax.plot(t, my_rv - rv, ".", ms=0.5)
+            ax.set_ylabel("Residuals [m/s]")
+            ax.set_xlabel("Days")
+
+            fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(6,1.5))
+            ax1.hist(my_rv - rv, bins=50, range=(-5, 5));
+            ax2.scatter(my_rv, rv, s=0.5)

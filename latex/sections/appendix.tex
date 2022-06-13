@@ -1,30 +1,3 @@
-
-
-% ==========================================================================================
-% 
-%                                     LFC ERRORS
-% 
-% ==========================================================================================
-% \section{LFC intensity errors}\label{appendix:LFC_errors} 
-
-% \begin{SCfigure}[1][!ht]%
-%     \begin{wide}  
-%     \includegraphics[scale=1]{figures/N_data_points.pdf}
-%     \caption{Number of data points in each LFC peak fit, determined by the average distance between peaks in each order.}
-%     \label{fig:N_data_points}
-% \end{wide}
-% \end{SCfigure}
-
-
-% \begin{SCfigure}[1][!ht]%
-%     \begin{wide}  
-%     \includegraphics[scale=0.72]{figures/calib/calib_errors_extensive.pdf}
-%     \caption{Chi2-values and P-values from individual LFC peak super-gauss fits with photon count (spectrum) errors multiplied by different scale-factors.}
-%     \label{fig:calib_errors_extensive}
-% \end{wide}
-% \end{SCfigure}
-
-
 % ==========================================================================================
 % 
 %                                     RV EXTRACTIONS
@@ -36,18 +9,10 @@
 \begin{SCfigure}[1][!ht]%
     \begin{wide}  
     \includegraphics[scale=0.72]{figures/err_vs_run_time.pdf}
-    \caption{Number of data points in each LFC peak fit, determined by the average distance between peaks in each order.}
+    \caption{Resulting error in extracted radial velocity shift between two observations (left) and run time of that computation (right) as a function of number of sampled points in the interpolation.}
     \label{fig:err_vs_run_time}
 \end{wide}
 \end{SCfigure}
-
-% \begin{figure}[ht]
-%     \centering
-%     \includegraphics[scale=0.80]{figures/err_vs_run_time.pdf}
-%     \caption{Number of data points in each LFC peak fit, determined by the average distance between peaks in each order.}
-%     \label{fig:err_vs_run_time}
-% \end{figure}
-
 
 \begin{SCfigure}[1][!ht]%
     \begin{wide}  
@@ -58,11 +23,29 @@
 \end{SCfigure}
 
 \subsection*{Computational run times}
-\todo{add number of function calls for the fitting}
+For running the analysis I have used a Macbook M1 pro (2021).
 
-\todo{add number of peak analyzed and so on}
+\subsubsection*{Calibration}
+\begin{itemize}
+    \item Fitting super-Gaussian to 17,068 LFC lines takes about 45 seconds (one core).
+    \item Computing the interpolation function and fitting the polynomials takes less than a second.
+\end{itemize}
 
-\todo{add run times}
+\subsubsection*{RV extractions}
+\begin{itemize}
+    \item Finding all features in 188 files takes just about 1 minute (one core).
+    \item The run time for computing the $\Delta V_r^{ij}$ matrix of course scales as $N^2$. The following times are for running the computation in parallel on 6 CPU cores:
+    \begin{itemize}
+        \item[] \begin{tabbing}
+            HD 34411 \hspace{0.5 cm} \= $N_{\text{files}} =$ 188 \hspace{0.5 cm} \= $N_{\text{features}} =$ 12,608,511 \hspace{0.25 cm} \= :\qquad 121 minutes \\
+
+            HD 10700    \> $N_{\text{files}} =$ 174 \> $N_{\text{features}} =$ 9,008,471   \> :\qquad 91 minutes \\
+            HD 26965    \> $N_{\text{files}} =$ 114 \> $N_{\text{features}} =$ 5,777,355   \> :\qquad 62 minutes \\
+            HD 101501   \> $N_{\text{files}} =$ 45 \> $N_{\text{features}} =$ 815,719     \> :\qquad 9 minutes \\
+        \end{tabbing}
+    \end{itemize}
+    \item The subsequent reduction of the $\Delta V_r^{ij}$ matrix takes up to five minutes on one core.
+\end{itemize}
 
 % ==========================================================================================
 % 
@@ -72,7 +55,7 @@
 \newpage
 \section{Additional results}\label{appendix:results}
 
-\small{RV extracts from three more stars: HD 101501, HD 10700 and HD 26965. In each figure the top shows my final extracted RV shifts using excalibur calibrated, barycentric-corrected data (data column \texttt{bary\char`_excalibur}), the center shows Lily Zhao et al's results using a chunk-by-chunk (CBC) analysis technique \cite{yale_data}, and the bottom shows residuals from subtracting Lily's results from mine. }
+\small{Relative radial velocities computed for three more stars: HD 101501, HD 10700, and HD 26965. In each figure the top shows my final extracted RV shifts using excalibur calibrated, barycentric-corrected data (data column \texttt{bary\char`_excalibur}), the center shows Zhao et al.'s results using a chunk-by-chunk (CBC) analysis technique \cite{yale_data}, and the bottom shows residuals from subtracting Zhao's results from mine. }
 
 \begin{SCfigure}[1][!ht]%
     \begin{wide}  

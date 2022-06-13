@@ -1,12 +1,21 @@
 \documentclass{article}
+\usepackage[a4paper]{geometry}
+% \usepackage[english, science, hyperref, titlepage]{ku-frontpage} %Laver KU-forside.
+\usepackage[english, science]{ku-frontpage}
 \usepackage[utf8]{inputenc}
-\usepackage[a4paper, lmargin = 1 cm , rmargin = 6 cm , tmargin = 2 cm, bmargin = 2 cm]{geometry}
 \usepackage{soul}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{tabularray}
 \usepackage{xcolor}
-\usepackage[colorlinks,allcolors=blue]{hyperref} % for href links
-\usepackage{bookmark} % to avoid rerun at every change, because standard ref package is crap... 
+\usepackage{bookmark} % to avoid rerun at every change
+% \usepackage[colorlinks,allcolors=black]{hyperref} % for href links
+\hypersetup{
+    colorlinks=True,
+    citecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
 
 % For captions in the margin
 \usepackage{sidecap}
@@ -18,9 +27,6 @@
 % Write "Appendix" on the appendix chapter titles.
 \usepackage[titletoc, title]{appendix}
 
-% Black hyperlinks (ref, citations, table of contents)
-\hypersetup{linkcolor=black}
-
 % MatPlotLib Plot sizes: 
 % dpi=300
 % format pdf
@@ -29,7 +35,7 @@
 % scale = 0.8 
 % text-size = 10
 
-% My styles: ===== 
+% My styles: =======================================================
 
 % To type underscores... type \_
 \chardef\_=`_ 
@@ -48,22 +54,34 @@
 \def\todoNow#1{\textbf{\footnotesize{\tcbox[colback=red!90]{\textcolor{white}{todo now: #1}}}}}
 \def\comment#1{\textbf{\footnotesize{\tcbox[colback=yellow!20]{#1}}}}
 
-% ======= 
+% ===================================================================
 
-\title{Bachelor Project in Physics}
-\author{Jakob Harteg, wmc573}
-\date{June 2022, University of Copenhagen}
+% \title{Bachelor Project in Physics}
+% \author{Jakob Harteg, wmc573}
+% \date{June 2022, University of Copenhagen}
+
+
+\assignment{Bachelor Project}
+\author{Jakob S. Harteg}
+\title{Laser Frequency Comb Calibrations and \newline Radial Velocity Extractions}
+\subtitle{}
+\date{Submitted: June 15, 2022}
+\advisor{Advisor: Troels C. Petersen}
+
+
+% ==================== BEGIN DOCUMENT ===============================
 
 \begin{document}
+\begingroup
+  \fontencoding{T1}\fontfamily{LinuxLibertineT-OsF}\selectfont
+  \maketitle
+\endgroup
 
-% Cover page
-\maketitle
 
-
-\todo{Make cover page}
-
-\todo{Add abstract}
-
+\newpage
+\begin{abstract}
+This project report explores data from The EXtreme PREcision Spectrograph (EXPRES) and explains devised methods for performing laser frequency comb (LFC) wavelength calibrations and radial velocity (RV) extractions from star spectra. For the calibration a per-line rms of 10.0 m/s was reached using a cubic-spline interpolation. \todo{Compare to Excalibur}. Relative radial velocity shifts for four different planets were extracted, although with faulty errors, and coincided within an order of magnitude with the results of Lily L. Zhao et al. \cite{yale_data}. 
+\end{abstract}
 
 % Table of contents
 \newpage
@@ -72,15 +90,16 @@
 \vspace{\fill}
 
 \section*{Note about the project}
-In the beginning of February 2022, Troels Petersen (KU) and Lars Buchhave (DTU) started working 
-together to improve computational LFC calibration methods, and Troels invited me and a few other students to come along for the ride. During the project I've been exploring real data and developing a crude method for performing LFC calibrations and subsequent radial velocity extractions. With this project report it is my intent to share and explain the process of performing such analyses, thinking of the reader as a fellow physics student perhaps interested in picking up where I left off. 
+In the beginning of February 2022, Troels C. Petersen (UCPH) and Lars A. Buchhave (DTU) started a collaboration to improve computational methods for LFC calibrations of spectrographs, and Troels invited me and a few other students to come along for the ride. During the project, I have been exploring real data and developing a crude method for performing LFC calibrations and radial velocity extractions. With this project report, I intend to share and explain the process of performing such analyses, thinking of the reader as a fellow physics student perhaps interested in picking up where I left off. 
+
+\newgeometry{top=2cm,bottom=2cm,right=6cm,left=1cm}
 
 % SECTIONS ==========================================
 \newpage
 \section{Introduction}
 \input{sections/introduction} 
 
-\newpage
+% \newpage
 \section{Theory}
 \input{sections/theory} 
 
@@ -92,14 +111,16 @@ together to improve computational LFC calibration methods, and Troels invited me
 \section{Results}
 \input{sections/results} 
 
-\newpage
+% \newpage
 \section{Discussion}
 \input{sections/discussion} 
 
-\section{Conclusion}
-% \input{sections/conclusion} 
+% \section{Conclusion}
+% % \input{sections/conclusion} 
 
 \section{Acknowledgements}
+\input{sections/acknowledgements} 
+
 
 % Bibliography
 \newpage
@@ -111,7 +132,6 @@ together to improve computational LFC calibration methods, and Troels invited me
 \newpage
 % \appendix
 \begin{appendices}
-\renewcommand{\thesection}{\Alph{section}:} % adds : (colon) after Appendix A 
         \input{sections/appendix} 
 \end{appendices}
 
