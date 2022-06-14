@@ -106,7 +106,7 @@ In this section, I will describe and explain methods for performing LFC calibrat
     \subsubsection{Interpolation calibration}
     Although there are large periodic trends in the residuals in figure \ref{fig:LFC_calib_poly_degrees}, on the very small scale, the changes seem rather random. A better approach might therefore be to use interpolation, as this is more flexible and copes better with very complicated and non-repetitive behavior.
     
-    A cubic-spline interpolation would force all the residuals to be zero, so in order to evaluate the quality of the method, we can omit for instance every second peak from the interpolation and then compute the residual between the omitted peaks and the resulting interpolation function. Then we can flip it around and interpolate the peaks we left out before and compute the remaining residuals. 
+    A cubic-spline interpolation would force all the residuals to be zero, so to evaluate the method, we can interpolate all the even peaks and compute the residuals for the odd peaks. Then flip around to interpolate the odd peaks and compute the residuals for the even peaks.
 
     Figure \ref{fig:calib_poly_vs_interp} shows a comparison of the residuals from a 5th degree poly-fit and the cubic-spline. For the cubic-spline I get a per-line rms of 10.0 m/s, while the poly-fit gives $5.73 \times 10^8$ m/s, which suggests that the cubic-spline approach is the better one. It is also worth noting that because the interpolation was done on only half the data points at a time, it will be even better when performed on all data points, as it would be when used for calibrating data before an RV analysis.
 
@@ -255,6 +255,8 @@ In this section, I will describe and explain methods for performing LFC calibrat
     \end{SCfigure}
 
 
-    Although the number of computations necessary for the described analysis is high, it is possible to run it for 188 observations on a powerful laptop in about 2 hours. More run-times are listed in appendix \ref{appendix:RV_extraction}.
+    Although the number of computations necessary for the described analysis is high, it is possible to run for 188 observations on a powerful laptop in about 2 hours. More run-times are listed in appendix \ref{appendix:RV_extraction}. The implementation of the described methods are hosted on GitHub\footnote{\url{https://github.com/Harteg/LFC_calibration_RV_extractions}}. 
+
+    
     
 

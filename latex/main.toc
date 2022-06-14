@@ -12,7 +12,7 @@
 \contentsline {subsubsection}{\numberline {3.1.2}Errors in the calibration data}{9}{subsubsection.3.1.2}%
 \contentsline {subsubsection}{\numberline {3.1.3}Poly-fit calibration}{10}{subsubsection.3.1.3}%
 \contentsline {subsubsection}{\numberline {3.1.4}Interpolation calibration}{10}{subsubsection.3.1.4}%
-\contentsline {subsection}{\numberline {3.2}Radial velocity extraction}{11}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.2}Radial velocity extraction}{10}{subsection.3.2}%
 \contentsline {subsubsection}{\numberline {3.2.1}Finding and matching features across observations}{11}{subsubsection.3.2.1}%
 \contentsline {subsubsection}{\numberline {3.2.2}Computing velocity shift as the cross-correlation}{12}{subsubsection.3.2.2}%
 \contentsline {subsubsection}{\numberline {3.2.3}Computing velocity shifts for all features}{13}{subsubsection.3.2.3}%

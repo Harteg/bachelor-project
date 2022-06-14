@@ -1221,6 +1221,7 @@ INPUT ./figures/shift_non_bary_centric.pdf
 INPUT figures/shift_non_bary_centric.pdf
 INPUT ./figures/shift_non_bary_centric.pdf
 INPUT ./figures/shift_non_bary_centric.pdf
+INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmtt8.tfm
 INPUT ./sections/results.tex
 INPUT ./sections/results.tex
 INPUT ./sections/results.tex
@@ -1313,6 +1314,7 @@ INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pf
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb
+INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb
