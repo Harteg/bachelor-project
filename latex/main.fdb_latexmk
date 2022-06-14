@@ -1,12 +1,12 @@
 # Fdb version 3
-["bibtex main"] 1655231787 "main.aux" "main.bbl" "main" 1655231823
+["bibtex main"] 1655231787 "main.aux" "main.bbl" "main" 1655232020
   "/usr/local/texlive/2021/texmf-dist/bibtex/bst/base/plain.bst" 1292289607 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "main.aux" 1655231823 28134 220c61cdda28b71ccd322270316690c7 "pdflatex"
+  "main.aux" 1655232019 28134 220c61cdda28b71ccd322270316690c7 "pdflatex"
   "references.bib" 1655122955 3610 8c67bdad072b2a8588d3922273a9cbfa ""
   (generated)
   "main.bbl"
   "main.blg"
-["pdflatex"] 1655231821 "/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex" "main.pdf" "main" 1655231823
+["pdflatex"] 1655232018 "/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex" "main.pdf" "main" 1655232020
   "/Users/jakobharteg/GitHub/bachelor-project/latex/main.tex" 1655135396 4298 0fd46d4233290e857ca92884de037310 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1136849721 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/libertine/lbtn_y6cxei.enc" 1490131464 3032 9da6f34bab0bf033a80f47010fc36bbe ""
@@ -258,13 +258,13 @@
   "ku-frontpage.sty" 1655053272 13054 3beb5bcbfff9a24172d5839063625475 ""
   "logos/ku-logo.pdf" 1636024725 93879 31d1db24936015ee9fe960c856f01525 ""
   "logos/science-english.pdf" 1636024725 71141 827ec2c5d6f797163b848e34358df682 ""
-  "main.aux" 1655231823 28134 220c61cdda28b71ccd322270316690c7 "pdflatex"
+  "main.aux" 1655232019 28134 220c61cdda28b71ccd322270316690c7 "pdflatex"
   "main.bbl" 1655231787 2572 ca636e7ea5083fac42ab66cb20d818bf "bibtex main"
   "main.tex" 1655135396 4298 0fd46d4233290e857ca92884de037310 ""
-  "main.toc" 1655231823 2235 15f79fe7fd8414325729a4b05ab19212 "pdflatex"
+  "main.toc" 1655232019 2235 15f79fe7fd8414325729a4b05ab19212 "pdflatex"
   "sections/acknowledgements.tex" 1655110025 787 5dfc089a01d4fd437f25796a7982aab3 ""
   "sections/appendix.tex" 1655133406 3999 29e44a0e337a50b7b2fa05cb2827f2cd ""
-  "sections/data_analysis.tex" 1655231821 28457 2361c90a5f58d2b08b45c9135e9266df ""
+  "sections/data_analysis.tex" 1655232018 28456 d284a9eb259c25ce8d04f3eaf3012cb7 ""
   "sections/discussion.tex" 1655134432 4088 ada25af35eea388e9d216ec216d7597c ""
   "sections/introduction.tex" 1655121367 1720 9ed9ae5a65f33c94a999963201dae6d3 ""
   "sections/results.tex" 1655134402 3349 ceb3b5357ddecd7a9ad963dc6d628844 ""
