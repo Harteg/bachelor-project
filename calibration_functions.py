@@ -54,7 +54,7 @@ def get_peak_index_ranges(peak_locs, peak_range_size=np.nan):
 
 
 def fit_peaks(data_spec, data_spec_err, peak_index_ranges, print=False):
-    """ Returns array of the fit values with errors: A, A_err, mu, mu_err, sigma, sigma_err, C, C_err, chi2_val, ndof, converged (bool), index_start, index_end, prob """
+    """ Returns array of the fit values with errors: A, A_err, mu (pixels), mu_err, sigma, sigma_err, C, C_err, chi2_val, ndof, converged (bool), index_start, index_end, prob """
 
     peak_fits = []
     for peak_index_range in peak_index_ranges:

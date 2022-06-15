@@ -48,18 +48,19 @@ Ryan~R Petersburg, JM~Joel Ong, Lily~L Zhao, Ryan~T Blackman, John~M Brewer,
 Lily~L. Zhao.
 \newblock Excalibur.
 \newblock \url{https://github.com/lilylingzhao/excalibur}, 2020.
-\newblock Accessed: 2022-05-15.
+\newblock (accessed: 2022-05-15).
 
 \bibitem{yale_data}
 Lily~L. Zhao et~al.
 \newblock Expres stellar-signals project.
 \newblock \url{https://exoplanets.astro.yale.edu/science/activity.php}.
-\newblock Accessed: 2022-05-15.
+\newblock (accessed: 2022-05-15).
 
 \bibitem{zhao2021excalibur}
 Lily~L. Zhao, David~W Hogg, Megan Bedell, and Debra~A Fischer.
 \newblock Excalibur: A nonparametric, hierarchical wavelength calibration
   method for a precision spectrograph.
 \newblock {\em The Astronomical Journal}, 161(2):80, 2021.
+\newblock \url{https://arxiv.org/abs/2010.13786} (accessed: 2022-05-15).
 
 \end{thebibliography}
