@@ -53,6 +53,7 @@ SPECTRA_PATH_10700 = "/Users/jakobharteg/Data/10700_spectra/"
 SPECTRA_PATH_26965 = "/Users/jakobharteg/Data/26965_spectra/"
 SPECTRA_PATH_101501 = "/Users/jakobharteg/Data/101501_spectra/"
 SPECTRA_PATH_51PEG = "/Users/jakobharteg/Data/51peg/"
+RV_RESULTS_PATH = "/Users/jakobharteg/kDrive/Uni/Kurser/Bachelorprojekt/Data/rv_results/"
 
 def get_all_spectra_filenames(spectra_path = SPECTRA_PATH_34411):
     """ Returns all filenames of the spectra files in the path speficied in spectra_path"""
