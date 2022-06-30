@@ -1,0 +1,66 @@
+\begin{thebibliography}{10}
+
+\bibitem{barycentric_exposure_meter_blackman}
+Ryan~T Blackman, JM~Joel Ong, and Debra~A Fischer.
+\newblock The measured impact of chromatic atmospheric effects on barycentric
+  corrections: Results from the extreme precision spectrograph.
+\newblock {\em The Astronomical Journal}, 158(1):40, 2019.
+
+\bibitem{star_properties}
+John~M Brewer, Debra~A Fischer, Jeff~A Valenti, and Nikolai Piskunov.
+\newblock Spectral properties of cool stars: extended abundance analysis of
+  1,617 planet-search stars.
+\newblock {\em The Astrophysical Journal Supplement Series}, 225(2):32, 2016.
+
+\bibitem{carroll2017introduction}
+Bradley~W Carroll and Dale~A Ostlie.
+\newblock {\em An introduction to modern astrophysics}.
+\newblock Cambridge University Press, 3. edition, 2017.
+
+\bibitem{EXPRES_technical_details_Jurgenson}
+C~Jurgenson, D~Fischer, T~McCracken, D~Sawyer, A~Szymkowiak, Allen Davis,
+  G~Muller, and F~Santoro.
+\newblock Expres: a next generation rv spectrograph in the search for
+  earth-like worlds.
+\newblock In {\em Ground-based and Airborne Instrumentation for Astronomy VI},
+  volume 9908, page 99086T. International Society for Optics and Photonics,
+  2016.
+
+\bibitem{doppler_shift_GR_formula}
+Lennart Lindegren and Dainis Dravins.
+\newblock The fundamental definition of “radial velocity”.
+\newblock {\em Astronomy \& Astrophysics}, 401(3):1185--1201, 2003.
+
+\bibitem{radial_velocity_techniques}
+Christophe Lovis, Debra Fischer, et~al.
+\newblock Radial velocity techniques for exoplanets.
+\newblock {\em Exoplanets}, pages 27--53, 2010.
+
+\bibitem{first_RV_from_EXPRES}
+Ryan~R Petersburg, JM~Joel Ong, Lily~L Zhao, Ryan~T Blackman, John~M Brewer,
+  Lars~A Buchhave, Samuel~HC Cabot, Allen~B Davis, Colby~A Jurgenson,
+  Christopher Leet, et~al.
+\newblock An extreme-precision radial-velocity pipeline: First radial
+  velocities from expres.
+\newblock {\em The Astronomical Journal}, 159(5):187, 2020.
+
+\bibitem{excalibur_github}
+Lily~L. Zhao.
+\newblock Excalibur.
+\newblock \url{https://github.com/lilylingzhao/excalibur}, 2020.
+\newblock (accessed: 2022-05-15).
+
+\bibitem{yale_data}
+Lily~L. Zhao et~al.
+\newblock Expres stellar-signals project.
+\newblock \url{https://exoplanets.astro.yale.edu/science/activity.php}.
+\newblock (accessed: 2022-05-15).
+
+\bibitem{zhao2021excalibur}
+Lily~L. Zhao, David~W Hogg, Megan Bedell, and Debra~A Fischer.
+\newblock Excalibur: A nonparametric, hierarchical wavelength calibration
+  method for a precision spectrograph.
+\newblock {\em The Astronomical Journal}, 161(2):80, 2021.
+\newblock \url{https://arxiv.org/abs/2010.13786} (accessed: 2022-05-15).
+
+\end{thebibliography}

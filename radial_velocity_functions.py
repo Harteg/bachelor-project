@@ -22,6 +22,8 @@ sys.path.append('/Users/jakobharteg/Github/MyAppStat/')
 from ExternalFunctions import nice_string_output, add_text_to_ax # useful functions to print fit results on figure
 
 
+
+
 # my_colors_red = "#b43e3e"
 # my_colors_blue = "#5168ce"
 my_colors_red = "C3"
@@ -88,6 +90,18 @@ def get_spec_wavel(data, order, continuum_normalized=False, bary_corrected=True)
         data_spec_err = data_spec_err / cont
 
     return data_spec, data_spec_err, data_wavel
+
+def get_filenames_in_dir(dir, must_contain=None, sort_cron_abc=True):
+    filenames = next(walk(dir), (None, None, []))[2]  # [] if no file
+    
+    if sort_cron_abc:
+        filenames = sorted(filenames)
+
+    if must_contain:
+        filenames = [x for x in filenames if must_contain in x]
+
+    filenames = [dir + x for x in filenames] # add path to the filename
+    return filenames
 
 
 def get_spectra_seconds_since_epoch(filename):
@@ -520,7 +534,7 @@ def compute_match_filter_mask(matches, max_dist, max_area_diff):
     return np.asarray(mask)
 
 
-def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=None, return_df=False, interp_size = 1000, return_extra=False):
+def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=None, return_df=False, interp_size = 1000, return_extra=False, return_minuit=False):
     """ Attempts to fit two features with based on a shift parameter.
         Returns shift_min_final (m/s), shift_min_final_err (m/s), valid 
         """
@@ -620,6 +634,8 @@ def compute_feature_shift(x1, y1, y1_err, peak1, x2, y2, peak2, plot=False, ax=N
         # return shift_min_final, shift_min_final_err, valid, minuit.fval, new_peak1_wavel, new_peak2_wavel
         
         return shift_min_final, shift_min_final_err, valid, minuit.fval
+    elif return_minuit:
+        return minuit
     else:
         return shift_min_final, shift_min_final_err, valid#, minuit
 
@@ -1797,3 +1813,26 @@ def plot_compare_lily(my_rv, my_err, days, save_as = None, star_name=None,
             fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(6,1.5))
             ax1.hist(my_rv - rv, bins=50, range=(-5, 5));
             ax2.scatter(my_rv, rv, s=0.5)
+
+
+def make_gif(read_dir, save_as, must_contain=None, use_nth_file=1, fps=30):
+    image_files = get_files_in_dir(read_dir, must_contain=must_contain)[::use_nth_file]
+
+    # need to sort them again, don't know why ... 
+    import natsort 
+    image_files = natsort.natsorted(image_files, reverse=False)
+    image_files
+
+    import imageio
+    images = []
+    for filename in image_files:
+        im = imageio.imread(filename)
+        images.append(im)
+    imageio.mimsave(save_as, images, fps=fps)
+
+
+def ax_add_grid(ax):
+    ax.xaxis.set_minor_locator(matplotlib.ticker.AutoMinorLocator())
+    ax.yaxis.set_minor_locator(matplotlib.ticker.AutoMinorLocator())
+    ax.grid(which='major', color='k', alpha=0.05, linestyle='-')
+    ax.grid(which='minor', color='k', alpha=0.025, linestyle='-')

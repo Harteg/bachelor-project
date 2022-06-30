@@ -102,22 +102,22 @@ def fit_peaks(data_spec, data_spec_err, peak_index_ranges, print=False):
 
         # peak_fits.append([*minuit.values, Chi2_val])
         peak_fits.append([
-            minuit.values['A'],
-            minuit.errors['A'],
-            minuit.values['mu'],
-            minuit.errors['mu'],
-            minuit.values['sigma'],
-            minuit.errors['sigma'],
-            minuit.values['C'],
-            minuit.errors['C'],
-            Chi2_val,
-            ndof,
-            converged,
-            index_start, 
-            index_end,
-            Prob,
-            minuit.values['P'],
-            minuit.errors['P'],
+            minuit.values['A'],         # 0
+            minuit.errors['A'],         # 1
+            minuit.values['mu'],        # 2
+            minuit.errors['mu'],        # 3
+            minuit.values['sigma'],     # 4
+            minuit.errors['sigma'],     # 5
+            minuit.values['C'],         # 6
+            minuit.errors['C'],         # 7
+            Chi2_val,                   # 8
+            ndof,                       # 9
+            converged,                  # 10
+            index_start,                # 11
+            index_end,                  # 12
+            Prob,                       # 13
+            minuit.values['P'],         # 14
+            minuit.errors['P'],         # 15
         ])
         
         if print:
@@ -330,14 +330,71 @@ def make_nan_matrix(size):
 
 
 LFC_PATH = "/Users/jakobharteg/GitHub/bachelor-project/expres_tp/"    
-def get_files_in_dir(dir, must_contain=None):
+def get_files_in_dir(dir, must_contain=None, sort=True):
     """ Returns all filenames in a dir"""
     filenames = next(walk(dir), (None, None, []))[2]  # [] if no file
 
     if must_contain:
-        filenames = [x for x in filenames if "LFC" in x]
+        filenames = [x for x in filenames if must_contain in x]
 
-    filenames = sorted(filenames)
+    if sort:
+        filenames = sorted(filenames)
+        
     filenames = [dir + x for x in filenames] # add path to the filename
     return filenames
 
+
+def wav2RGB(wavelength, in_angstrom=True):
+    # Convert wavelength in nm into RGB color. 
+    # https://codingmess.blogspot.com/2009/05/conversion-of-wavelength-in-nanometers.html
+    
+    if wavelength is np.nan:
+        return np.nan
+
+    if in_angstrom:
+        wavelength = wavelength * 0.1 # convert angstrom to nm
+    
+    w = int(wavelength)
+
+    # colour
+    if w >= 380 and w < 440:
+        R = -(w - 440.) / (440. - 350.)
+        G = 0.0
+        B = 1.0
+    elif w >= 440 and w < 490:
+        R = 0.0
+        G = (w - 440.) / (490. - 440.)
+        B = 1.0
+    elif w >= 490 and w < 510:
+        R = 0.0
+        G = 1.0
+        B = -(w - 510.) / (510. - 490.)
+    elif w >= 510 and w < 580:
+        R = (w - 510.) / (580. - 510.)
+        G = 1.0
+        B = 0.0
+    elif w >= 580 and w < 645:
+        R = 1.0
+        G = -(w - 645.) / (645. - 580.)
+        B = 0.0
+    elif w >= 645 and w <= 780:
+        R = 1.0
+        G = 0.0
+        B = 0.0
+    else:
+        R = 0.0
+        G = 0.0
+        B = 0.0
+
+    # intensity correction
+    if w >= 380 and w < 420:
+        SSS = 0.3 + 0.7*(w - 350) / (420 - 350)
+    elif w >= 420 and w <= 700:
+        SSS = 1.0
+    elif w > 700 and w <= 780:
+        SSS = 0.3 + 0.7*(780 - w) / (780 - 700)
+    else:
+        SSS = 0.0
+    SSS *= 255
+
+    return [int(SSS*R)/255, int(SSS*G)/255, int(SSS*B)/255]
