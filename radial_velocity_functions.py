@@ -997,14 +997,14 @@ def compute_z_test_mask(x, sigma):
     return mask
 
 
-def filter_z_test(shifts, set_to_nan=False):
+def filter_z_test(shifts, set_to_nan=False, sigma=5):
     """ return filtered shifts collection by z test of sigma 5 """
     
     # Filter
     df = pd.DataFrame(shifts, copy=True)
     df.columns = ["x", "err", "valid"]
 
-    mask = compute_z_test_mask(df["x"], 5)
+    mask = compute_z_test_mask(df["x"], sigma)
 
     if set_to_nan:
         df.valid[mask == False] = np.nan 
@@ -1041,7 +1041,7 @@ def matrix_reduce_results_file(filename, path, plot=True, with_date_duplicates=F
     return matrix_reduce(diff_matrix, diff_matrix_err, diff_matrix_valid, path, plot, with_date_duplicates)
 
 
-def matrix_reduce(diff_matrix, diff_matrix_err, diff_matrix_valid, path, plot=True, with_date_duplicates=False):
+def matrix_reduce(diff_matrix, diff_matrix_err, diff_matrix_valid, path, plot=True, with_date_duplicates=False, center_around_zero=True):
     """ Takes a file of our cross-correlation results (matrix) and reduces"""
 
     def model_chi2(*V):
@@ -1065,7 +1065,8 @@ def matrix_reduce(diff_matrix, diff_matrix_err, diff_matrix_valid, path, plot=Tr
     final_shifts_err = minuit.errors[:]
 
     # Center around 0
-    final_shifts = final_shifts - np.mean([min(final_shifts), max(final_shifts)])
+    if center_around_zero:
+        final_shifts = final_shifts - np.mean([min(final_shifts), max(final_shifts)])
 
     # get list of observation days
     if with_date_duplicates:
@@ -1721,7 +1722,7 @@ def remove_outliers_from_result_with_rv_cut(res):
 
 
 def plot_compare_lily(my_rv, my_err, days, save_as = None, star_name=None, 
-            plot_residuals=False, lily_data_file=None, padding_top=4, padding_bottom=1, ticks=None, small_height=False):
+            plot_residuals=False, lily_data_file=None, padding_top=4, padding_bottom=1, ticks=None, small_height=False, draw_grid=False):
 
     height = 4 if small_height else 5
     info_text_y_loc = 0.93 if small_height else 0.95
@@ -1797,6 +1798,10 @@ def plot_compare_lily(my_rv, my_err, days, save_as = None, star_name=None,
     ax3.yaxis.set_ticks([-2, 0, 2])
     ax3.hist(residuals, orientation='horizontal', range=(-2.5, 2.5), bins=int(np.sqrt(len(residuals))), alpha=0.1, color="k", bottom=-20)
 
+    if draw_grid:
+        ax_add_grid(ax1)
+        ax_add_grid(ax2)
+        ax_add_grid(ax3)
 
     if save_as is not None:
         fig.savefig(save_as, bbox_inches="tight", dpi=300)
