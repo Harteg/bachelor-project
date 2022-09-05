@@ -40,8 +40,7 @@ def compute_rms(x):
     return np.sqrt(np.sum(x ** 2) / len(x - 1))
 
 
-def compute_coords(filenames):
-    size = len(filenames)
+def compute_coords(size):
     coords = []
     for x in np.arange(size):
         for y in np.arange(x, size):
@@ -261,7 +260,10 @@ def find_features(filename,
                     is_51_peg = False,                  # 51Peg doesn't have excalibur column so we need different keywords 
                     use_bary_correction = True,         # True if you want to use "wavelength" column filtered by pixel_mask.
                     scale_up_errors = False,            # scale errors by sqrt{3}
-                    custom_error_scale = None           # scale errors by a constant
+                    custom_error_scale = None,          # scale errors by a constant
+                    order_padding=0,                    # pad orders with a number of pixels, so we exclude features found at the edges
+                    apply_order_overlap_masking=False,  # true to crop off the wavelengths at the start of each order which also appeared at the end of the previous order.
+                    correct_for_tellurics=False         # set intensity to 0 for pixels with non-zero tellurics    
     ):
     
     """ Returns list of features x_values (angstrom by default), y_values, y_err_values, x_peak_location, peak_index, order """
@@ -276,7 +278,8 @@ def find_features(filename,
     is_51_peg = ("peg" in filename)
 
     orders = np.arange(0, orders_n)
-    for order in orders:
+    end_x = -1
+    for index, order in enumerate(orders):
         
         if is_51_peg:
             pixel_mask  = fits_data['PIXEL_MASK'][order]
@@ -286,13 +289,6 @@ def find_features(filename,
             continuum   = fits_data['continuum'][order][pixel_mask]
             x           = fits_data['bary_wavelength'][order][pixel_mask]
         elif not use_bary_correction:
-            # pixel_mask  = fits_data['PIXEL_MASK'][order]    # filter by pixel_mask
-            # y           = fits_data['spectrum'][order][pixel_mask]
-            # og_y        = y # copy of original y data before filtering
-            # y_err       = fits_data['uncertainty'][order][pixel_mask]
-            # continuum   = fits_data['continuum'][order][pixel_mask]
-            # x           = fits_data['wavelength'][order][pixel_mask]
-
             excalibur_mask  = fits_data['EXCALIBUR_MASK'][order]    # filter by EXCALIBUR_MASK
             y           = fits_data['spectrum'][order][excalibur_mask]
             og_y        = y # copy of original y data before filtering
@@ -333,8 +329,34 @@ def find_features(filename,
             # print("Order bad:", len(y), "/", len(og_y), "=", len(y) / len(og_y))
             continue
 
+        # Corect for tellurics
+        if correct_for_tellurics:
+            tel = fits_data['tellurics'][order][excalibur_mask][frac_err_mask]
+            y[np.where(tel < 1)] = 1
+
         # Now invert peaks
         y = 1 - y
+
+        # order padding
+        if order_padding > 0:
+            x = x[order_padding:-order_padding]
+            y = y[order_padding:-order_padding]
+            y_err = y_err[order_padding:-order_padding]
+
+        # orders overlap, so we can trim off the wavelengths in the beginning of each order,
+        # which appeared at the end of the previous order. 
+        if apply_order_overlap_masking:
+            if end_x > 0:
+                for j, x_val in enumerate(x):
+                    if x_val > end_x:
+                        x = x[j:]
+                        y = y[j:]
+                        y_err = y_err[j:]
+                        break
+
+            # save last x for next order
+            end_x = x[-1]
+
 
         peaks = func_find_peaks(y, min_peak_dist, min_peak_prominence)
         peak_locs = peaks[0]
@@ -1841,3 +1863,111 @@ def ax_add_grid(ax):
     ax.yaxis.set_minor_locator(matplotlib.ticker.AutoMinorLocator())
     ax.grid(which='major', color='k', alpha=0.05, linestyle='-')
     ax.grid(which='minor', color='k', alpha=0.025, linestyle='-')
+
+
+def match_k_features(filenames, correct_for_tellurics=False, log=True, min_feature_count_in_k=50, max_feature_count_in_k=60):
+    all_features = [find_features(file, log=False, apply_order_overlap_masking=True, correct_for_tellurics=correct_for_tellurics) for file in filenames]
+
+    # Extract wavelength of all features
+    feature_wavelengths = []
+    for f in all_features:
+        list = [f[i][3] for i in range(len(f))]
+        feature_wavelengths.append(list)
+    feature_wavelengths = np.concatenate(feature_wavelengths)
+
+    # Do numpy histogram to get count and bin_edges with larger bin size
+    xmin, xmax = np.min(feature_wavelengths), np.max(feature_wavelengths)
+    Nbins = 100000
+    count, bin_edges = np.histogram(feature_wavelengths, bins=Nbins, range=(xmin, xmax))
+    bin_centers = (bin_edges[1:] + bin_edges[:-1])/2
+    bin_width = (xmax-xmin)/Nbins
+
+    # remove features that are overlaping (if any ..)
+    count[np.where(count > max_feature_count_in_k)] = 0
+
+    # remove features that are not present throughout most observations (50+)
+    count[np.where(count < min_feature_count_in_k)] = 0
+
+    # Find peaks in histogram
+    from findpeaks import findpeaks
+    fp = findpeaks(lookahead=1, interpolate=10) # todo: what do these params do? 
+    results = fp.fit(count)
+
+    # get df from results
+    res_df = results["df"]
+
+    # exclude points that are not peaks (such as valleys)
+    res_df = res_df[res_df.peak]
+
+    # get peak index and height
+    peak_index = res_df.x 
+    peak_height = res_df.y 
+
+    # Remove "peaks" that are below 50 (a lot around zero...)
+    peak_index = peak_index[peak_height > 50]
+    peak_height = peak_height[peak_height > 50]
+
+    # get wavelength of bin-centers
+    peak_wavelength = bin_centers[peak_index]
+
+    # Make dataframe of all features
+    df_all_features = []
+    days = convert_dates_to_relative_days(get_spectra_dates(filenames))
+    for obs, day, i in zip(all_features, days, range(len(all_features))):
+        for f in obs:
+            fdf = pd.DataFrame({
+                "k": np.nan,   # add k, ready to assign 
+                "obs": i,
+                "day": day,
+                "x": [f[0]],
+                "y": [f[1]],
+                "y_err": [f[2]],
+                "x_peak": f[3],
+                "x_peak_index": f[4],
+                "order": f[5]
+            })
+            df_all_features.append(fdf)
+
+    df_all_features = pd.concat(df_all_features, ignore_index=True)
+
+    # Loop through all features
+    for i in range(len(df_all_features)):
+        
+        # get feature peak (wavelength)
+        feature_peak = df_all_features.iloc[i].x_peak
+        
+        # loop through all k wavelengths
+        for k, λ in enumerate(peak_wavelength):
+
+            # check if feature peak is in the bin of wavelength k, if so asign. 
+            if λ > feature_peak - bin_width and λ < feature_peak + bin_width:
+                df_all_features.loc[i, "k"] = k
+                break
+
+    if log:
+        print(f"Categorized {len(df_all_features[df_all_features.k >= 0])} features with k ranging from 0 to {np.nanmax(df_all_features.k)}. {(len(df_all_features[df_all_features.k >= 0])/len(df_all_features) * 100):.3}% of the found features.")
+
+    return df_all_features
+
+
+def parse_matrix_results_feature(result, coords):
+    
+    size = np.max(np.max(coords)) + 1
+    diff_matrix, diff_matrix_err, diff_matrix_valid = make_nan_matrix(size), make_nan_matrix(size), make_nan_matrix(size)
+
+    for coord, shifts in zip(coords, result):
+
+        # Split 
+        rv, err, valid = shifts[0], shifts[1], shifts[2]
+
+        x = coord[0]
+        y = coord[1]
+
+        diff_matrix[x, y] = rv
+        diff_matrix_err[x, y] = err
+        diff_matrix_valid[x, y] = valid
+        
+    return diff_matrix, diff_matrix_err, diff_matrix_valid
+
+
+
